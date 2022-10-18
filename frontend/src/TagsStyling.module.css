@@ -1,0 +1,26 @@
+:global a:link {
+    text-decoration: none;
+    color: blue;
+}
+
+:global a:visited {
+    color: blue;
+}
+
+
+
+:global * {
+    color: black;
+    font-family: Arial;
+    font-size: 14px;
+}
+
+
+:global li {
+    list-style-type: none;
+}
+
+
+:global h1 {
+    font-size: 20px;
+}

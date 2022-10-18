@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'amazonApp',
     'corsheaders',
+    'frontend',
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,7 @@ STATICFILES_DIRS = [
 ]
 
 
-AUTH_USER_MODEL = 'amazonApp.User'
+AUTH_USER_MODEL = 'frontend.User'
 
 
 CORS_ALLOW_ALL_ORIGINS = True

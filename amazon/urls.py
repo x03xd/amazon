@@ -16,12 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
-from amazonApp.views import Authentication, HomePage, LogoutView
+from frontend.views import Authentication, HomePage, LogoutView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', include('amazonApp.urls')),
-
+    path('api/', include('amazonApp.urls')),
+    path('', include('frontend.urls')),
 ]
