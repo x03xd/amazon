@@ -1,8 +1,9 @@
 import {useNavigate} from 'react-router-dom';
-import stylesModal2 from './Modal2.module.css';
+import stylesLogin from './Login.module.css';
 import {useEffect, useState} from 'react';
+import CSRFToken from './CSRFToken.js';
 
-export default function Modal2(props){
+export default function Login(props){
 
     const [data, setData] = useState(null);
 
@@ -11,13 +12,15 @@ export default function Modal2(props){
 
 
     return(
-        <div className = "modal-container">
-            <h1>Zaloguj się</h1>
+        <div className = "modal-container classic-border">
+            <p>Zaloguj się</p>
 
-            <form>
+            <form action = "" method = "POST">
+                <CSRFToken />
                 <label htmlFor = "id-1">E-mail lub numer telefonu komórkowego</label>
-                <input name = "username" className = "text-input" type = "text" id = "id-1"/>
-                <input type = "submit" className = "login-button" value = "dalej"/>
+
+                <input name = 'username' className = "text-input login" type = "text" id = "id-1"/><br/>
+                <input type = "submit" className = "login-button login" value = "Dalej"/>
             </form>
 
             <div id = "text-E01">

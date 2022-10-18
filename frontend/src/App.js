@@ -34,11 +34,11 @@ function App(props) {
 
                     <div className = "content">
 
-
-
                         <div className = {`overlay ${style}`}>
-                            <Outlet />
                         </div>
+
+                        <Outlet />
+
                     </div>
 
                     <div></div>

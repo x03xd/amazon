@@ -18,7 +18,6 @@ export default function Navbar(props){
         <>
             <nav>
                 <div className = 'navbar-upper-part'>
-                    <div>
 
                         <img className = "logo-image" src = {deliverImage} alt = "logo"/>
                         <span className = "logo-text"> DeliverService </span>
@@ -31,7 +30,7 @@ export default function Navbar(props){
 
                         <a>Zwroty i zamówienia</a>
                         <a>Koszyk</a>
-                    </div>
+
                 </div>
 
 
