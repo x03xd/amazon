@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'amazonApp',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'amazon.urls'
@@ -80,8 +82,12 @@ WSGI_APPLICATION = 'amazon.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'amazon',
+        'USER': 'root',
+        'PASSWORD': 'zxc!!@123Q',
+        'PORT': '3306',
+        'HOST': 'localhost',
     }
 }
 
@@ -131,3 +137,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'react-amazon/build/static')
 
 ]
+
+
+AUTH_USER_MODEL = 'amazonApp.User'
+
+
+CORS_ALLOW_ALL_ORIGINS = True
