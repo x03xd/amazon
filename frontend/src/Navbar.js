@@ -5,12 +5,13 @@ import {useState} from 'react';
 
 export default function Navbar(props){
 
-    const changeStyle = () => {
-        props.onChange("active");
+    const activeOverlay = (style) => {
+        props.overlayStyle(style);
     }
 
-    const changeStyle2 = () => {
-        props.onChange("");
+
+    const activeLoginModal = (style) => {
+        props.loginModalStyle(style);
     }
 
 
@@ -28,7 +29,7 @@ export default function Navbar(props){
                             <a>Wybierz adres dostawy</a>
                             <input className = "main-search-bar" type = "text" />
 
-                            <a onClick = {changeStyle2} onMouseOver = {changeStyle} className = "login">Konto i listy</a>
+                            <a onMouseOver = {() => {activeOverlay('active'); activeLoginModal('active')}}>Konto i listy</a>
                             <a>Zwroty i zamówienia</a>
                             <a>Koszyk</a>
                         </div>
@@ -37,9 +38,11 @@ export default function Navbar(props){
 
 
 
+
+
                 <div className = 'navbar-lower-part'>
                     <div>
-                        <a>Menu</a>
+                        <a onClick= {() => {activeOverlay('active')}}>Menu</a>
                         <a>Prime</a>
                         <a>Okazje</a>
                         <a>Bestsellery</a>

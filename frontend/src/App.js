@@ -4,18 +4,24 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import {useState} from 'react';
 import Modal from './Modal';
-
+import LeftModal from './LeftModal';
 import stylesTags from './TagsStyling.module.css';
 import stylesAuthLayout from './AuthLayout.module.css';
 import stylesApp from './App.module.css';
+import stylesModal from './Modal.module.css';
 import AuthLayout from './AuthLayout';
 
 function App(props) {
 
-    const [style, setStyle] = useState("")
+    const [overlayStyle, setOverlayStyle] = useState("")
+    const [loginModalStyle, setLoginModalStyle] = useState("")
 
-    function styler(style){
-        setStyle(style);
+    function overlayStyler(style){
+        setOverlayStyle(style);
+    }
+
+    function loginModalStyler(style){
+        setLoginModalStyle(style);
     }
 
 
@@ -23,9 +29,9 @@ function App(props) {
             <div className = "main-container-app">
 
                 <div className = "navbar">
-                    <Navbar onChange = {styler} />
+                    <Navbar overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} />
 
-                    <Modal className = {style} />
+                    <Modal className = {`login-modal ${loginModalStyle}`} />
                 </div>
 
                 <div className = "main">
@@ -33,11 +39,12 @@ function App(props) {
 
                     <div className = "content">
 
-                        <div className = {`overlay ${style}`}>
+                        <div className = {`overlay ${overlayStyle}`} onClick = {() => {setOverlayStyle(""); setLoginModalStyle("");}}>
                         </div>
 
                         <Outlet />
 
+                        <LeftModal />
                     </div>
 
                     <div></div>
