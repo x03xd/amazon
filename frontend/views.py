@@ -18,25 +18,41 @@ class HomePage(TemplateView):
 class Authentication(TemplateView):
     template_name = 'index.html'
 
+
     def post(self, request, *args, **kwargs):
 
-        username = request.POST.get('username')
+        json_data = json.load(request)
 
         try:
-            user = User.objects.get(username = username)
+            user_object = User.objects.get(username = json_data['username'])
+            return JsonResponse({'authenticated': 'true', 'email': user_object.email, 'username': json_data['username']})
+
+        except User.DoesNotExist:
+
+            return JsonResponse({'authenticated':'false'})
+
+
+class Authentication2(TemplateView):
+    template_name = 'index.html'
+
+    def post(self, request, *args, **kwargs):
+
+        json_data = json.load(request)
+
+        try:
+            user = User.objects.get(username = json_data['username'])
 
         except:
             pass
 
-        user = authenticate(request, username = username, password = "123")
+        user = authenticate(request, username = json_data['username'], password= json_data['password'])
+
         if user is not None:
             login(request, user)
-            return redirect("/")
-        return redirect("/")
+            return JsonResponse({'password': 'correct'})
 
-
-
-
+        else:
+            return JsonResponse({'password': 'wrong'})
 
 class LogoutView(View):
     def get(self, request, *args, **kwargs):

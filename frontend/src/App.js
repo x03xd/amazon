@@ -20,7 +20,6 @@ function App(props) {
 
 
     return (
-
             <div className = "main-container-app">
 
                 <div className = "navbar">

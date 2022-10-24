@@ -1,49 +1,57 @@
+
+:global .modal-container-wrapper {
+    grid-column: 3 / 4;
+    display: grid;
+    align-content: start;
+    grid-auto-rows: min-content;
+}
+
+
 :global .modal-container  {
-    margin-top: 110px;
-    width: 18%;
-    height: 340px;
-    position: fixed;
-    left: 50%;
-    top: 15%;
-    transform: translate(-50%, -50%);
-    border-radius: 4px;
-
     text-align: center;
+    margin-top: 25px;
+    padding: 10px;
 }
 
 
-:global .modal-container form {
-    text-align: center;
-    margin-top: 5px;
-}
 
 :global .modal-container p {
-    margin-top: 15;
-    font-size: 24px;
-    font-weight: 700;
+    font-weight: 650;
+    text-align: start;
+    margin-left: 25px;
+    margin-top: 25px;
 }
+
+
 
 :global .modal-container form input {
     margin-top: 15px;
 }
 
+:global .modal-container form input:last-child {
+    margin-top: 20px;
+}
+
+
+
 :global .modal-container form label {
     font-weight: 600;
-    line-height: 10px;
+
 }
+
 
 :global #text-E01 {
     display: grid;
     align-items: center;
+    background: white;
+
+}
+
+:global #text-E01 a {
+
 }
 
 
-
-:global .text-input.login {
-    width: 70%;
-}
-
-
-:global .login-button.login {
-    width: 72%;
+:global .login {
+    width: 315px;
 }

@@ -1,26 +1,112 @@
 :global a:link {
-    text-decoration: none;
+    text-decoration: none !important;
     color: blue;
 }
 
 :global a:visited {
     color: blue;
+    text-decoration: none !important;
 }
 
 
 
 :global * {
-    color: black;
-    font-family: Arial;
-    font-size: 14px;
+    color: black !important;
+    font-family: Arial !important;
+    font-size: 12px  !important;
 }
 
 
 :global li {
-    list-style-type: none;
+    list-style-type: none !important;
 }
 
 
-:global h1 {
-    font-size: 20px;
+
+:global .fs-10 {
+    font-size: 10px!important;
+}
+
+
+:global .fs-11 {
+    font-size: 11px !important;
+}
+
+
+
+:global .fs-12 {
+    font-size: 12px !important;
+}
+
+
+
+:global .fs-13 {
+    font-size: 13px!important;
+}
+
+
+:global .fs-14 {
+    font-size: 14px !important;
+}
+
+
+
+:global .fs-15 {
+    font-size: 15px !important;
+}
+
+:global .fs-16 {
+    font-size: 16px!important;
+}
+
+
+:global .fs-17 {
+    font-size: 17px !important;
+}
+
+
+
+:global .fs-18 {
+    font-size: 18px !important;
+}
+
+
+
+:global .fs-19 {
+    font-size: 19px!important;
+}
+
+
+:global .fs-20 {
+    font-size: 20px !important;
+}
+
+
+
+:global .fs-21 {
+    font-size: 21px !important;
+}
+
+:global .fs-22 {
+    font-size: 22px!important;
+}
+
+
+:global .fs-23 {
+    font-size: 23px !important;
+}
+
+
+:global .fs-24 {
+    font-size: 24px !important;
+}
+
+
+:global .fs-25 {
+    font-size: 25px !important;
+}
+
+
+:global .fs-26 {
+    font-size: 26px !important;
 }

@@ -3,7 +3,7 @@
 import React from 'react';
 
 
-export default  function CSRFTOKEN(){
+export default function CSRFTOKEN(){
 
     function getCookie(name) {
         let cookieValue = null;
@@ -26,7 +26,7 @@ export default  function CSRFTOKEN(){
     const csrftoken = getCookie('csrftoken');
 
     return (
-        <input name="csrfmiddlewaretoken" value={csrftoken} type="hidden" />
+        <input name="csrfmiddlewaretoken" value={csrftoken || ""} type="hidden" />
     );
 
 };

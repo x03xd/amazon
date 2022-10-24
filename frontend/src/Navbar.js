@@ -19,17 +19,19 @@ export default function Navbar(props){
             <nav>
                 <div className = 'navbar-upper-part'>
 
-                        <img className = "logo-image" src = {deliverImage} alt = "logo"/>
-                        <span className = "logo-text"> DeliverService </span>
+                        <div className = "logo-box">
+                            <img className = "logo-image" src = {deliverImage} alt = "logo"/>
+                            <span className = "logo-text"> DeliverService </span>
+                        </div>
 
-                        <a>Wybierz adres dostawy</a>
-                        <input className = "main-search-bar" type = "text" />
-                        <a onClick = {changeStyle2} onMouseOver = {changeStyle} className = "login">Konto i listy</a>
+                        <div>
+                            <a>Wybierz adres dostawy</a>
+                            <input className = "main-search-bar" type = "text" />
 
-
-
-                        <a>Zwroty i zamówienia</a>
-                        <a>Koszyk</a>
+                            <a onClick = {changeStyle2} onMouseOver = {changeStyle} className = "login">Konto i listy</a>
+                            <a>Zwroty i zamówienia</a>
+                            <a>Koszyk</a>
+                        </div>
 
                 </div>
 

@@ -1,60 +1,77 @@
 
+:global .main-container-auth-layout {
+    display: grid;
+    align-content: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+}
 
 
 :global .main-container-auth-layout-title {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
+    grid-column: 1 / 6;
+    display: grid;
     justify-content: center;
-    align-items: center;
+    align-content: center;
+}
+
+
+
+:global .main-container-auth-layout-create-button {
+    grid-column: 1 / 6;
+    text-align: center;
+    margin-top: 55px;
+}
+
+
+:global .auth-navbar {
+    grid-column: 1 / 6;
+    text-align: center;
+    background: #EFEFEF;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 35%;
+}
+
+
+:global .auth-navbar > div {
     margin-top: 20px;
 }
 
 
 
-
-:global .main-container-auth-layout-3 {
-
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}
-
-
-:global .main-container-auth-layout div:last-child {
-    left: 0;
-    right: 0;
-    background: #EFEFEF;
-    text-align: center;
-    position: fixed;
-    bottom: 0;
-    height: 40%;
-}
-
-
-:global .main-container-auth-layout div:last-child > div {
-    display: flex;
-    gap: 25px;
-    justify-content: center;
-    margin-top: 30px;
-}
-
-:global .main-container-auth-layout div:last-child span {
+:global .auth-navbar span {
     line-height: 40px;
+}
+
+
+:global .auth-navbar a {
     font-size: 11px;
+    padding: 10px;
 }
 
 
-:global .main-container-auth-layout div:last-child a {
-    font-size: 11px;
+
+
+
+:global .text-E01.active a, :global .text-E01.active span {
+    display: block;
 }
 
 
-:global #text-E01 {
-    font-size: 12px;
-    background: white;
+:global .text-E01 span, :global .text-E01 a {
+    display: none;
 }
 
+
+:global .label  {
+    display: none;
+    text-align: start;
+}
+
+
+
+:global .label.active  {
+    display: block;
+}
