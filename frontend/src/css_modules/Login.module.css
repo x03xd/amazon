@@ -1,16 +1,15 @@
 
 :global .modal-container-wrapper {
     grid-column: 3 / 4;
-    display: grid;
-    align-content: start;
     grid-auto-rows: min-content;
 }
 
 
 :global .modal-container  {
-    text-align: center;
+    text-align: center !important;
     margin-top: 25px;
     padding: 10px;
+
 }
 
 
@@ -36,7 +35,7 @@
 
 :global .modal-container form label {
     font-weight: 600;
-
+    line-height: 0px;
 }
 
 
@@ -54,4 +53,5 @@
 
 :global .login {
     width: 315px;
+
 }

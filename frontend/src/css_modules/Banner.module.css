@@ -1,0 +1,12 @@
+
+
+:global .card-banner {
+    grid-column: 1 / 5;
+}
+
+
+
+:global .gradient-banner {
+    height: 120px;
+    background-image: linear-gradient(transparent, gray);
+}

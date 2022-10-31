@@ -1,5 +1,5 @@
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
-import stylesLogin from './Login.module.css';
+import stylesLogin from './css_modules/Login.module.css';
 import {useEffect, useState, useRef} from 'react';
 import CSRFToken from './CSRFToken.js';
 
@@ -122,31 +122,31 @@ export default function Login(props){
         <div className = "modal-container-wrapper">
             <div className = "modal-container classic-border">
 
-                <p className = "fs-26">Zaloguj się</p>
+                <p className = "fs-26 cr-black pt-10">Zaloguj się</p>
 
-                <p>{email}</p>
+                <p className = "cr-black">{email}</p>
 
 
-                <form method = "POST" ref = {formInput} action = {location.state.link}>
+                <form method = "POST" ref = {formInput} action = {location.state.link} className = "cr-black">
                     <CSRFToken />
 
-                    <label htmlFor = "id-1">{location.state.content}</label><br/>
+                     <span className  = "cr-black" className = "cr-black fw-550">{location.state.content}</span>
 
-                    <input ref = {textInput} defaultValue = "" className = "text-input login" type = {location.state.type} id = "id-1"  /><br/>
+                    <input ref = {textInput} defaultValue = "" className = "text-input login cr-black" type = {location.state.type} id = "id-1x"  /><br/>
 
-                    <input value = {location.state.inputValue} type = "submit" className = {`login-button login ${location.state.style}`} onClick = {submitForm}/>
-                    <input value = {location.state.inputValue} type = "submit" className = {`login-button login ${location.state.style2}`} onClick = {dataToBackend}/>
+                    <input  value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style}`} onClick = {submitForm}/>
+                    <input  value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style2}`} onClick = {dataToBackend}/>
                 </form>
 
 
                 <div className = {`text-E01 ${location.state.style} p-3`} id = "text-E01">
-                    <span className = "fs-11 p-3">Logując się, wyrażasz zgodę na Warunki użytkowania i sprzedaży Amazon. Zobacz Informację o prywatności, Informację o plikach cookie oraz Informację o reklamach dopasowanych do zainteresowań.</span><br/>
-                    <a className = "fs-12" href = "#">Potrzebujesz pomocy?</a>
+                    <span  className = "fs-11 p-3 cr-black">Logując się, wyrażasz zgodę na Warunki użytkowania i sprzedaży Amazon. Zobacz Informację o prywatności, Informację o plikach cookie oraz Informację o reklamach dopasowanych do zainteresowań.</span><br/>
+                    <a className = "fs-12 cr-black" href = "#">Potrzebujesz pomocy?</a>
                 </div>
 
                 <div className = {`${location.state.style2} p-3`} id = "reminder-login">
                      <input className = 'flex' type = "checkbox"/>
-                     <span className = "fs-12">Nie wylogowuj mnie  </span><a className = "fs-12" href = "#">   Szczegóły</a>
+                     <span className = 'cr-black' className = "fs-12">Nie wylogowuj mnie  </span><a className = "cr-black" className = "fs-12" href = "#">   Szczegóły</a>
                 </div>
 
             </div>

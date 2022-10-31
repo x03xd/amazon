@@ -1,5 +1,5 @@
 import {Outlet, useNavigate} from 'react-router-dom';
-import deliverImage from './logo.png';
+import logo from './images/xd.png';
 import Login from './Login';
 import Register from './Register';
 import {useState} from 'react';
@@ -13,8 +13,7 @@ export default function AuthLayout(props){
         <div className = "main-container-auth-layout">
                 <div className = "main-container-auth-layout-title">
                     <div className = "logo-box">
-                        <img className = "logo-image" src = {deliverImage} alt = "logo"/>
-                        <span className = "logo-text"> DeliverService </span>
+                        <img className = 'logo mt-2 ms-4' src = {logo} />
                     </div>
                 </div>
 
@@ -28,19 +27,17 @@ export default function AuthLayout(props){
 
                 <div className = "auth-navbar">
                     <div>
-                         <a href = "#">Warunki użytkowania i sprzedaży</a>
-                         <a href = "#">Informacja o prywatności </a>
-                         <a href = "#">Pomoc </a>
-                         <a href = "#">Nota prawna</a>
-                         <a href = "#">Cookies</a>
-                         <a href = "#">Reklamy dopasowane do zainteresowań</a><br/>
+                         <a className = 'cr-black' href = "#">Warunki użytkowania i sprzedaży</a>
+                         <a className = 'cr-black' href = "#">Informacja o prywatności </a>
+                         <a className = 'cr-black' href = "#">Pomoc </a>
+                         <a className = 'cr-black' href = "#">Nota prawna</a>
+                         <a className = 'cr-black' href = "#">Cookies</a>
+                         <a className = 'cr-black' href = "#">Reklamy dopasowane do zainteresowań</a><br/>
 
-                    <span>© 1996-2022 DeliverService.com, Inc. lub podmioty powiązane</span>
+                    <span className = 'cr-black'>© 1996-2022 DeliverService.com, Inc. lub podmioty powiązane</span>
                     </div>
                 </div>
         </div>
     );
-
-
 
 }

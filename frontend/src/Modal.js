@@ -15,32 +15,32 @@ export default function Modal(props){
     return(
         <div className = {`login-modal ${props.className}`}>
 
-            <div>
+            <div className = "p-3">
                 <button onClick = {() => { navigateTo() }} className = "login-button">Zaloguj się</button>
 
-                <span>Pierwszy raz w serwisie Amazon?</span> <br/>
-                <a href = "#">Rozpocznij tutaj.</a>
+                <span className = 'cr-black mt-4'>Pierwszy raz w serwisie Amazon?</span> <br/>
+                <a className = 'cr-black' href = "#">Rozpocznij tutaj.</a>
             </div>
 
 
 
             <div>
                 <div>
-                    <ul>
-                        <li>Moje listy</li>
-                        <li>Utwórz listę zakupów</li>
+                    <ul className = "p-5">
+                        <li className = 'cr-black'>Moje listy</li>
+                        <li className = 'cr-black'>Utwórz listę zakupów</li>
                     </ul>
                 </div>
 
                 <div>
-                    <ul>
-                        <li>Moje konto</li>
-                        <li>Moje konto</li>
-                        <li>Moje zamówienia</li>
-                        <li>Kup ponownie</li>
-                        <li>Moje rekomendacje</li>
-                        <li>Mój Prime</li>
-                        <li>Sprzedawaj na Amazon</li>
+                    <ul className = "p-5">
+                        <li className = 'cr-black'>Moje konto</li>
+                        <li className = 'cr-black'>Moje konto</li>
+                        <li className = 'cr-black'>Moje zamówienia</li>
+                        <li className = 'cr-black'>Kup ponownie</li>
+                        <li className = 'cr-black'>Moje rekomendacje</li>
+                        <li className = 'cr-black'>Mój Prime</li>
+                        <li className = 'cr-black'>Sprzedawaj na Amazon</li>
                     </ul>
                 </div>
             </div>
