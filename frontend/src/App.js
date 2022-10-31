@@ -52,18 +52,18 @@ function App(props) {
                         <LeftModal className = {`left-modal ${leftModalStyle}`}/>
                     </div>
 
+                    <div className = "side-main"></div>
 
                     <div className = "main">
-                        <div></div>
 
                         <div className = "content mt-4">
                             <div className = {`overlay ${overlayStyle}`} onClick = {() => {setOverlay(""); setLoginModal(""); setLeftModal(""); unclickableNavbar('')}}></div>
                             <Outlet />
                         </div>
 
-                        <div></div>
                     </div>
 
+                    <div className = "side-main-2"></div>
 
                     <div className = "footer">
                         <Footer />

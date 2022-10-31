@@ -6,49 +6,63 @@ import logo from './images/xd.png';
 
 export default function Footer(){
 
+    function scrollUp(){
+        window.scrollTo(0, 0)
+    }
+
 
     return(
         <>
             <footer>
                 <div className = "footer-upper-part">
-
-
+                    <span onClick = {scrollUp} className = "d-inline-block w-100 h-100">Powrót na stronę góry</span>
                 </div>
 
                 <div className = "footer-upper-mid-part">
 
                     <ul>
                         <li>O nas</li>
-                        <li>asdasd</li>
-                        <li>asdasd</li>
+                        <li>Informacje<br/>korporacyjne</li>
+                        <li>Praca</li>
+                        <li>Informacje<br/>prasowe</li>
+                        <li>Amazon<br/>Science</li>
                     </ul>
 
 
                     <ul>
                         <li>Zarabiaj z nami</li>
-                        <li>asdasd</li>
-                        <li>asdasd</li>
+                        <li>Zareklamuj swoje<br/>produkty</li>
+                        <li>Sprzedawaj na<br/>Amazon</li>
+                        <li>Realizacja przez<br/>Amazon (FBA)</li>
+                        <li>Program<br/>partnerski</li>
+                        <li>Wydawaj z nami<br/>niezalezne<br/>produkcje</li>
+
                     </ul>
 
 
                     <ul>
                         <li>Metody płatności</li>
-                        <li>asdasd</li>
-                        <li>asdasd</li>
+                        <li>Metody płatności</li>
+                        <li>Przelewy24</li>
                     </ul>
 
 
                     <ul>
                         <li>Obserwuj nas</li>
-                        <li>asdasd</li>
-                        <li>asdasd</li>
+                        <li>Youtube</li>
+                        <li>Twitter</li>
                     </ul>
 
 
                     <ul>
                         <li>Potrzebujesz pomocy?</li>
-                        <li>asdasd</li>
-                        <li>asdasd</li>
+                        <li>Śledź przesyłki lub <br/>wyświetl zamówienia</li>
+                        <li>Koszty i zasady dostaw</li>
+                        <li>Zwroty i wymiana</li>
+                        <li>Recykling</li>
+                        <li>Aplikacja Amazon</li>
+                        <li>Dział Obsługi Klienta</li>
+
                     </ul>
                 </div>
 

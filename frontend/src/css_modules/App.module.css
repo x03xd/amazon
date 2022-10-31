@@ -28,9 +28,23 @@
 
 :global .main {
     grid-column: 2 / 3;
+
 }
 
 
+
+
+:global .side-main-2 {
+    grid-column: 3 / 4;
+    background: lightgrey !important;
+}
+
+
+
+:global .side-main {
+    grid-column: 1 / 2;
+    background: lightgrey !important;
+}
 
 
 
@@ -87,11 +101,12 @@
 
 :global .main {
     margin-top: 68px;
+
 }
 
 
 :global .content {
-   background: gray;
+   background: lightgray;
    min-height: 1500px;
 
 }

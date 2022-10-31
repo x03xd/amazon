@@ -8,5 +8,5 @@
 
 :global .gradient-banner {
     height: 120px;
-    background-image: linear-gradient(transparent, gray);
+    background-image: linear-gradient(transparent, lightgray);
 }
