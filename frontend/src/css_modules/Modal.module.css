@@ -1,6 +1,6 @@
 :global .login-modal {
     background: white;
-    position: fixed;
+    position: absolute;
     display: none;
     grid-template-rows: 1fr 6fr;
     right: 110px;
@@ -124,6 +124,7 @@
     left: 0;
     right: 0;
     bottom: 0;
+    z-index: 5;
 }
 
 
