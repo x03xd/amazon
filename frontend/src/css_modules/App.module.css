@@ -5,6 +5,8 @@
 
   --top-foot: #37475A;
   --bot-foot: #131A22;
+
+  --dark-orange: #B12704;
 }
 
 
@@ -36,14 +38,14 @@
 
 :global .side-main-2 {
     grid-column: 3 / 4;
-    background: lightgrey !important;
+
 }
 
 
 
 :global .side-main {
     grid-column: 1 / 2;
-    background: lightgrey !important;
+
 }
 
 
@@ -107,8 +109,7 @@
 
 :global .content {
    background: lightgray;
-   min-height: 1500px;
-
+   min-height: 1600px;
 }
 
 

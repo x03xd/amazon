@@ -1,10 +1,17 @@
 
-
-import {useState} from 'react';
+import {Routes, Route, useNavigate} from 'react-router-dom';
+import {useState, useRef } from 'react';
 import logo from './images/xd.png';
 import cart from './images/shopping-cart-xxl.png';
+import Store from './Store';
+
+import CSRFToken from './CSRFToken';
 
 export default function Navbar(props){
+
+
+
+    const navigate = useNavigate();
 
     const activeOverlay = (style) => {
         props.overlayStyle(style);
@@ -21,6 +28,9 @@ export default function Navbar(props){
     const unclickableNavbar = (style) => {
         props.unclickableNavbar(style)
     }
+
+    const searchBar = useRef(null);
+
 
 
 
@@ -39,10 +49,12 @@ export default function Navbar(props){
                     </div>
 
                     <div>
-                        <input className = "main-search-bar" type = "text" onClick = {() => {activeOverlay('active'); unclickableNavbar('pointer-event-handler')}}  />
+                        <form method = "GET" >
+                            <input ref = {searchBar} name = "q" className = "main-search-bar" type = "text" onClick = {() => {activeOverlay('active'); unclickableNavbar('pointer-event-handler')}}  />
+                        </form>
                     </div>
 
-                    <div>
+                    <div className = "position-static">
                         <span>Witamy, zaloguj sie</span><br/>
                         <span onClick = {() => {activeOverlay('active'); activeLoginModal('active'); unclickableNavbar('pointer-event-handler')}}>Konto i listy</span>
                     </div>
@@ -88,11 +100,6 @@ export default function Navbar(props){
 
                     <div>
                         <span>Dział Obsługi Klienta</span>
-                    </div>
-
-
-                    <div>
-                        <a>KONTENT DO ZROBIENIA</a>
                     </div>
 
                 </div>

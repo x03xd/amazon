@@ -1,5 +1,5 @@
 import {Outlet, useNavigate} from 'react-router-dom';
-import logo from './images/xd.png';
+import logo from './images/xd2.webp';
 import Login from './Login';
 import Register from './Register';
 import {useState} from 'react';
@@ -13,7 +13,7 @@ export default function AuthLayout(props){
         <div className = "main-container-auth-layout">
                 <div className = "main-container-auth-layout-title">
                     <div className = "logo-box">
-                        <img className = 'logo mt-2 ms-4' src = {logo} />
+                        <img className = 'logo mt-4' src = {logo} />
                     </div>
                 </div>
 

@@ -1,0 +1,64 @@
+
+:global .lobby-content {
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+    background: white !important;
+    min-height: 1600px;
+
+}
+
+
+
+:global .lobby-content-gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+}
+
+
+
+
+
+:global .lobby-content-sidebar {
+    padding: 15px;
+}
+
+:global .lobby-content-sidebar > div {
+ margin-top: 15px;
+}
+
+
+:global .lobby-content-sidebar div:first-child span {
+    color: var(--dark-orange) !important;
+    font-size: 18px!important;
+    line-height: 24px!important;
+}
+
+
+
+:global #add-to-card-button {
+    border-radius: 16px;
+    border: 0;
+    width: 90%;
+    height: 32px;
+    background: yellow;
+}
+
+
+:global #buy-now-button {
+    border-radius: 16px;
+    border: 0;
+    width: 90%;
+    height: 32px;
+}
+
+
+:global .lobby-buttons {
+    display: grid;
+    gap: 10px;
+}
+
+:global #quantity select {
+    border: 1px solid;
+    width: 60px;
+}

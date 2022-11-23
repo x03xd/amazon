@@ -1,10 +1,11 @@
 :global a:link {
     text-decoration: none !important;
-    color: blue !important;
+    color: #007185 !important;
 }
 
 :global a:hover {
     cursor:pointer;
+    color: var(--dark-orange) !important;
 }
 
 :global ul {
@@ -13,7 +14,7 @@
 
 :global a:visited {
     text-decoration: none !important;
-    color: blue !important;
+    color: #007185 !important;
 }
 
 :global button, :global input {
@@ -21,15 +22,10 @@
 }
 
 
-:global .standard-a {
-    color:blue !important;
-    text-decoration: none !important;
-}
-
 
 
 :global * {
-    color: white !important;
+    color: black !important;
     font-family: Arial !important;
     font-size: 12px  !important;
 }

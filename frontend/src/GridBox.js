@@ -27,8 +27,6 @@ export default function GridBox(props){
 
                 </div>
 
-
-
                 <div className = "home-footer-card">
                     <a className = "standard-a">Zobacz więcej</a>
                 </div>

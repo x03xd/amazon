@@ -2,11 +2,9 @@ import {useNavigate, useParams, useLocation} from 'react-router-dom';
 import stylesLogin from './css_modules/Login.module.css';
 import {useEffect, useState, useRef} from 'react';
 import CSRFToken from './CSRFToken.js';
-
+import logo from './images/xd.png';
 
 export default function Login(props){
-
-
 
     function getCookie(name) {
         let cookieValue = null;
@@ -25,7 +23,6 @@ export default function Login(props){
         }
         return cookieValue;
     }
-
 
 
 
@@ -54,6 +51,7 @@ export default function Login(props){
     }
 
         async function submitForm(e){
+
             e.preventDefault();
 
                 let response = await fetch("http://127.0.0.1:8000/login/", {
@@ -117,7 +115,6 @@ export default function Login(props){
         }
 
 
-
     return(
         <div className = "modal-container-wrapper">
             <div className = "modal-container classic-border">
@@ -128,14 +125,13 @@ export default function Login(props){
 
 
                 <form method = "POST" ref = {formInput} action = {location.state.link} className = "cr-black">
-                    <CSRFToken />
 
                      <span className  = "cr-black" className = "cr-black fw-550">{location.state.content}</span>
 
                     <input ref = {textInput} defaultValue = "" className = "text-input login cr-black" type = {location.state.type} id = "id-1x"  /><br/>
 
-                    <input  value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style}`} onClick = {submitForm}/>
-                    <input  value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style2}`} onClick = {dataToBackend}/>
+                    <input value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style}`} onClick = {submitForm}/>
+                    <input value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style2}`} onClick = {dataToBackend}/>
                 </form>
 
 
@@ -144,9 +140,10 @@ export default function Login(props){
                     <a className = "fs-12 cr-black" href = "#">Potrzebujesz pomocy?</a>
                 </div>
 
-                <div className = {`${location.state.style2} p-3`} id = "reminder-login">
+                <div className = {`${location.state.style2} p-3 mt-3`} id = "reminder-login">
                      <input className = 'flex' type = "checkbox"/>
                      <span className = 'cr-black' className = "fs-12">Nie wylogowuj mnie  </span><a className = "cr-black" className = "fs-12" href = "#">   Szczegóły</a>
+
                 </div>
 
             </div>

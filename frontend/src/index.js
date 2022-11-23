@@ -7,6 +7,8 @@ import AuthLayout from './AuthLayout';
 import Login from './Login';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Store from './Store';
+import Lobby from './Lobby';
+import Card from './Card';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -18,7 +20,9 @@ root.render(
 
             <Route element = {<App />}>
                 <Route path = "/" element = {<Main />} />
-                <Route path = "/:results" element = {<Store />} />
+                <Route path = "/s" element = {<Store />} />
+                <Route path = "/l/:slug" element = {<Lobby />} />
+                <Route path = "/card" element = {<Card />} />
             </Route>
 
 
