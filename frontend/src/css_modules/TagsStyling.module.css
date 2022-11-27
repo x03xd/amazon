@@ -8,9 +8,6 @@
     color: var(--dark-orange) !important;
 }
 
-:global ul {
-
-}
 
 :global a:visited {
     text-decoration: none !important;
@@ -24,6 +21,8 @@
 
 
 
+
+
 :global * {
     color: black !important;
     font-family: Arial !important;
@@ -33,7 +32,6 @@
 :global li {
     list-style-type: none !important;
 }
-
 
 
 
@@ -145,4 +143,9 @@
 
 :global .fw-550 {
     font-weight:550;
+}
+
+
+:global .fw-525 {
+    font-weight:525;
 }

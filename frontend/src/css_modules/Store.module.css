@@ -1,6 +1,4 @@
 
-
-
 :global .store-content {
     display: grid;
     grid-template-columns: 1fr 4fr;
@@ -29,6 +27,22 @@
     font-size: 14px !important;
 }
 
+:global .store-content-bar > div ul {
+    padding: 0;
+}
+
+
+:global .store-content-bar > div {
+    padding-top: 15px;
+}
+
+:global .store-content-bar > div ul li:hover {
+    cursor:pointer;
+    color: var(--dark-orange) !important;
+}
+
+
+
 
 
 :global .product-card-content {
@@ -53,8 +67,8 @@
     padding: 12px;
     border: 1px solid lightgrey;
     border-top: none;
-
 }
+
 
 :global .product-card-content div:nth-child(2) span:hover {
     color: #fc7303 !important;

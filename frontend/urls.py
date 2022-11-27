@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import Authentication, HomePage, LogoutView, Authentication2, Store, Lobby, Card, Process
-from . import views
+from .views import Authentication, HomePage, LogoutView, Authentication2, Store, Lobby, Process
 
 urlpatterns = [
 
@@ -10,6 +9,5 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('s/', Store.as_view()),
     path('l/<slug:slug>/', Lobby.as_view()),
-    path('card/', Card.as_view(), name = 'card'),
-    path('process/', Process.as_view(), name = 'process'),
+    path('process/', Process.as_view(), name = 'card'),
 ]

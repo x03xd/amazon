@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, View
 import json
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import DetailView
-from .models import User, Product, Card
+from .models import User, Product, Test
 
 from django.http.response import JsonResponse, HttpResponse
 from django.contrib.auth import login, logout, authenticate
@@ -13,6 +13,16 @@ from django.shortcuts import render, redirect
 from django.db.models import Q, F
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import FormView, CreateView, UpdateView
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+@receiver(post_save, sender=User)
+def create_favorites(sender, instance, created, **kwargs):
+    if created:
+        Cart.objects.create(owner=instance)
+
+
 
 class Store(TemplateView):
     template_name = "index.html"
@@ -72,20 +82,26 @@ class Lobby(TemplateView):
 
 
 
-
-
-class Card(TemplateView):
+class Cart(TemplateView):
     template_name = 'index.html'
+
 
 
 class Process(TemplateView):
     template_name = 'index.html'
-   #updateview model = Product
 
     def post(self, request, *args, **kwargs):
 
-        json_data = json.load(request)["id"]
+        try:
+            json_data = json.load(request)["id"]
+            product = Product.objects.get(id = json_data)
 
-        return JsonResponse({"hehe": json_data})
+            cart = Test.objects.get(owner__username = "admin")
+            cart.products.add(product)
 
-#DODAJ ZDJECIA BO NPM RUN BUILD USUNAL I SKONCZ TO
+            return JsonResponse({"done": True})
+
+        except:
+            return JsonResponse({"done": False})
+
+

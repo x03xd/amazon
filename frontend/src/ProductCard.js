@@ -27,7 +27,7 @@ export default function ProductCard(props){
     .replace(/^-+|-+$/g, ''));
 */
 
-    console.log(props.item)
+//    console.log(props.item)
 
     return(
         <div className = "product-card-content">

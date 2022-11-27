@@ -19,12 +19,10 @@
 
 
 
-:global .lobby-content-sidebar {
-    padding: 15px;
-}
 
 :global .lobby-content-sidebar > div {
- margin-top: 15px;
+
+    padding: 10px;
 }
 
 

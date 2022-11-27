@@ -81,57 +81,59 @@ export default function Lobby(props){
 
 
 
-            <div className = "lobby-content-sidebar border border-secondary mt-5">
+            <div className = "mt-5">
+                <div className = "lobby-content-sidebar border border-secondary">
 
-                <div className = "mt-0">
-                    <span>{location.state.price}</span><br/>
+                    <div className = "">
+                        <span>{location.state.price}</span><br/>
+                    </div>
+
+                    <div>
+                        <a className = "fs-14 fw-550" href = "">DARMOWA dostawa </a> <br/>
+                    </div>
+
+                    <div>
+                        <span className = "fs-14">Lub najszybsza dostawa </span>
+                    </div>
+
+                    <div className = "d-flex align-items-center">
+                        <img src = {adress}/> <a className = "" href = "">Wybierz adres dostawy</a>
+                    </div>
+
+                    <div>
+                        <span className = {`fs-18 fw-500 ${statusColor}`}>{status}</span>
+                    </div>
+
+                    <div className = "d-flex align-items-center">
+                        <label className = "fs-16" htmlFor = "quantity">Ilość: </label>
+
+                        <select className = "ms-2 p-2" name="quantity" id="quantity">
+                            <option value= "1" >1</option>
+                            <option value= "2" >2</option>
+                            <option value= "3" >3</option>
+                        </select>
+                    </div>
+
+                    <div className = "lobby-buttons">
+                        <input onClick = {addToCard} type = "button" id = "add-to-card-button" value = "Dodaj do koszyka"/>
+                        <input className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
+                    </div>
+
+                    <div className = "d-flex align-items-center">
+                        <img src = {padlock2} />
+                        <a className = "ms-1" href = "">Bezpieczna transakcja</a>
+                    </div>
+
+                    <div>
+                        <span>Wysyłka i sprzedaż przez Amazon.</span>
+                    </div>
+
+                    <div>
+                        <span>Zasady dotyczące zwrotów:</span> <br/>
+                        <a href = "">Możliwość zwrotu do 31 stycznia 2023</a>
+                    </div>
+
                 </div>
-
-                <div>
-                    <a className = "fs-14 fw-550" href = "">DARMOWA dostawa </a> <br/>
-                </div>
-
-                <div>
-                    <span className = "fs-14">Lub najszybsza dostawa </span>
-                </div>
-
-                <div className = "d-flex align-items-center">
-                    <img src = {adress}/> <a className = "" href = "">Wybierz adres dostawy</a>
-                </div>
-
-                <div>
-                    <span className = {`fs-18 fw-500 ${statusColor}`}>{status}</span>
-                </div>
-
-                <div className = "d-flex align-items-center">
-                    <label className = "fs-16" htmlFor = "quantity">Ilość: </label>
-
-                    <select className = "ms-2 p-2" name="quantity" id="quantity">
-                        <option value= "1" >1</option>
-                        <option value= "2" >2</option>
-                        <option value= "3" >3</option>
-                    </select>
-                </div>
-
-                <div className = "lobby-buttons">
-                    <input onClick = {addToCard} type = "button" id = "add-to-card-button" value = "Dodaj do koszyka"/>
-                    <input className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
-                </div>
-
-                <div className = "d-flex align-items-center">
-                    <img src = {padlock2} />
-                    <a className = "ms-1" href = "">Bezpieczna transakcja</a>
-                </div>
-
-                <div>
-                    <span>Wysyłka i sprzedaż przez Amazon.</span>
-                </div>
-
-                <div>
-                    <span>Zasady dotyczące zwrotów:</span> <br/>
-                    <a href = "">Możliwość zwrotu do 31 stycznia 2023</a>
-                </div>
-
             </div>
         </div>
     );

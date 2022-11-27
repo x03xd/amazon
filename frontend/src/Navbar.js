@@ -32,8 +32,6 @@ export default function Navbar(props){
     const searchBar = useRef(null);
 
 
-
-
     return(
         <>
             <nav className = {props.unclick}>
