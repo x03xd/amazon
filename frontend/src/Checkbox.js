@@ -1,34 +1,21 @@
 
-import { useState, useEffect, } from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
+import { useState, useEffect} from 'react';
+import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
 
 export default function Checkbox(props){
 
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     function handleClick(e){
-
+        navigate(`?q=${props.query}&c=${props.item}/`);
         window.location.reload()
-
-        navigate(`/s?q=${props.query}&c=${props.item}`);
-
-
     }
-
-    const [brand, setBrand] = useState([]);
-    console.log(props.query);
-
-    useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/products/`)
-        .then(response => response.json())
-        .then(result => setBrand(result));
-    }, [])
-
 
     return(
         <>
             <li onClick = {handleClick} key = {props.index}>
-                <input name = "c" onClick = {handleClick} type = "checkbox" />
+                <input name = "c" onClick = {handleClick} type = "checkbox" value = {props.item}/>
                 {props.item}
             </li>
         </>

@@ -5,7 +5,6 @@
     left: 0;
     right: 0;
     z-index: 10;
-
 }
 
 
@@ -16,6 +15,7 @@
     align-items: center;
     justify-content: space-around;
 }
+
 
 :global nav div.navbar-upper-part span {
     color: white !important;
@@ -37,8 +37,6 @@
 
 
 
-
-
 :global nav div.navbar-lower-part {
     background: var(--bot-nav);
     height: 38px;
@@ -46,6 +44,7 @@
     align-items: center;
     gap: 25px;
 }
+
 
 :global .navbar-lower-part > div span {
     font-size: 14px !important;

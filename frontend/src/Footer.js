@@ -1,15 +1,20 @@
 
-
+import {useNavigate} from 'react-router-dom';
 import logo from './images/xd.png';
 
 
 
 export default function Footer(){
 
+    const navigate = useNavigate();
+
     function scrollUp(){
         window.scrollTo(0, 0)
     }
 
+    function returnHome(){
+        navigate("");
+    }
 
     return(
         <>
@@ -71,7 +76,7 @@ export default function Footer(){
                 <div className = "footer-lower-mid-part">
                     <div></div>
 
-                    <div className = "logo-box text-center">
+                    <div onClick = {returnHome} className = "logo-box text-center">
                         <img src = {logo} height = '25'/>
                     </div>
 

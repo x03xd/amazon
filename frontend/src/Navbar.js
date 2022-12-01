@@ -1,5 +1,5 @@
 
-import {Routes, Route, useNavigate} from 'react-router-dom';
+import {Routes, Route, useNavigate, useSearchParams} from 'react-router-dom';
 import {useState, useRef } from 'react';
 import logo from './images/xd.png';
 import cart from './images/shopping-cart-xxl.png';
@@ -8,7 +8,6 @@ import Store from './Store';
 import CSRFToken from './CSRFToken';
 
 export default function Navbar(props){
-
 
 
     const navigate = useNavigate();
@@ -32,12 +31,22 @@ export default function Navbar(props){
     const searchBar = useRef(null);
 
 
+    function subCategoryNavigate(){
+        navigate(`s`)
+    }
+
+
+    function returnHome(){
+        navigate("");
+    }
+
+
     return(
         <>
             <nav className = {props.unclick}>
                 <div className = 'navbar-upper-part'>
 
-                    <div className = "logo-box">
+                    <div onClick = {returnHome} className = "logo-box">
                         <img className = 'logo mt-2 ms-4' src = {logo} />
                     </div>
 
@@ -47,7 +56,7 @@ export default function Navbar(props){
                     </div>
 
                     <div>
-                        <form method = "GET" >
+                        <form method = "GET" onSubmit = {subCategoryNavigate}>
                             <input ref = {searchBar} name = "q" className = "main-search-bar" type = "text" onClick = {() => {activeOverlay('active'); unclickableNavbar('pointer-event-handler')}}  />
                         </form>
                     </div>

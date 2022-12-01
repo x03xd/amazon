@@ -1,7 +1,7 @@
 import Banner from './Banner';
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useSearchParams } from "react-router-dom";
 import UList from './UList';
 import Checkbox from './Checkbox';
 
@@ -28,11 +28,11 @@ export default function Store(props){
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [subs, setSubs] = useState([]);
-
     const [forData, setForData] = useState([]);
 
-    let link = window.location.href.substring(26, 100);
-    console.log(link);
+    console.log(products)
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
 
@@ -46,7 +46,7 @@ export default function Store(props){
         .then(result2 => setCategories(result2));
 
 
-        fetch(`http://127.0.0.1:8000/api/products/?q=${link}`)
+        fetch(`http://127.0.0.1:8000/api/products/?q=${searchParams.get("q")}&c=${searchParams.get("c")}`)
         .then(response3 => response3.json())
         .then(result3 => setProducts(result3));
 
@@ -54,10 +54,12 @@ export default function Store(props){
         ///FOR DATA///
 
         fetch(`http://127.0.0.1:8000/api/products/`)
-        .then(response3 => response3.json())
-        .then(result3 => setForData(result3));
+        .then(response4 => response4.json())
+        .then(result4 => setForData(result4));
 
     },[])
+
+    console.log(searchParams.get("c"));
 
 
     // ,[] This array defines the list of variables that if changed will trigger the callback function.
@@ -92,14 +94,14 @@ export default function Store(props){
                     <div>
                         <span>Marka</span>
                         <ul>
-                            {forData.map((item, index) => <Checkbox query = {link} key = {index} item = {item.brand} /> )}
+                            {forData.map((item, index) => <Checkbox query = {searchParams.get("q")} key = {index} item = {item.brand} /> )}
                         </ul>
                     </div>
 
                     <div>
                         <span>Cena</span>
                         <ul>
-                            {priceLimits.map((item, index) => <Checkbox query = {link} key = {index} item = {item} /> )}
+                            {priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} key = {index} item = {item} /> )}
                         </ul>
                     </div>
 

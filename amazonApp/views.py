@@ -19,17 +19,16 @@ class ProductsAPI(generics.ListAPIView):
         q = self.request.query_params.get('q')
         c = self.request.query_params.get('c')
 
-        if q is not None and q != "":
+        if q is not None and c == "null":
             queryset = queryset.filter(subcategory_name__sub_category=q)
 
-            if c is not None and c != "":
-                queryset = queryset.filter(brand=c)
+
+        if q is not None and c != "null":
+            queryset = queryset.filter(subcategory_name__sub_category=q, brand=c.rstrip(c[-1]))
+
+
 
         return queryset
-
-
-
-
 
 
 
