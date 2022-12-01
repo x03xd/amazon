@@ -15,6 +15,7 @@ import stylesNavbar from './css_modules/Navbar.module.css';
 import stylesFooter from './css_modules/Footer.module.css';
 import stylesBanner from './css_modules/Banner.module.css';
 import stylesLobby from './css_modules/Lobby.module.css';
+import stylesCard from './css_modules/Card.module.css';
 
 function App(props) {
 

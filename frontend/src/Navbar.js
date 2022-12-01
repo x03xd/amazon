@@ -28,16 +28,29 @@ export default function Navbar(props){
         props.unclickableNavbar(style)
     }
 
-    const searchBar = useRef(null);
+    const [searchParams, setSearchParams] = useSearchParams();
 
 
-    function subCategoryNavigate(){
-        navigate(`s`)
+    function subCategoryNavigate(e){
+
+        if(value == null){
+            navigate("")
+        }
+
+        else {
+            navigate(`s`)
+        }
     }
-
 
     function returnHome(){
         navigate("");
+    }
+
+
+    const [value, setValue] = useState(null);
+    function searchBarHandling(e){
+        setValue(e.target.value)
+        console.log(value)
     }
 
 
@@ -57,7 +70,7 @@ export default function Navbar(props){
 
                     <div>
                         <form method = "GET" onSubmit = {subCategoryNavigate}>
-                            <input ref = {searchBar} name = "q" className = "main-search-bar" type = "text" onClick = {() => {activeOverlay('active'); unclickableNavbar('pointer-event-handler')}}  />
+                            <input onChange = {searchBarHandling} name = "q" className = "main-search-bar" type = "text" onClick = {() => {activeOverlay('active'); unclickableNavbar('pointer-event-handler')}}  />
                         </form>
                     </div>
 

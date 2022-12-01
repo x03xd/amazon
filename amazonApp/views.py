@@ -26,7 +26,19 @@ class ProductsAPI(generics.ListAPIView):
         if q is not None and c != "null":
             queryset = queryset.filter(subcategory_name__sub_category=q, brand=c.rstrip(c[-1]))
 
+        return queryset
 
+
+
+class ProductsBySubsAPI(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+
+        q = self.request.query_params.get('q')
+
+        if q is not None:
+            queryset = Product.objects.filter(subcategory_name__sub_category=q)
 
         return queryset
 

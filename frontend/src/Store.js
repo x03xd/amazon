@@ -53,18 +53,13 @@ export default function Store(props){
 
         ///FOR DATA///
 
-        fetch(`http://127.0.0.1:8000/api/products/`)
+        fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${searchParams.get("q")}`)
         .then(response4 => response4.json())
         .then(result4 => setForData(result4));
 
     },[])
 
-    console.log(searchParams.get("c"));
-
-
-    // ,[] This array defines the list of variables that if changed will trigger the callback function.
-    // tu byla historia plus wczesniej outlet podanie contextu
-
+    //console.log(searchParams.get("c"));
 
         let priceLimits = [
             "Do 20zł", "20 do 50zł", "50 do 100zł", "100 do 150zł", "150zł i więcej"

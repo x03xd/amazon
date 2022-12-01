@@ -9,10 +9,21 @@ export default function Footer(){
     const navigate = useNavigate();
 
     function scrollUp(){
-        window.scrollTo(0, 0)
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
     }
 
     function returnHome(){
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'auto'
+        });
+
         navigate("");
     }
 
