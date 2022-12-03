@@ -1,36 +1,60 @@
-
 import { useState, useEffect} from 'react';
 import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
 
-export default function Checkbox(props){
 
+export default function Checkbox(props){
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState(props.array);
 
-    function handleClick(e){
+// LOCAl storage SIE ZAPISUJE POTEM REFRESH I NAJPIERW POBIERAMY getItem stare localstorage przed refreshem state gdzie byly same false i mamy jedna tablice=
+    useEffect(() => {                                                   // dla state i jedna oddzielna dla localstorage przez co po refr3eshowaniu componentu
+                                                                         // nie pobieramy wartosci ze state ale z nowej tablicy i sie nie usuwa!
+        items.map((item, index) => {
+            //setItems(JSON.parse(localStorage.getItem(index))); []
+            items[index] = JSON.parse(localStorage.getItem(index));
+            console.log(items);
+        });
 
-         navigate(`?q=${props.query}&c=${props.item}/`);
-         window.location.reload()
+    },[]);
 
-         //if (e.target.type === 'checkbox') {
-             //let items = JSON.parse(localStorage.setItem('items'));
-         //}
+    console.log(items);
+
+    useEffect(() => {
+
+        items.map((item, index) => {
+            localStorage.setItem(index, JSON.stringify(item))
+        });
+
+    }, [JSON.stringify(items)]);
+
+
+
+
+    function handleResult(e, position){
+        items.map((item, index) => {
+            if(index == position) {
+                if(items[index] == false) {items[index] = true;}
+
+                else if(items[index] == true) {items[index] = false;}
+            }
+        });
+
+        navigate(`?q=${props.query}&c=${props.name}/`);
+        window.location.reload()
     }
 
-
-
-    const [isChecked, setIsChecked] = useState(localStorage.getItem('checkbox') === 'true');
-
-
+    console.log(JSON.parse(localStorage.getItem("2")));
+    /*checked = {JSON.parse(localStorage.getItem(props.index))}*/
     return(
         <>
-            <li onClick = {handleClick} key = {props.index}>
-                <input name = "c" onClick = {handleClick} type = "checkbox" value = {props.item}/>
-                {props.item}
+            <li key = {props.index}>
+                <input checked = {JSON.parse(localStorage.getItem(props.index))} name = "c" onChange = {(e) => {handleResult(e, props.index) }} type = "checkbox" />
+                {props.name}
             </li>
         </>
     );
+
 
 }

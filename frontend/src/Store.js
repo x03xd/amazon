@@ -4,10 +4,11 @@ import ProductCard from './ProductCard';
 import { useOutletContext, useSearchParams } from "react-router-dom";
 import UList from './UList';
 import Checkbox from './Checkbox';
+import {useLocalStorage} from "./useLocalStorage";
 
 export default function Store(props){
-
-        function getCookie(name) {
+    //   {priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item} array = {newArray} /> )}
+    function getCookie(name) {
         let cookieValue = null;
 
         if (document.cookie && document.cookie !== '') {
@@ -25,6 +26,7 @@ export default function Store(props){
         return cookieValue;
     }
 
+
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [subs, setSubs] = useState([]);
@@ -33,7 +35,6 @@ export default function Store(props){
     console.log(products)
 
     const [searchParams, setSearchParams] = useSearchParams();
-
     useEffect(() => {
 
         fetch(`http://127.0.0.1:8000/api/subcategories/`)
@@ -66,6 +67,33 @@ export default function Store(props){
         ]
 
 
+        let arrayBrands = [];
+        for(let nums of subs){
+            arrayBrands.push(nums)
+        }
+        arrayBrands.fill(false)
+
+
+
+        let arrayPrices = [];
+        for(let nums of priceLimits){
+            arrayPrices.push(nums)
+        }
+        arrayPrices.fill(false)
+
+        //let newArray = arrayBrands.concat(arrayPrices);
+        //console.log(newArray)
+
+       // console.log(newArray.slice(0, arrayBrands.length));
+        //console.log(newArray.slice(arrayBrands.length + 1));
+
+      /*  function boolConverter(index, item){
+            arrayBrands[index] = item;
+            console.log(arrayBrands)
+        }
+        */
+
+
         return(
             <div className = "store-content mt-5">
 
@@ -89,14 +117,14 @@ export default function Store(props){
                     <div>
                         <span>Marka</span>
                         <ul>
-                            {forData.map((item, index) => <Checkbox query = {searchParams.get("q")} key = {index} item = {item.brand} /> )}
+                            {forData.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item.brand} array = {arrayBrands} /> )}
                         </ul>
                     </div>
 
                     <div>
                         <span>Cena</span>
                         <ul>
-                            {priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} key = {index} item = {item} /> )}
+
                         </ul>
                     </div>
 
