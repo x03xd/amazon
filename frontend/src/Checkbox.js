@@ -8,25 +8,28 @@ export default function Checkbox(props){
 
     const [items, setItems] = useState(props.array);
 
-// LOCAl storage SIE ZAPISUJE POTEM REFRESH I NAJPIERW POBIERAMY getItem stare localstorage przed refreshem state gdzie byly same false i mamy jedna tablice=
-    useEffect(() => {                                                   // dla state i jedna oddzielna dla localstorage przez co po refr3eshowaniu componentu
-                                                                         // nie pobieramy wartosci ze state ale z nowej tablicy i sie nie usuwa!
+    //ZEBY MOC NA TYM DZIALA I NIE DOSTAWIC NULLOW NAJPIERW TRZEBA SAMYM SETTEREM PODZIALAC DAJAC DEFAULTOWE WARTOSCI W TAGBLICY A POTEM OBA
+    // USTAWIAMY nowy array state z poprzednim local storage sprzed refresha
+    console.log(items);
+
+    // zapisuje do array state nasze localstorage sprzed refresha tak aby sie nie resetowalo do defaulowegto false false false...
+    useEffect(() => {
+    //getter
         items.map((item, index) => {
             //setItems(JSON.parse(localStorage.getItem(index))); []
             items[index] = JSON.parse(localStorage.getItem(index));
-            console.log(items);
-        });
 
+        });
     },[]);
 
-    console.log(items);
 
+
+    //mozliwosc zmian i nowe state array z gettera powoduje tutaj ze nie nadpisujemy false false false
     useEffect(() => {
-
+    //setter
         items.map((item, index) => {
             localStorage.setItem(index, JSON.stringify(item))
         });
-
     }, [JSON.stringify(items)]);
 
 
@@ -42,10 +45,10 @@ export default function Checkbox(props){
         });
 
         navigate(`?q=${props.query}&c=${props.name}/`);
-        window.location.reload()
+       // window.location.reload()
     }
 
-    console.log(JSON.parse(localStorage.getItem("2")));
+    //console.log(JSON.parse(localStorage.getItem("2")));
     /*checked = {JSON.parse(localStorage.getItem(props.index))}*/
     return(
         <>

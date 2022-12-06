@@ -1,0 +1,36 @@
+
+
+:global .card-content {
+   display: grid;
+   grid-template-columns: 4fr 1fr;
+   min-height: 1600px;
+   gap: 20px;
+}
+
+:global .card-content-left {
+    height: 15%;
+    padding: 20px;
+}
+
+:global .card-content-left-first {
+    display: flex;
+}
+
+:global .card-content-left-second {
+    margin-top: 35px;
+    background: gray;
+    height: 25%;
+    padding: 10px;
+}
+
+
+
+:global .card-content-right {
+    height: 65%;
+}
+
+
+:global .card-content-stripe {
+
+}
+
