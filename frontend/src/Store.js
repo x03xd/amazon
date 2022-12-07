@@ -47,7 +47,7 @@ export default function Store(props){
         .then(result2 => setCategories(result2));
 
 
-        fetch(`http://127.0.0.1:8000/api/products/?q=${searchParams.get("q")}&c=${searchParams.get("c")}`)
+        fetch(`http://127.0.0.1:8000/api/products/?q=${searchParams.get("q")}&c=${searchParams.get("c")}&w=null`)
         .then(response3 => response3.json())
         .then(result3 => setProducts(result3));
 
@@ -72,7 +72,6 @@ export default function Store(props){
             arrayBrands.push(nums)
         }
         arrayBrands.fill(false)
-
 
 
         let arrayPrices = [];
@@ -124,7 +123,7 @@ export default function Store(props){
                     <div>
                         <span>Cena</span>
                         <ul>
-
+                            {priceLimits.map((item, index) => <Checkbox nut = "w" w = {item} index = {index} key = {index} name = {item} array = {arrayPrices} /> )}
                         </ul>
                     </div>
 
