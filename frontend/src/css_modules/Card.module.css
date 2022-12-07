@@ -7,30 +7,37 @@
    gap: 20px;
 }
 
+
 :global .card-content-left {
-    height: 15%;
-    padding: 20px;
+    grid-column: 1 / 2;
+    display: grid;
+    grid-template-rows: 15% 5% 1fr 1fr;
+    gap: 20px;
+
 }
 
+:global .card-content-left-first-content{
+    width: 100%;
+    padding: 20px;
+    place-items: center;
+}
+
+
 :global .card-content-left-first {
+    grid-row: 1 / 2;
+    padding: 20px;
     display: flex;
 }
 
+
 :global .card-content-left-second {
-    margin-top: 35px;
-    background: gray;
-    height: 25%;
-    padding: 10px;
+    grid-row: 2 / 3;
 }
 
 
 
 :global .card-content-right {
-    height: 65%;
-}
-
-
-:global .card-content-stripe {
+    grid-column: 2 / 3;
+    border-radius: 6px;
 
 }
-

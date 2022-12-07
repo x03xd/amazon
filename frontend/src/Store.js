@@ -117,7 +117,7 @@ export default function Store(props){
                     <div>
                         <span>Marka</span>
                         <ul>
-                            {forData.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item.brand} array = {arrayBrands} /> )}
+                             {forData.map((item, index) => <Checkbox nut = "c" c = {item.brand} index = {index} key = {index} name = {item.brand} array = {arrayBrands} /> )}
                         </ul>
                     </div>
 

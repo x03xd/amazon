@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a031a4af-263d-4a20-b0d7-fc1ff09c5dc4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/src/images/cardz.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/Card.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Card.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/Checkbox.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Checkbox.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Store.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Store.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Card.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Card.module.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
