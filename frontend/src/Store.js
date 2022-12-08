@@ -32,7 +32,6 @@ export default function Store(props){
     const [subs, setSubs] = useState([]);
     const [forData, setForData] = useState([]);
 
-    console.log(products)
 
     const [searchParams, setSearchParams] = useSearchParams();
     useEffect(() => {
@@ -47,9 +46,11 @@ export default function Store(props){
         .then(result2 => setCategories(result2));
 
 
-        fetch(`http://127.0.0.1:8000/api/products/?q=${searchParams.get("q")}&c=${searchParams.get("c")}&w=null`)
+        fetch(`http://127.0.0.1:8000/api/products/?q=${searchParams.get("q")}&c=${searchParams.get("c")}&u=${searchParams.get("u")}&u2=${searchParams.get("u2")}`)
         .then(response3 => response3.json())
         .then(result3 => setProducts(result3));
+
+
 
 
         ///FOR DATA///
@@ -62,10 +63,14 @@ export default function Store(props){
 
     //console.log(searchParams.get("c"));
 
-        let priceLimits = [
-            "Do 20zł", "20 do 50zł", "50 do 100zł", "100 do 150zł", "150zł i więcej"
-        ]
 
+        let priceLimits = [
+            {item: {desc: "Do 20zł", range: {start: 1, end: 20}}},
+            {item: {desc: "20 do 50zł", range: {start: 20.01, end: 50}}},
+            {item: {desc: "50 do 100zł", range: {start: 50.01, end: 100}}},
+            {item: {desc: "100 do 150zł", range: {start: 100.01, end: 150}}},
+            {item: {desc: "150zł i więcej", range: {start: 150.01, end: 99999}}},
+        ]
 
         let arrayBrands = [];
         for(let nums of subs){
@@ -93,6 +98,8 @@ export default function Store(props){
         */
 
 
+
+
         return(
             <div className = "store-content mt-5">
 
@@ -116,14 +123,16 @@ export default function Store(props){
                     <div>
                         <span>Marka</span>
                         <ul>
-                             {forData.map((item, index) => <Checkbox nut = "c" c = {item.brand} index = {index} key = {index} name = {item.brand} array = {arrayBrands} /> )}
+                             {forData.map((item, index) =>
+                                <Checkbox nut = "c" c = {item.brand} u = {searchParams.get("u")} u2 = {searchParams.get("u2")} index = {index} key = {index} name = {item.brand} array = {arrayBrands} />
+                             )}
                         </ul>
                     </div>
 
                     <div>
                         <span>Cena</span>
                         <ul>
-                            {priceLimits.map((item, index) => <Checkbox nut = "w" w = {item} index = {index} key = {index} name = {item} array = {arrayPrices} /> )}
+                            {priceLimits.map((item, index) => <Checkbox nut = "u" c = {searchParams.get("c")} u = {item.item.range.start} u2 = {item.item.range.end} index = {index} key = {index} name = {item.item.desc} array = {arrayPrices} /> )}
                         </ul>
                     </div>
 

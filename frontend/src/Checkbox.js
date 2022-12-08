@@ -8,10 +8,10 @@ export default function Checkbox(props){
 
     const [items, setItems] = useState(props.array);
 
-    //* current query strings values */
     const c = searchParams.get("c");
     const q = searchParams.get("q");
-    const w = searchParams.get("w");
+    const u = searchParams.get("u");
+    const u2 = searchParams.get("u2");
 
     console.log(items);
 
@@ -33,12 +33,12 @@ export default function Checkbox(props){
             if(index == position) {
                 if(items[index] == false) {
                     items[index] = true;
-                    navigate(`?q=${q}&c=${props.c}/`);
+                    navigate(`?q=${q}&c=${props.c}&u=${props.u}&u2=${props.u2}`);
                 }
 
                 else if(items[index] == true) {
                     items[index] = false;
-                    (c != null || c != "null") ? navigate(`?q=${q}&c=${c}/`) : navigate(`?q=${q}`);
+                    (c != null || c != "null") ? navigate(`?q=${q}&c=${c}&u=${u}&u2=${u2}`) : navigate(`?q=${q}`);
                 }
             }
         });
@@ -47,11 +47,17 @@ export default function Checkbox(props){
     }
 
 
+    function onlyOne(e){
+
+
+
+    }
+
 
     return(
         <>
             <li key = {props.index}>
-                <input checked = {JSON.parse(localStorage.getItem(props.nut + props.index))} onChange = {(e) => {handleResult(e, props.index) }} type = "checkbox" />
+                <input checked = {JSON.parse(localStorage.getItem(props.nut + props.index))} onChange = {(e) => { handleResult(e, props.index); onlyOne(e) }} type = "checkbox" />
                 {props.name}
             </li>
         </>

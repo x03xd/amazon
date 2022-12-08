@@ -18,19 +18,38 @@ class ProductsAPI(generics.ListAPIView):
 
         q = self.request.query_params.get('q')
         c = self.request.query_params.get('c')
-        w = self.request.query_params.get('w')
-
-        if q is not None and c == "null":
-            queryset = queryset.filter(subcategory_name__sub_category=q)
+        u = self.request.query_params.get('u')
+        u2 = self.request.query_params.get('u2')
 
 
-        if q is not None and c != "null":
-            queryset = queryset.filter(subcategory_name__sub_category=q, brand=c.rstrip(c[-1]))
+        if q is not None:
+            if c != "null" and u == "null":
+                queryset = queryset.filter(subcategory_name__sub_category=q, brand=c)
+
+            if c != "null" and u != "null":
+                queryset = queryset.filter(subcategory_name__sub_category=q, price__gte=u, price__lte=u2)
+
+
+
+
+            #if c == "null":
+            #    queryset = queryset.filter(subcategory_name__sub_category=q)
+            #c.rstrip(c[-1]) STRIP SLASHA
+           # if c != "null":
+           #     queryset = queryset.filter(subcategory_name__sub_category=q, brand= c.rstrip(c[-1]))
 
         return queryset
 
+class TestAPI(generics.ListAPIView):
+    serializer_class = ProductSerializer
 
+    def get_queryset(self):
+        q = self.request.query_params.get('q')
+        c = self.request.query_params.get('c')
+        u = self.request.query_params.get('u')
+        u2 = self.request.query_params.get('u2')
 
+        return JsonResponse({"q":q, "u2":u2, "u":u,"c":c})
 
 
 class ProductsBySubsAPI(generics.ListAPIView):
