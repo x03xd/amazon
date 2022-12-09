@@ -76,3 +76,16 @@
     display: inline-block;
     height: 100%;
 }
+
+
+
+:global .price-filters input {
+    width: 20%;
+}
+
+
+:global .price-filters button {
+    height: 20px;
+    border-radius: 6px;
+    font-size: 13px;
+}

@@ -104,4 +104,4 @@ class Process(TemplateView):
         except:
             return JsonResponse({"done": False})
 
-
+#PRZEPISZ TE Z POSTEM I GETEM WSM TEZ NA TAMTE VIEW

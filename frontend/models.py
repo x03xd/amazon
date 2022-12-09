@@ -69,8 +69,8 @@ class User(AbstractUser):
 
 class Test(models.Model):
     test_name = models.CharField(max_length = 30, null = True)
-    products = models.ManyToManyField(Product, related_name='products', blank = True)
-    owner = models.OneToOneField(User, on_delete = models.CASCADE, null = True)
+    products = models.ManyToManyField(Product, related_name='products', blank=True)
+    owner = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
 
 
     def __str__(self):

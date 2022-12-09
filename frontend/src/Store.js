@@ -1,12 +1,17 @@
 import Banner from './Banner';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ProductCard from './ProductCard';
-import { useOutletContext, useSearchParams } from "react-router-dom";
+import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
 import UList from './UList';
+import Clear from './Clear';
+
 import Checkbox from './Checkbox';
 import {useLocalStorage} from "./useLocalStorage";
 
 export default function Store(props){
+
+    const navigate = useNavigate();
+
     //   {priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item} array = {newArray} /> )}
     function getCookie(name) {
         let cookieValue = null;
@@ -32,8 +37,17 @@ export default function Store(props){
     const [subs, setSubs] = useState([]);
     const [forData, setForData] = useState([]);
 
+    const aRef = useRef();
+    const bRef = useRef();
+    const cRef = useRef();
 
     const [searchParams, setSearchParams] = useSearchParams();
+        const c = searchParams.get("c");
+        const q = searchParams.get("q");
+        const u = searchParams.get("u");
+        const u2 = searchParams.get("u2");
+
+
     useEffect(() => {
 
         fetch(`http://127.0.0.1:8000/api/subcategories/`)
@@ -50,9 +64,6 @@ export default function Store(props){
         .then(response3 => response3.json())
         .then(result3 => setProducts(result3));
 
-
-
-
         ///FOR DATA///
 
         fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${searchParams.get("q")}`)
@@ -62,7 +73,6 @@ export default function Store(props){
     },[])
 
     //console.log(searchParams.get("c"));
-
 
         let priceLimits = [
             {item: {desc: "Do 20zł", range: {start: 1, end: 20}}},
@@ -85,18 +95,30 @@ export default function Store(props){
         }
         arrayPrices.fill(false)
 
-        //let newArray = arrayBrands.concat(arrayPrices);
-        //console.log(newArray)
 
-       // console.log(newArray.slice(0, arrayBrands.length));
-        //console.log(newArray.slice(arrayBrands.length + 1));
+        function clearQueryString(arg){
+            switch (arg) {
+                case "c":
+                    arrayBrands.map((item, index) => {localStorage.setItem("c" + index, "false")})
+                    break;
 
-      /*  function boolConverter(index, item){
-            arrayBrands[index] = item;
-            console.log(arrayBrands)
+                case "u":
+                    arrayPrices.map((item, index) => {localStorage.setItem("u" + index, "false")})
+                    break;
+
+            }
+
+            window.location.reload();
         }
-        */
 
+
+        function handleClickSearch(){
+
+            console.log(aRef.current.value);
+
+            navigate(`?q=${q}&c=${c}&u=${aRef.current.value}&u2=${bRef.current.value}`);
+            window.location.reload();
+        }
 
 
 
@@ -121,19 +143,27 @@ export default function Store(props){
                      </div>
 
                     <div>
-                        <span>Marka</span>
-                        <ul>
-                             {forData.map((item, index) =>
+                        <span>Marka</span><br/>
+                        <Clear nut = "c" func = {clearQueryString} />
+                        <ul className = "checkbox-list">
+                            {forData.map((item, index) =>
                                 <Checkbox nut = "c" c = {item.brand} u = {searchParams.get("u")} u2 = {searchParams.get("u2")} index = {index} key = {index} name = {item.brand} array = {arrayBrands} />
-                             )}
+                            )}
                         </ul>
                     </div>
 
                     <div>
                         <span>Cena</span>
-                        <ul>
+                        <Clear nut = "u" func = {clearQueryString} />
+                        <ul className = "checkbox-list">
                             {priceLimits.map((item, index) => <Checkbox nut = "u" c = {searchParams.get("c")} u = {item.item.range.start} u2 = {item.item.range.end} index = {index} key = {index} name = {item.item.desc} array = {arrayPrices} /> )}
                         </ul>
+
+                        <div className = "d-flex align-items-center price-filters">
+                            <input ref = {aRef} className = "" type = "text" placeholder = "Min"/>
+                            <input ref = {bRef} className = "ms-1" type = "text" placeholder = "Max"/>
+                            <button onClick = {handleClickSearch} className = "ms-1 border 0">Szukaj</button>
+                        </div>
                     </div>
 
                 </div>

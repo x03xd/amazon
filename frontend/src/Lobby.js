@@ -47,7 +47,7 @@ export default function Lobby(props){
         async function addToCard(e){
             e.preventDefault();
 
-                let response = await fetch(`http://127.0.0.1:8000/process/`, {
+              /*  let response = await fetch(`http://127.0.0.1:8000/process/`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -59,6 +59,24 @@ export default function Lobby(props){
 
                 let jsonResponse = await response.json();
                 console.log(jsonResponse)
+                */
+
+
+                let response2 = await fetch(`http://127.0.0.1:8000/api/process/`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type':'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({id: location.state.id_product})
+                })
+
+                let jsonResponse2 = await response2.json();
+                console.log(jsonResponse2)
+
+
+
         }
 
 

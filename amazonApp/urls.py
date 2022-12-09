@@ -8,4 +8,5 @@ urlpatterns = [
     path("categories/", views.CategoriesAPI.as_view()),
     path("subcategories/", views.SubCategoriesAPI.as_view()),
     path("test/", views.TestAPI.as_view()),
+    path("process/", views.ProcessAPI.as_view())
 ]

@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
 
 
@@ -47,17 +47,12 @@ export default function Checkbox(props){
     }
 
 
-    function onlyOne(e){
-
-
-
-    }
 
 
     return(
         <>
             <li key = {props.index}>
-                <input checked = {JSON.parse(localStorage.getItem(props.nut + props.index))} onChange = {(e) => { handleResult(e, props.index); onlyOne(e) }} type = "checkbox" />
+                <input ref = {useRef(props.index)} checked = {JSON.parse(localStorage.getItem(props.nut + props.index))} onChange = {(e) => { handleResult(e, props.index); }} type = "checkbox" />
                 {props.name}
             </li>
         </>

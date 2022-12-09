@@ -23,6 +23,10 @@ class ProductsAPI(generics.ListAPIView):
 
 
         if q is not None:
+
+            if c == "null" and u == "null":
+                queryset = queryset.filter(subcategory_name__sub_category=q)
+
             if c != "null" and u == "null":
                 queryset = queryset.filter(subcategory_name__sub_category=q, brand=c)
 
@@ -66,10 +70,6 @@ class ProductsBySubsAPI(generics.ListAPIView):
 
 
 
-
-
-
-
 class CategoriesAPI(generics.ListAPIView):
     serializer_class = CategorySerializer
 
@@ -89,3 +89,8 @@ class SubCategoriesAPI(generics.ListAPIView):
         return queryset3
 
 
+class ProcessAPI(generics.ListAPIView):
+
+
+    def post(self, reuqest):
+        return JsonResponse({"xd":"kabliber44"});
