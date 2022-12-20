@@ -11,7 +11,7 @@
 :global .card-content-left {
     grid-column: 1 / 2;
     display: grid;
-    grid-template-rows: 15% 5% 1fr 1fr;
+    grid-template-rows: minmax(15%, auto) 5% 1fr 1fr;
     gap: 20px;
 
 }

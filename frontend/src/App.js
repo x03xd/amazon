@@ -16,6 +16,8 @@ import stylesFooter from './css_modules/Footer.module.css';
 import stylesBanner from './css_modules/Banner.module.css';
 import stylesLobby from './css_modules/Lobby.module.css';
 import stylesCard from './css_modules/Card.module.css';
+import stylesCardObject from './css_modules/CardObject.module.css'
+import stylesAlert from './css_modules/Alert.module.css';
 
 function App(props) {
 

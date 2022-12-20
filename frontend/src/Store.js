@@ -82,11 +82,16 @@ export default function Store(props){
             {item: {desc: "150zł i więcej", range: {start: 150.01, end: 99999}}},
         ]
 
+
         let arrayBrands = [];
-        for(let nums of subs){
-            arrayBrands.push(nums)
+        for(let product of forData){
+            arrayBrands.push(product.brand)
         }
-        arrayBrands.fill(false)
+        let unique = [...new Set(arrayBrands)];
+        let unique2 = [...new Set(arrayBrands)];
+
+        unique2.fill(false)
+
 
 
         let arrayPrices = [];
@@ -99,15 +104,26 @@ export default function Store(props){
         function clearQueryString(arg){
             switch (arg) {
                 case "c":
-                    arrayBrands.map((item, index) => {localStorage.setItem("c" + index, "false")})
+                    arrayBrands.map((item, index) => {
+
+                        if(localStorage.getItem("c" + index) == "true"){
+                            localStorage.setItem("c" + index, "false");
+                        }
+
+                    })
                     break;
 
                 case "u":
-                    arrayPrices.map((item, index) => {localStorage.setItem("u" + index, "false")})
+                    arrayPrices.map((item, index) => {
+
+                        if(localStorage.getItem("u" + index) == "true"){
+                            localStorage.setItem("u" + index, "false");
+                        }
+
+
+                    })
                     break;
-
             }
-
             window.location.reload();
         }
 
@@ -121,7 +137,7 @@ export default function Store(props){
         }
 
 
-
+        console.log(forData);
         return(
             <div className = "store-content mt-5">
 
@@ -146,8 +162,8 @@ export default function Store(props){
                         <span>Marka</span><br/>
                         <Clear nut = "c" func = {clearQueryString} />
                         <ul className = "checkbox-list">
-                            {forData.map((item, index) =>
-                                <Checkbox nut = "c" c = {item.brand} u = {searchParams.get("u")} u2 = {searchParams.get("u2")} index = {index} key = {index} name = {item.brand} array = {arrayBrands} />
+                            {unique.map((item, index) =>
+                                <Checkbox nut = "c" c = {item} u = {searchParams.get("u")} u2 = {searchParams.get("u2")} index = {index} key = {index} name = {item} array = {unique2} />
                             )}
                         </ul>
                     </div>
@@ -156,7 +172,9 @@ export default function Store(props){
                         <span>Cena</span>
                         <Clear nut = "u" func = {clearQueryString} />
                         <ul className = "checkbox-list">
-                            {priceLimits.map((item, index) => <Checkbox nut = "u" c = {searchParams.get("c")} u = {item.item.range.start} u2 = {item.item.range.end} index = {index} key = {index} name = {item.item.desc} array = {arrayPrices} /> )}
+                            {priceLimits.map((item, index) =>
+                                <Checkbox nut = "u" c = {searchParams.get("c")} u = {item.item.range.start} u2 = {item.item.range.end} index = {index} key = {index} name = {item.item.desc} array = {arrayPrices} /> )
+                            }
                         </ul>
 
                         <div className = "d-flex align-items-center price-filters">
@@ -171,8 +189,8 @@ export default function Store(props){
 
                 <div className = "store-content-products">
                     <div className = "">
-                        <span className = "fs-20 fw-525">WYNIKI</span><br/>
-                        <a className = "fs-14 text-decoration-none">Dowiedz się o tych wynikach.</a>
+                        <span className = "fw-525">WYNIKI</span><br/>
+                        <a className = "text-decoration-none">Dowiedz się o tych wynikach.</a>
                     </div>
 
                     <div className = "store-content-results mt-3">

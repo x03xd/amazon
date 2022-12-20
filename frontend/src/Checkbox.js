@@ -13,7 +13,7 @@ export default function Checkbox(props){
     const u = searchParams.get("u");
     const u2 = searchParams.get("u2");
 
-    console.log(items);
+
 
     useEffect(() => {
         items.map((item, index) => {
@@ -46,7 +46,7 @@ export default function Checkbox(props){
         window.location.reload()
     }
 
-
+   //        console.log(JSON.parse(localStorage.getItem(props.nut + props.index)))
 
 
     return(

@@ -36,11 +36,11 @@ export default function ProductCard(props){
             </div>
 
             <div className = "">
-                <span onClick = {handleClick} className = "fs-16 a-text-normal">{props.item.description.substring(0, 150)}...</span>
+                <span onClick = {handleClick} className = "a-text-normal">{props.item.description.substring(0, 150)}...</span>
             </div>
 
             <div className = "">
-                <p className = "fs-25 fw-500">{props.item["price"]}</p>
+                <p className = "fw-500">{props.item["price"]}</p>
                 <span>Dostawa do dnia:</span><br/>
                 <span>DARMOWA dostawa przez Amazon</span>
             </div>

@@ -17,13 +17,11 @@ export default function Clear(props){
 
             case "c":
                 navigate(`?q=${q}&c=${null}&u=${u}&u2=${u2}`);
-                console.log("c");
                 props.func("c");
                 break;
 
             case "u":
                 navigate(`?q=${q}&c=${c}&u=${null}&u2=${null}`);
-                console.log("u");
                 props.func("u");
                 break;
 

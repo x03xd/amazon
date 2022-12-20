@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
-from frontend.views import Authentication, HomePage, LogoutView
+from frontend.views import HomePage, LogoutView
 from django.conf import settings
 from django.conf.urls.static import static
 

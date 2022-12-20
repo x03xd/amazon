@@ -1,0 +1,4 @@
+:global .alert-container-wrapper {
+    grid-column: 3 / 4;
+}
+

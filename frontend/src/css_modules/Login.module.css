@@ -1,57 +1,6 @@
 
-:global .modal-container-wrapper {
-    grid-column: 3 / 4;
-    grid-auto-rows: min-content;
-}
-
-
-:global .modal-container  {
-    text-align: center !important;
-    margin-top: 25px;
-    padding: 10px;
-
-}
-
-
-
-:global .modal-container p {
-    font-weight: 650;
-    text-align: start;
-    margin-left: 25px;
-    margin-top: 25px;
-}
-
-
-
-:global .modal-container form input {
-    margin-top: 15px;
-}
-
-:global .modal-container form input:last-child {
-    margin-top: 20px;
-}
-
-
-
-:global .modal-container form label {
-    font-weight: 600;
-    line-height: 0px;
-}
-
-
-:global #text-E01 {
-    display: grid;
-    align-items: center;
-    background: white;
-
-}
-
-:global #text-E01 a {
-
-}
 
 
 :global .login {
     width: 315px;
-
 }

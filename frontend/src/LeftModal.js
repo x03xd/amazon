@@ -14,13 +14,13 @@ export default function LeftModal(props){
                 </div>
 
                 <div className = "">
-                    <p className = "fs-20 fw-600">Witamy, zaloguj się</p>
+                    <p className = "fw-600">Witamy, zaloguj się</p>
                 </div>
             </div>
 
             <div className = "left-modal-body">
                 <div>
-                    <a className = "fs-18 fw-550">Przegladaj według kategorii</a>
+                    <a className = "fw-550">Przegladaj według kategorii</a>
                     <a href = "">Echo i Alexa</a>
                     <a>Fire TV</a>
                     <a>Czytniki i e-booki Kindle</a>

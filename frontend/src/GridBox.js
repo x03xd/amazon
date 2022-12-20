@@ -10,7 +10,7 @@ export default function GridBox(props){
     return(
             <div className = {`card-nbt ${props.class}`}>
                 <div className = "home-header-card">
-                    <h2 className = "cr-black fs-21 pt-4 fw-600">{props.boxTitle}</h2>
+                    <h2 className = "cr-black pt-4 fw-600">{props.boxTitle}</h2>
                 </div>
 
                 <div className = "home-body-card">

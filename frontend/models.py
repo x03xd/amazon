@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import base64, os, requests, json
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 # Create your models here.
 
+from rest_framework.response import Response
+from django.http.response import JsonResponse
 class Category(models.Model):
 
     CHOICES = (
@@ -17,7 +20,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.category
-
 
 
 
@@ -59,15 +61,21 @@ class Product(models.Model):
 
 class User(AbstractUser):
     email = models.EmailField(max_length=30, null=True)
-    coins = models.IntegerField(null=True)
+    coins = models.IntegerField(null=True, blank = True)
+
 
     def __str__(self):
         return self.username
 
 
+'''
+    @classmethod
+    def post_create(cls, sender, instance, created, *args, **kwargs):
+        if not created:
+            return
+'''
 
-
-class Test(models.Model):
+class Cart(models.Model):
     test_name = models.CharField(max_length = 30, null = True)
     products = models.ManyToManyField(Product, related_name='products', blank=True)
     owner = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
@@ -79,4 +87,11 @@ class Test(models.Model):
 
 class Transaction(models.Model):
     pass
+
+@receiver(post_save, sender=User)
+def create_one_to_one(sender, instance, created, **kwargs):
+    if created:
+        one_to_one = Cart.objects.create(test_name=f"{instance}'s cart", owner = instance)
+        instance.one_to_one = one_to_one
+        instance.save()
 

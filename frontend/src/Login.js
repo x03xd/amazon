@@ -6,28 +6,6 @@ import logo from './images/xd.png';
 
 export default function Login(props){
 
-    function getCookie(name) {
-        let cookieValue = null;
-
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-
-
-
-
     let formInput = useRef(null);
     let textInput = useRef(null);
 
@@ -39,11 +17,11 @@ export default function Login(props){
 
 
     function navigateBack(){
-        navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', type: 'text', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
+        navigate("/login/", {state: {link: 'http://127.0.0.1:8000/api/login/', type: 'text', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
     }
 
     function navigateToPasswordInput(){
-        navigate("/login2/", {state: {link: 'http://127.0.0.1:8000/login2/', type: 'password', inputValue: 'Zaloguj się', style: 'hidden', style2: 'active', content: 'Hasło'}});
+        navigate("/login2/", {state: {link: 'http://127.0.0.1:8000/api/login2/', type: 'password', inputValue: 'Zaloguj się', style: 'hidden', style2: 'active', content: 'Hasło'}});
     }
 
     function navigateToHome(){
@@ -54,12 +32,11 @@ export default function Login(props){
 
             e.preventDefault();
 
-                let response = await fetch("http://127.0.0.1:8000/login/", {
+                let response = await fetch("http://127.0.0.1:8000/api/login/", {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
                         'Content-Type':'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
                     },
                     body: JSON.stringify({'username': textInput.current.value})
                 })
@@ -87,12 +64,11 @@ export default function Login(props){
 
             console.log('datatobackend')
 
-            let response = await fetch("http://127.0.0.1:8000/login2/", {
+            let response = await fetch("http://127.0.0.1:8000/api/login2/", {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
                     'Content-Type':'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
                 },
                 body: JSON.stringify({'username': username, 'password': textInput.current.value})
             })
@@ -119,31 +95,29 @@ export default function Login(props){
         <div className = "modal-container-wrapper">
             <div className = "modal-container classic-border">
 
-                <p className = "fs-26 cr-black pt-10">Zaloguj się</p>
+                <p>Zaloguj się</p>
 
-                <p className = "cr-black">{email}</p>
+                <p>{email}</p>
 
+                <form method = "POST" ref = {formInput}>
+                     <CSRFToken />
+                     <span>{location.state.content}</span>
 
-                <form method = "POST" ref = {formInput} action = {location.state.link} className = "cr-black">
-
-                     <span className  = "cr-black" className = "cr-black fw-550">{location.state.content}</span>
-
-                    <input ref = {textInput} defaultValue = "" className = "text-input login cr-black" type = {location.state.type} id = "id-1x"  /><br/>
+                    <input ref = {textInput} defaultValue = "" className = "text-input login" type = {location.state.type}  /><br/>
 
                     <input value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style}`} onClick = {submitForm}/>
                     <input value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style2}`} onClick = {dataToBackend}/>
                 </form>
 
 
-                <div className = {`text-E01 ${location.state.style} p-3`} id = "text-E01">
-                    <span  className = "fs-11 p-3 cr-black">Logując się, wyrażasz zgodę na Warunki użytkowania i sprzedaży Amazon. Zobacz Informację o prywatności, Informację o plikach cookie oraz Informację o reklamach dopasowanych do zainteresowań.</span><br/>
-                    <a className = "fs-12 cr-black" href = "#">Potrzebujesz pomocy?</a>
+                <div className = {`text-E01 ${location.state.style}`}>
+                    <span  className = "p-3">Logując się, wyrażasz zgodę na Warunki użytkowania i sprzedaży Amazon. Zobacz Informację o prywatności, Informację o plikach cookie oraz Informację o reklamach dopasowanych do zainteresowań.</span><br/>
+                    <a href = "#">Potrzebujesz pomocy?</a>
                 </div>
 
                 <div className = {`${location.state.style2} p-3 mt-3`} id = "reminder-login">
-                     <input className = 'flex' type = "checkbox"/>
-                     <span className = 'cr-black' className = "fs-12">Nie wylogowuj mnie  </span><a className = "cr-black" className = "fs-12" href = "#">   Szczegóły</a>
-
+                     <input type = "checkbox"/>
+                     <span>Nie wylogowuj mnie  </span><a href = "#">Szczegóły</a>
                 </div>
 
             </div>

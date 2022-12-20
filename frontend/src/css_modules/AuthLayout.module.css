@@ -3,8 +3,11 @@
     display: grid;
     align-content: center;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-
+    grid-template-rows: auto 1fr 6fr;
+    min-height: 1100px;
 }
+
+
 
 
 :global .main-container-auth-layout-title {
@@ -18,8 +21,9 @@
 
 :global .main-container-auth-layout-create-button {
     grid-column: 1 / 6;
-    text-align: center;
-    margin-top: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
@@ -27,11 +31,6 @@
     grid-column: 1 / 6;
     text-align: center;
     background: #EFEFEF;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    height: 35%;
 }
 
 
@@ -50,8 +49,6 @@
     font-size: 11px;
     padding: 10px;
 }
-
-
 
 
 
@@ -74,4 +71,30 @@
 
 :global .label.active  {
     display: block;
+}
+
+
+
+/*  LOGIN AND REGISTER HAVING IN COMMON CODE */
+
+
+:global .modal-container-wrapper {
+    grid-column: 3 / 4;
+}
+
+
+:global .modal-container  {
+    padding: 30px;
+}
+
+
+:global .modal-container form > span {
+    font-weight: 600 !important;
+}
+
+
+
+:global div.modal-container p:first-child {
+    font-size: 2rem !important;
+    font-weight: 600;
 }

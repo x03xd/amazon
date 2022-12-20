@@ -18,12 +18,10 @@
 
 
 
-
-
 :global .lobby-content-sidebar > div {
-
     padding: 10px;
 }
+
 
 
 :global .lobby-content-sidebar div:first-child span {

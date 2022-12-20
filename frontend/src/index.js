@@ -5,6 +5,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Main from './Main.js';
 import AuthLayout from './AuthLayout';
 import Login from './Login';
+import Register from './Register';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Store from './Store';
 import Lobby from './Lobby';
@@ -29,6 +30,7 @@ root.render(
             <Route element = {<AuthLayout />} >
                 <Route path = "/login" element = {<Login />} />
                 <Route path = "/login2" element = {<Login />} />
+                <Route path = "/registration" element = {<Register />} />
             </Route>
 
         </Routes>
