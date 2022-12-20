@@ -3,6 +3,7 @@ import stylesLogin from './css_modules/Login.module.css';
 import {useEffect, useState, useRef} from 'react';
 import CSRFToken from './CSRFToken.js';
 import logo from './images/xd.png';
+import Alert from './Alert';
 
 export default function Login(props){
 
@@ -12,8 +13,35 @@ export default function Login(props){
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [alertStyle, setAlertStyle] = useState("hidden");
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
+
+    function getCookie(name) {
+        let cookieValue = null;
+
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
+    useEffect(() => {
+        const adress = window.location.href;
+        if(adress == 'http://localhost:3000/login' || adress == 'http://localhost:3000/login/'){
+            setAlertStyle("hidden");
+        }
+    })
 
 
     function navigateBack(){
@@ -37,6 +65,7 @@ export default function Login(props){
                     credentials: 'include',
                     headers: {
                         'Content-Type':'application/json',
+                                   'X-CSRFToken': getCookie("csrftoken"),
                     },
                     body: JSON.stringify({'username': textInput.current.value})
                 })
@@ -47,12 +76,14 @@ export default function Login(props){
                 setUsername(jsonResponse.username)
 
                 if(jsonResponse.authenticated == 'false'){
-                    navigateBack()
+                    navigateBack();
+                    setAlertStyle("active");
                 }
 
 
                 else if(jsonResponse.authenticated == 'true'){
-                    navigateToPasswordInput()
+                    navigateToPasswordInput();
+                    setAlertStyle("hidden");
                 }
 
             textInput.current.value = "";
@@ -69,6 +100,7 @@ export default function Login(props){
                 credentials: 'include',
                 headers: {
                     'Content-Type':'application/json',
+                               'X-CSRFToken': getCookie("csrftoken"),
                 },
                 body: JSON.stringify({'username': username, 'password': textInput.current.value})
             })
@@ -79,11 +111,13 @@ export default function Login(props){
 
             if(jsonResponse.password == 'correct'){
                 navigateToHome()
+                setAlertStyle("hidden");
             }
 
 
             if(jsonResponse.password == 'wrong'){
                 navigateToPasswordInput()
+                setAlertStyle("active");
             }
 
 
@@ -93,33 +127,39 @@ export default function Login(props){
 
     return(
         <div className = "modal-container-wrapper">
-            <div className = "modal-container classic-border">
 
-                <p>Zaloguj się</p>
+            <div>
+                <Alert style = {alertStyle} />
+            </div>
 
-                <p>{email}</p>
+            <div>
+                <div className = "modal-container classic-border mt-4">
 
-                <form method = "POST" ref = {formInput}>
-                     <CSRFToken />
-                     <span>{location.state.content}</span>
+                    <p>Zaloguj się</p>
 
-                    <input ref = {textInput} defaultValue = "" className = "text-input login" type = {location.state.type}  /><br/>
+                    <p>{email}</p>
 
-                    <input value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style}`} onClick = {submitForm}/>
-                    <input value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style2}`} onClick = {dataToBackend}/>
-                </form>
+                    <form method = "POST" ref = {formInput}>
+                        <CSRFToken />
+                        <span>{location.state.content}</span>
 
+                        <input ref = {textInput} defaultValue = "" className = "text-input login" type = {location.state.type}  /><br/>
 
-                <div className = {`text-E01 ${location.state.style}`}>
-                    <span  className = "p-3">Logując się, wyrażasz zgodę na Warunki użytkowania i sprzedaży Amazon. Zobacz Informację o prywatności, Informację o plikach cookie oraz Informację o reklamach dopasowanych do zainteresowań.</span><br/>
-                    <a href = "#">Potrzebujesz pomocy?</a>
+                        <input value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style}`} onClick = {submitForm}/>
+                        <input value = {location.state.inputValue} type = "button" className = {`login-button login ${location.state.style2}`} onClick = {dataToBackend}/>
+                    </form>
+
+                    <div className = {`text-E01 ${location.state.style} mt-4`}>
+                        <span  className = "">Logując się, wyrażasz zgodę na Warunki użytkowania i sprzedaży Amazon. Zobacz Informację o prywatności, Informację o plikach cookie oraz Informację o reklamach dopasowanych do zainteresowań.</span><br/>
+                        <a href = "#">Potrzebujesz pomocy?</a>
+                    </div>
+
+                    <div className = {`${location.state.style2} p-3 mt-3`} id = "reminder-login">
+                         <input type = "checkbox"/>
+                         <span>Nie wylogowuj mnie  </span><a href = "#">Szczegóły</a>
+                    </div>
+
                 </div>
-
-                <div className = {`${location.state.style2} p-3 mt-3`} id = "reminder-login">
-                     <input type = "checkbox"/>
-                     <span>Nie wylogowuj mnie  </span><a href = "#">Szczegóły</a>
-                </div>
-
             </div>
         </div>
     );

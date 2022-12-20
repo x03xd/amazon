@@ -2,44 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a031a4af-263d-4a20-b0d7-fc1ff09c5dc4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/amazonApp/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/Alert.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/CardObject.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/RequestUser.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/css_modules/Alert.module.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/css_modules/CardObject.module.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/images/sign.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/amazon/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazon/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazon/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazon/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazonApp/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazonApp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/amazonApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Alert.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Alert.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/AuthLayout.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/AuthLayout.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Card.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Card.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Checkbox.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Checkbox.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Clear.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Clear.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/GridBox.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/GridBox.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/LeftModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/LeftModal.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/Lobby.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Lobby.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Login.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/ProductCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/ProductCard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Register.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Register.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Store.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Store.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/App.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/App.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/AuthLayout.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/AuthLayout.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Card.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Card.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Lobby.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Lobby.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Login.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Login.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Store.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Store.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/TagsStyling.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/TagsStyling.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/scss.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/RequestUser.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/RequestUser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Alert.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Alert.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Modal.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Modal.module.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,5 +70,21 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/amazonApp/views.py</url>
+          <line>124</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/amazonApp/views.py</url>
+          <line>85</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

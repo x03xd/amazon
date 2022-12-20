@@ -3,42 +3,24 @@ import {useLocation} from 'react-router-dom';
 import adress from './images/loc1.png';
 import padlock2 from './images/padlock2.png';
 import RequestUser from './RequestUser';
+import CSRFToken from './CSRFToken';
 
 export default function Lobby(props){
 
-    function getCookie(name) {
-        let cookieValue = null;
-
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
 
     const location = useLocation();
-
     let status = location.state.status
     let statusColor;
 
 
-    if(status){
-        status = "Dostępny"
-        statusColor = "text-success";
+    if(status <= 0){
+        status = "Niedostępny"
+        statusColor = "text-danger";
     }
 
     else {
-        status = "Niedostępny"
-        statusColor = "text-danger";
+        status = "Dostępny"
+        statusColor = "text-success";
     }
 
     console.log(location.state.id_product);
@@ -54,7 +36,6 @@ export default function Lobby(props){
                     credentials: 'include',
                     headers: {
                         'Content-Type':'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
                     },
                     body: JSON.stringify({id: location.state.id_product})
                 })
@@ -67,7 +48,7 @@ export default function Lobby(props){
 
     return(
         <div className = "lobby-content">
-        <RequestUser />
+
             <div className = "lobby-content-gallery mt-5">
                 <div>
                     <img className = "p-5" height = "451" width = "597" src = {location.state.g1} />
@@ -114,8 +95,15 @@ export default function Lobby(props){
                     </div>
 
                     <div className = "lobby-buttons">
-                        <input onClick = {addToCard} type = "button" id = "add-to-card-button" value = "Dodaj do koszyka"/>
-                        <input className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
+                        <form method = "POST">
+                            <CSRFToken />
+                            <input onClick = {addToCard} type = "button" id = "add-to-card-button" value = "Dodaj do koszyka"/>
+                        </form>
+
+                        <form method = "POST">
+                            <CSRFToken />
+                            <input className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
+                        </form>
                     </div>
 
                     <div className = "d-flex align-items-center">

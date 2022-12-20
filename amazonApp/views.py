@@ -80,13 +80,6 @@ class CardAPI(APIView):
 
 #@login_required
 
-class getUser(APIView):
-    def get(self, request, *args, **kwargs):
-
-        token = Token.objects.get(user__username = request.user.username)
-       # serializer = TokenSerializer(token)
-
-        return JsonResponse({"key":123})
 
 
 
@@ -101,7 +94,6 @@ class ProcessAPI(APIView):
             cart = Cart.objects.get(owner__username = "admin")
             cart.products.add(product)
 
-
             return JsonResponse({"done": True})
 
         except:
@@ -109,7 +101,14 @@ class ProcessAPI(APIView):
 
 
 
+class getUser(APIView):
+    def get(self, request, *args, **kwargs):
 
+        user = User.objects.get(username = "kacperek")
+        serializer = UserSerializer(user)
+
+
+        return JsonResponse({"user":self.request.user})
 
 
 
@@ -153,16 +152,9 @@ class LoginAPI(APIView):
 
 class Login2API(APIView):
 
-
     def post(self, request, *args, **kwargs):
 
         json_data = json.load(request)
-
-        try:
-            user = User.objects.get(username = json_data['username'])
-
-        except:
-            pass
 
         user = authenticate(request, username = json_data['username'], password= json_data['password'])
 

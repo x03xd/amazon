@@ -1,15 +1,9 @@
 
-
-
-
-
-
 export default function Alert(props){
 
-
-
-
     console.log(props.style);
+
+
 
     return(
         <div className = {`alert-container-wrapper ${props.style}`}>
@@ -21,3 +15,4 @@ export default function Alert(props){
     );
 
 }
+

@@ -13,22 +13,31 @@ export default function AuthLayout(props){
     const [searchParams, setSearchParams] = useSearchParams();
     const [generatedText, setGeneratedText] = useState("");
     const [buttonStyle, setButtonStyle] = useState("");
-
+  //  const [styleAlert, setStyleAlert] = useState("");
 
     useEffect(() => {
         const adress = window.location.href;
-        if(adress == 'http://localhost:3000/login2/' || adress == "http://localhost:3000/registration"){
+        if(adress == 'http://localhost:3000/login2' || adress == 'http://localhost:3000/login2/' || adress == "http://localhost:3000/registration" || adress == "http://localhost:3000/registration/"){
             setButtonStyle("hidden");
         }
     })
 
+  //  function setStyle(style){
+   //     setStyleAlert(style)
+  //  }
+
+
     return(
         <>
+
             <div className = "main-container-auth-layout-title">
                 <div className = "logo-box">
                     <img className = 'logo mt-4' src = {logo} />
                 </div>
+
             </div>
+
+
 
             <div className = "main-container-auth-layout mt-4">
                     <Outlet />
@@ -36,7 +45,6 @@ export default function AuthLayout(props){
                     <div className = "main-container-auth-layout-create-button">
                         <button className = {`login-button ${buttonStyle}`}>Utwórz nowe konto</button><br/>
                     </div>
-
 
 
                     <div className = "auth-navbar">

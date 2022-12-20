@@ -17,7 +17,7 @@ export default function ProductCard(props){
         .replace(/^-+|-+$/g, '')
 
         navigate(`/l/${slug}`, {state: {id_product: props.item.id, image: props.item.image, desc: props.item.description, price: props.item.price
-        , g1: props.item.gallery1, status: props.item.status, brand: props.item.brand, slug: slug}})
+        , g1: props.item.gallery1, status: props.item.quantity, brand: props.item.brand, slug: slug}})
     }
 
 /*

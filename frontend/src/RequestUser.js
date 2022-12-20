@@ -9,7 +9,7 @@ export default function RequestUser(){
     const [key, setKey] = useState(null);
 
     useEffect(() => {
-        let response = fetch("http://127.0.0.1:8000/api/get-user/", {
+        let response = fetch("http://localhost:3000/get-user/", {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
