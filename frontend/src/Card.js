@@ -1,70 +1,58 @@
 import card_picture from './images/cardz.svg';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import CardObject from './CardObject';
-
+import AuthContext from "./AuthenticationContext";
+import CSRFToken from './CSRFToken';
+import jwt_decode from "jwt-decode";
 
 export default function Card(){
 
-    function getCookie(name) {
-        let cookieValue = null;
-
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-
-
+    const [cardUserGetter, setCardUserGetter] = useState([]);
     const [cardItemsGetter, setCardItemsGetter] = useState([]);
-    const [cardItemsSetter, setCardItemsSetter] = useState([]);
-    const [userID, setUserID] = useState([""]);
 
+    let {username} = useContext(AuthContext);
+    console.log(username.username)
 
+    //getting cart of logged user
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/cart/`)
+         let response = fetch('http://127.0.0.1:8000/api/cart/', {
+            method:'post',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({"username":username.username})
+        })
+        .then(response => response.json())
+        .then(result => (setCardUserGetter(result)));
+    }, [])
+
+    console.log(cardUserGetter)
+
+    //getting objects from cart
+    useEffect(() => {
+         let response = fetch('http://127.0.0.1:8000/api/products/', {
+            method:'post',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({"list":cardUserGetter})
+        })
         .then(response => response.json())
         .then(result => (setCardItemsGetter(result)));
-    }, [])
+
+    }, [cardUserGetter])
+
 
 
     console.log(cardItemsGetter);
 
-    useEffect(() => {
-        let response = fetch("http://127.0.0.1:8000/api/products/", {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type':'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-
-            body: JSON.stringify({
-                "list" : cardItemsGetter
-            })
-
-        })
-        .then(response => response.json())
-        .then(result => setCardItemsSetter(result))
-
-    }, [cardItemsGetter])
-
-
+    //{cardItemsGetter.map(item => <CardObject item = {item} /> )}
 
     if(!cardItemsGetter){
         return(
             <div className = "card-content mt-5 bg-white">
-
+            <CSRFToken />
                 <div className = "card-content-left">
                     <div className = "card-content-left-first bg-light">
                         <div className = "card-content-left-first-img">
@@ -121,7 +109,7 @@ export default function Card(){
                         </div>
 
                         <div className = "card-content-objects-inner mt-5 bg-light">
-                            {cardItemsSetter.map(item => <CardObject item = {item} /> )}
+                            {cardItemsGetter.map((item, index) => <CardObject item = {item} key = {index}/>)}
                         </div>
 
 

@@ -3,7 +3,7 @@ import {useEffect, useState, useRef} from 'react';
 import React from 'react';
 
 
-export default function CSRFTOKEN(){
+export default function CSRFToken(){
 
 
     function getCookie(name) {

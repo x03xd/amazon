@@ -6,7 +6,6 @@ from rest_framework import serializers
 
 
 
-
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User

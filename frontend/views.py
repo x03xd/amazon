@@ -30,12 +30,6 @@ class HomePage(TemplateView):
 
 
 
-class LogoutView(View):
-    def get(self, request, *args, **kwargs):
-        logout(request)
-        return redirect("/")
-
-
 class Lobby(TemplateView):
     template_name = 'index.html'
 

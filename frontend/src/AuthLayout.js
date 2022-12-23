@@ -2,10 +2,10 @@ import {Outlet, useNavigate} from 'react-router-dom';
 import logo from './images/xd2.webp';
 import Login from './Login';
 import Register from './Register';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import Alert from './Alert';
-import { useOutletContext, useSearchParams } from "react-router-dom";
-
+import { useSearchParams } from "react-router-dom";
+import AuthContext from "./AuthenticationContext";
 
 export default function AuthLayout(props){
 
@@ -13,7 +13,9 @@ export default function AuthLayout(props){
     const [searchParams, setSearchParams] = useSearchParams();
     const [generatedText, setGeneratedText] = useState("");
     const [buttonStyle, setButtonStyle] = useState("");
-  //  const [styleAlert, setStyleAlert] = useState("");
+
+
+
 
     useEffect(() => {
         const adress = window.location.href;

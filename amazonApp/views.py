@@ -20,6 +20,9 @@ from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 class ProductsAPI(generics.ListAPIView):
     serializer_class = ProductSerializer
 
@@ -68,15 +71,32 @@ class ProductsAPI(generics.ListAPIView):
 
         return Response(serializer.data)
 
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        # ...
+
+        return token
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
 
 
 class CardAPI(APIView):
 
-    def get(self, request):
-        cart = Cart.objects.all()
-        serializer = CartSerializer(cart, many = True)
+    def post(self, request):
 
-        return Response(serializer.data[0]["products"])
+        json_data = json.load(request)
+
+        cart = Cart.objects.get(owner__username = json_data["username"])
+        serializer = CartSerializer(cart)
+
+        return Response(serializer.data["products"])
 
 #@login_required
 
@@ -88,10 +108,10 @@ class ProcessAPI(APIView):
     def post(self, request, *args, **kwargs):
 
         try:
-            json_data = json.load(request)["id"]
-            product = Product.objects.get(id = json_data)
+            json_data = json.load(request)
+            product = Product.objects.get(id = json_data["id"])
 
-            cart = Cart.objects.get(owner__username = "admin")
+            cart = Cart.objects.get(owner__username = json_data["username"])
             cart.products.add(product)
 
             return JsonResponse({"done": True})
@@ -99,16 +119,6 @@ class ProcessAPI(APIView):
         except:
             return JsonResponse({"done": False})
 
-
-
-class getUser(APIView):
-    def get(self, request, *args, **kwargs):
-
-        user = User.objects.get(username = "kacperek")
-        serializer = UserSerializer(user)
-
-
-        return JsonResponse({"user":self.request.user})
 
 
 
@@ -149,12 +159,15 @@ class LoginAPI(APIView):
 
             return JsonResponse({'authenticated':'false'})
 
-
+'''
 class Login2API(APIView):
 
     def post(self, request, *args, **kwargs):
 
         json_data = json.load(request)
+
+        user = User.objects.get(username=json_data['username'])
+
 
         user = authenticate(request, username = json_data['username'], password= json_data['password'])
 
@@ -162,8 +175,15 @@ class Login2API(APIView):
             login(request, user)
             return JsonResponse({'password': 'correct'})
 
+
         else:
-            return JsonResponse({'password': 'wrong'})
+            return JsonResponse({'password': "wrong"})
+
+
+'''
+class LogoutView(APIView):
+    def get(self, request, *args, **kwargs):
+        pass
 
 
 

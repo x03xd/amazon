@@ -1,7 +1,7 @@
 import {Outlet} from 'react-router-dom';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import Modal from './Modal';
 import LeftModal from './LeftModal';
 import stylesTags from './css_modules/TagsStyling.module.css';
@@ -18,29 +18,20 @@ import stylesLobby from './css_modules/Lobby.module.css';
 import stylesCard from './css_modules/Card.module.css';
 import stylesCardObject from './css_modules/CardObject.module.css'
 import stylesAlert from './css_modules/Alert.module.css';
+import AuthContext from "./AuthenticationContext";
+
 
 function App(props) {
 
+    let {authToken, username, loginUser} = useContext(AuthContext)
 
-    function getCookie(name) {
-        let cookieValue = null;
 
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
 
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-
-                    break;
-                }
-            }
+    useEffect(() => {
+        if(authToken != null){
+            console.log("loggedIn");
         }
-        return cookieValue;
-    }
-
-
+    })
 
     const [overlayStyle, setOverlay] = useState("");
     const [loginModalStyle, setLoginModal] = useState("");

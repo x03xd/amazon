@@ -4,32 +4,16 @@ import ProductCard from './ProductCard';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
 import UList from './UList';
 import Clear from './Clear';
+import CSRFToken from './CSRFToken';
 
 import Checkbox from './Checkbox';
-import {useLocalStorage} from "./useLocalStorage";
+
 
 export default function Store(props){
 
     const navigate = useNavigate();
 
     //   {priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item} array = {newArray} /> )}
-    function getCookie(name) {
-        let cookieValue = null;
-
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
 
 
     const [categories, setCategories] = useState([]);
@@ -64,8 +48,6 @@ export default function Store(props){
         .then(response3 => response3.json())
         .then(result3 => setProducts(result3));
 
-        ///FOR DATA///
-
         fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${searchParams.get("q")}`)
         .then(response4 => response4.json())
         .then(result4 => setForData(result4));
@@ -73,6 +55,9 @@ export default function Store(props){
     },[])
 
     //console.log(searchParams.get("c"));
+
+
+        // zrob oddzoelny file i dla kazdej subkaty daj inne progi
 
         let priceLimits = [
             {item: {desc: "Do 20zł", range: {start: 1, end: 20}}},
@@ -120,7 +105,6 @@ export default function Store(props){
                             localStorage.setItem("u" + index, "false");
                         }
 
-
                     })
                     break;
             }
@@ -137,7 +121,12 @@ export default function Store(props){
         }
 
 
-        console.log(forData);
+        function changeQ(qValue){
+            navigate(`?q=${qValue.toLowerCase()}&c=${c}&u=${u}&u2=${u2}`);
+            window.location.reload();
+        }
+
+
         return(
             <div className = "store-content mt-5">
 
@@ -154,7 +143,7 @@ export default function Store(props){
                         <span>Kategoria</span>
 
                         <ul>
-                            {subs.map((item, index) => <UList key = {index} item = {item.sub_category} /> )}
+                            {subs.map((item, index) => <UList UListFunction = {changeQ} key = {index} item = {item.sub_category} /> )}
                         </ul>
                      </div>
 

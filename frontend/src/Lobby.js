@@ -1,12 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import {useLocation} from 'react-router-dom';
 import adress from './images/loc1.png';
 import padlock2 from './images/padlock2.png';
-import RequestUser from './RequestUser';
 import CSRFToken from './CSRFToken';
+import AuthContext from "./AuthenticationContext";
 
 export default function Lobby(props){
 
+    let {username} = useContext(AuthContext)
 
     const location = useLocation();
     let status = location.state.status
@@ -25,10 +26,8 @@ export default function Lobby(props){
 
     console.log(location.state.id_product);
 
-
         async function addToCard(e){
             e.preventDefault();
-
 
 
                 let response2 = await fetch(`http://127.0.0.1:8000/api/process/`, {
@@ -37,7 +36,7 @@ export default function Lobby(props){
                     headers: {
                         'Content-Type':'application/json',
                     },
-                    body: JSON.stringify({id: location.state.id_product})
+                    body: JSON.stringify({'id': location.state.id_product, 'username': username.username})
                 })
 
                 let jsonResponse2 = await response2.json();
