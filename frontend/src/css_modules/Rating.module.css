@@ -1,0 +1,20 @@
+:global .star-rating-icon {
+    font-size: 1.3rem !important;
+}
+
+
+:global .star-rating-container {
+    display: flex;
+    gap: 0.2rem;
+
+}
+
+:global div svg path {
+    color: lightgrey !important;
+}
+
+
+:global div.ranked-up svg path {
+    color: orange !important;
+}
+

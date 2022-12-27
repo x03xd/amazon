@@ -19,6 +19,8 @@ import stylesCard from './css_modules/Card.module.css';
 import stylesCardObject from './css_modules/CardObject.module.css'
 import stylesAlert from './css_modules/Alert.module.css';
 import AuthContext from "./AuthenticationContext";
+import stylesRating from './css_modules/Rating.module.css';
+
 
 
 function App(props) {

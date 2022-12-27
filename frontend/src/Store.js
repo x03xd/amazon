@@ -5,7 +5,7 @@ import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom
 import UList from './UList';
 import Clear from './Clear';
 import CSRFToken from './CSRFToken';
-
+import Rating from './Rating';
 import Checkbox from './Checkbox';
 
 
@@ -148,6 +148,12 @@ export default function Store(props){
                      </div>
 
                     <div>
+                        <span>Recenzja klienta</span>
+                        <Rating />
+                    </div>
+
+
+                    <div>
                         <span>Marka</span><br/>
                         <Clear nut = "c" func = {clearQueryString} />
                         <ul className = "checkbox-list">
@@ -165,13 +171,16 @@ export default function Store(props){
                                 <Checkbox nut = "u" c = {searchParams.get("c")} u = {item.item.range.start} u2 = {item.item.range.end} index = {index} key = {index} name = {item.item.desc} array = {arrayPrices} /> )
                             }
                         </ul>
+                    </div>
+
 
                         <div className = "d-flex align-items-center price-filters">
                             <input ref = {aRef} className = "" type = "text" placeholder = "Min"/>
                             <input ref = {bRef} className = "ms-1" type = "text" placeholder = "Max"/>
                             <button onClick = {handleClickSearch} className = "ms-1 border 0">Szukaj</button>
                         </div>
-                    </div>
+
+
 
                 </div>
 

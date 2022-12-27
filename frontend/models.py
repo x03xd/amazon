@@ -36,13 +36,12 @@ class SubCategory(models.Model):
 
 
 
-
 class Product(models.Model):
     subcategory_name = models.ForeignKey(SubCategory, on_delete = models.CASCADE, null = True)
     title = models.CharField(max_length = 140, null = True)
     description = models.CharField(max_length = 1040, null = True)
     price = models.FloatField(null = True)
-    rating = models.DecimalField(null = True, decimal_places = 2, max_digits = 10, blank = True)
+
     image = models.ImageField(null = True)
 
     gallery1 = models.ImageField(null = True, blank = True)
@@ -57,6 +56,19 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+
+
+
+class Rating(models.Model):
+    number_of_ratings = models.PositiveIntegerField(null = True, blank = True)
+    rating = models.DecimalField(null = True, blank = True, decimal_places = 2, max_digits = 4)
+
+   # average_rating = models.DecimalField(null = True, blank = True, decimal_places = 2, max_digits = 4)
+    rated_product = models.OneToOneField(Product, null = True, blank = True, on_delete = models.CASCADE)
+
+
+
 
 
 class User(AbstractUser):
@@ -87,6 +99,7 @@ class Cart(models.Model):
 
 class Transaction(models.Model):
     pass
+
 
 @receiver(post_save, sender=User)
 def create_one_to_one(sender, instance, created, **kwargs):

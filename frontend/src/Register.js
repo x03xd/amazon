@@ -8,7 +8,6 @@ import Alert from './Alert.js';
 
 export default function Register(){
 
-
     let usernameRef = useRef(null);
     let emailRef = useRef(null);
     let password1Ref = useRef(null);
