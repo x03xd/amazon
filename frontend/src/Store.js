@@ -1,13 +1,13 @@
 import Banner from './Banner';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import ProductCard from './ProductCard';
-import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import UList from './UList';
 import Clear from './Clear';
-import CSRFToken from './CSRFToken';
 import Rating from './Rating';
 import Checkbox from './Checkbox';
-
+import React from 'react';
+import QueryParamsContext from "./QueryParamsContext";
 
 export default function Store(props){
 
@@ -15,21 +15,17 @@ export default function Store(props){
 
     //   {priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item} array = {newArray} /> )}
 
-
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [subs, setSubs] = useState([]);
     const [forData, setForData] = useState([]);
+    const [averageRate, setAverageRate] = useState([]);
 
     const aRef = useRef();
     const bRef = useRef();
     const cRef = useRef();
 
-    const [searchParams, setSearchParams] = useSearchParams();
-        const c = searchParams.get("c");
-        const q = searchParams.get("q");
-        const u = searchParams.get("u");
-        const u2 = searchParams.get("u2");
+    let {q_QueryParam, c_QueryParam, u_QueryParam, u2_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
 
 
     useEffect(() => {
@@ -38,26 +34,28 @@ export default function Store(props){
         .then(response => response.json())
         .then(result => setSubs(result));
 
-
         fetch(`http://127.0.0.1:8000/api/categories/`)
         .then(response2 => response2.json())
         .then(result2 => setCategories(result2));
 
-
-        fetch(`http://127.0.0.1:8000/api/products/?q=${searchParams.get("q")}&c=${searchParams.get("c")}&u=${searchParams.get("u")}&u2=${searchParams.get("u2")}`)
+        fetch(`http://127.0.0.1:8000/api/products/?q=${q_QueryParam}&c=${c_QueryParam}&u=${u_QueryParam}&rating=${rating_QueryParam}`)
         .then(response3 => response3.json())
-        .then(result3 => setProducts(result3));
+        .then(result3 => (console.log(result3), setProducts(result3)));
 
-        fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${searchParams.get("q")}`)
+        fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${q_QueryParam}`)
         .then(response4 => response4.json())
         .then(result4 => setForData(result4));
 
+        fetch(`http://127.0.0.1:8000/api/avg-rate`)
+        .then(response5 => response5.json())
+        .then(result5 => (console.log(result5), setAverageRate(result5)));
+
+        fetch(`http://127.0.0.1:8000/api/test`)
+        .then(response6 => response6.json())
+        .then(result6 => console.log(result6));
+
     },[])
 
-    //console.log(searchParams.get("c"));
-
-
-        // zrob oddzoelny file i dla kazdej subkaty daj inne progi
 
         let priceLimits = [
             {item: {desc: "Do 20zł", range: {start: 1, end: 20}}},
@@ -72,27 +70,37 @@ export default function Store(props){
         for(let product of forData){
             arrayBrands.push(product.brand)
         }
-        let unique = [...new Set(arrayBrands)];
-        let unique2 = [...new Set(arrayBrands)];
+        let uniqueArrayBrands = [...new Set(arrayBrands)];
+        let brandsFalseFilled = [...new Set(arrayBrands)];
 
-        unique2.fill(false)
-
+        brandsFalseFilled.fill(false)
 
 
         let arrayPrices = [];
         for(let nums of priceLimits){
             arrayPrices.push(nums)
         }
-        arrayPrices.fill(false)
+        let uniqueArrayPrices = [...new Set(arrayPrices)];
+        let pricesFalseFilled = [...new Set(arrayPrices)];
+
+        pricesFalseFilled.fill(false)
 
 
         function clearQueryString(arg){
+
             switch (arg) {
                 case "c":
+                    //console.log(storage);
+                    //console.log(checkStorage);
+
                     arrayBrands.map((item, index) => {
 
-                        if(localStorage.getItem("c" + index) == "true"){
-                            localStorage.setItem("c" + index, "false");
+                        let storage = JSON.parse(localStorage.getItem("c" + index));
+                        let checkStorage = storage ? storage.value : "";
+
+                        if(checkStorage === true){
+                            let object = {value: false, nut: "c", id: (uniqueArrayBrands || [])[index] }
+                            localStorage.setItem("c" + index, JSON.stringify(object));
                         }
 
                     })
@@ -101,8 +109,12 @@ export default function Store(props){
                 case "u":
                     arrayPrices.map((item, index) => {
 
-                        if(localStorage.getItem("u" + index) == "true"){
-                            localStorage.setItem("u" + index, "false");
+                        let storage = JSON.parse(localStorage.getItem("u" + index));
+                        let checkStorage = storage ? storage.value : "";
+
+                        if(checkStorage === true){
+                            let object = {value: false, nut: "u", id: (uniqueArrayPrices || [])[index] }
+                            localStorage.setItem("u" + index, JSON.stringify(object));
                         }
 
                     })
@@ -113,18 +125,33 @@ export default function Store(props){
 
 
         function handleClickSearch(){
+            navigate(`?q=${q_QueryParam}&c=${c_QueryParam}&u=${aRef.current.value}-${bRef.current.value}&rating=${rating_QueryParam}`);
 
-            console.log(aRef.current.value);
-
-            navigate(`?q=${q}&c=${c}&u=${aRef.current.value}&u2=${bRef.current.value}`);
             window.location.reload();
         }
 
 
         function changeQ(qValue){
-            navigate(`?q=${qValue.toLowerCase()}&c=${c}&u=${u}&u2=${u2}`);
+            navigate(`?q=${qValue.toLowerCase()}&c=${c_QueryParam}&u=${u_QueryParam}`);
             window.location.reload();
         }
+
+
+        let productsWithRatings = [];
+
+        aLoop:
+        for(let item of products){
+            for(let rate of averageRate){
+
+                if(Number(rate.rated_products) === item.id){
+
+                    productsWithRatings.push(<ProductCard key = {item.id} item = {item} rate = {rate.average_rate} />);
+
+                    continue aLoop;
+                }
+            }
+        }
+
 
 
         return(
@@ -155,21 +182,25 @@ export default function Store(props){
 
                     <div>
                         <span>Marka</span><br/>
-                        <Clear nut = "c" func = {clearQueryString} />
+                        <Clear nut = "c" func = {clearQueryString} arrayProp = {uniqueArrayBrands} />
                         <ul className = "checkbox-list">
-                            {unique.map((item, index) =>
-                                <Checkbox nut = "c" c = {item} u = {searchParams.get("u")} u2 = {searchParams.get("u2")} index = {index} key = {index} name = {item} array = {unique2} />
-                            )}
+                            {uniqueArrayBrands.map((item, index) => {
+                                return(
+                                    <Checkbox nut = "c" q = {q_QueryParam} c = {item} u = {u_QueryParam} rating = {rating_QueryParam} index = {index} key = {index} name = {item} array = {brandsFalseFilled} arrayProp = {uniqueArrayBrands} />
+                                );
+                            })}
                         </ul>
                     </div>
 
                     <div>
                         <span>Cena</span>
-                        <Clear nut = "u" func = {clearQueryString} />
+                        <Clear nut = "u" func = {clearQueryString} arrayProp = {uniqueArrayPrices} />
                         <ul className = "checkbox-list">
-                            {priceLimits.map((item, index) =>
-                                <Checkbox nut = "u" c = {searchParams.get("c")} u = {item.item.range.start} u2 = {item.item.range.end} index = {index} key = {index} name = {item.item.desc} array = {arrayPrices} /> )
-                            }
+                            {priceLimits.map((item, index) => {
+                                return(
+                                    <Checkbox nut = "u" q = {q_QueryParam} c = {c_QueryParam} u = {item.item.range} rating = {rating_QueryParam} index = {index} key = {index} name = {item.item.desc} array = {pricesFalseFilled} arrayProp = {uniqueArrayPrices} />
+                                )
+                            })}
                         </ul>
                     </div>
 
@@ -192,7 +223,9 @@ export default function Store(props){
                     </div>
 
                     <div className = "store-content-results mt-3">
-                        {products.map((item, index) => <ProductCard key = {index} item = {item} />)}
+
+                        {productsWithRatings}
+
                     </div>
                 </div>
 
@@ -201,3 +234,4 @@ export default function Store(props){
             </div>
         );
 }
+

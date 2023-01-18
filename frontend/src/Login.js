@@ -12,7 +12,7 @@ const Login = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    let {loginUser, usernameFilter, email, alertStyle, alertText} = useContext(AuthContext)
+    let {loginUser, usernameFilter, email, alertStyle, alertText} = useContext(AuthContext);
 
     const [adress, setAdress] = useState(window.location.href);
 

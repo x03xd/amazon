@@ -4,6 +4,8 @@ import base64, os, requests, json
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 # Create your models here.
+from django.db.models import Avg, Sum
+
 
 from rest_framework.response import Response
 from django.http.response import JsonResponse
@@ -35,7 +37,6 @@ class SubCategory(models.Model):
 
 
 
-
 class Product(models.Model):
     subcategory_name = models.ForeignKey(SubCategory, on_delete = models.CASCADE, null = True)
     title = models.CharField(max_length = 140, null = True)
@@ -59,15 +60,9 @@ class Product(models.Model):
 
 
 
-
-class Rating(models.Model):
-    number_of_ratings = models.PositiveIntegerField(null = True, blank = True)
-    rating = models.DecimalField(null = True, blank = True, decimal_places = 2, max_digits = 4)
-
-   # average_rating = models.DecimalField(null = True, blank = True, decimal_places = 2, max_digits = 4)
-    rated_product = models.OneToOneField(Product, null = True, blank = True, on_delete = models.CASCADE)
-
-
+class UserRate(models.Model):
+    rate = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=4)
+    rated_products = models.ForeignKey(Product, null=True, blank=True, on_delete = models.CASCADE)
 
 
 
@@ -108,3 +103,9 @@ def create_one_to_one(sender, instance, created, **kwargs):
         instance.one_to_one = one_to_one
         instance.save()
 
+@receiver(post_save, sender=Product)
+def create_one_to_one(sender, instance, created, **kwargs):
+    if created:
+        rating = UserRate.objects.create(rated_products = instance, rate = None)
+        instance.rating = rating
+        instance.save()

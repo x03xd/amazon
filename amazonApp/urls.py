@@ -17,7 +17,11 @@ urlpatterns = [
     path("products-by-subs/", views.ProductsBySubsAPI.as_view()),
     path("registration/", views.RegisterSystem.as_view()),
     path('logout/', views.LogoutView.as_view()),
+    path('avg-rate/', views.CountAvgRate.as_view()),
 
     path('token/',MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+
+    path("test/", views.TestXD.as_view()),
 ]

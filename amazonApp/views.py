@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from frontend.models import Product, Category, SubCategory
-from .serializers import ProductSerializer, CategorySerializer, SubCategorySerializer, UserSerializer, CartSerializer
+from frontend.models import Product, Category, SubCategory, UserRate
+from .serializers import ProductSerializer, CategorySerializer, SubCategorySerializer, UserSerializer, CartSerializer, UserRateSerializer, StandardUserRateSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http.response import JsonResponse
 import json
-from django.db.models import Q, F
+from django.db.models import Q, F, When, Value, Case
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, CreateAPIView
 from frontend.models import User, Cart
 from django.contrib.auth import login, logout, authenticate
@@ -20,56 +20,12 @@ from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Avg, Sum, Count
+from django.db.models.functions import Concat
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-class ProductsAPI(generics.ListAPIView):
-    serializer_class = ProductSerializer
 
-    def get_queryset(self):
-
-        queryset = Product.objects.all()
-
-        q = self.request.query_params.get('q')
-        c = self.request.query_params.get('c')
-        u = self.request.query_params.get('u')
-        u2 = self.request.query_params.get('u2')
-
-        if q is not None:
-
-            if q == "":
-                queryset = queryset.filter(subcategory_name__sub_category=q)
-
-            if c == "null" and u != "null":
-                queryset = queryset.filter(subcategory_name__sub_category=q, price__gte=u, price__lte=u2)
-
-            if c == "null" and u == "null":
-                queryset = queryset.filter(subcategory_name__sub_category=q)
-
-            if c != "null" and u == "null":
-                queryset = queryset.filter(subcategory_name__sub_category=q, brand=c)
-
-            if c != "null" and u != "null":
-                queryset = queryset.filter(subcategory_name__sub_category=q, brand = c, price__gte=u, price__lte=u2)
-
-           #queryset = queryset.filter(subcategory_name__sub_category=q, brand= c.rstrip(c[-1]))
-
-        return queryset
-
-
-    def post(self, request):
-
-        json_f = json.load(request)["list"]
-        objects_list = []
-
-
-        for id in json_f:
-            objects_list.append(Product.objects.get(id = id))
-
-        serializer = ProductSerializer(objects_list, many=True)
-
-
-        return Response(serializer.data)
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -224,4 +180,118 @@ class ProductsBySubsAPI(generics.ListAPIView):
         return queryset
 
 
+class TestXD(APIView):
 
+    def get(self, request, format = None):
+
+        lista = []
+        object_ = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=4)
+        serializer = UserRateSerializer(object_, many = True)
+
+        for x in object_:
+            lista.append(x["rated_products"])
+
+        #return Response(serializer.data)
+        return Response(lista)
+
+class CountAvgRate(generics.ListAPIView):
+    serializer_class = UserRateSerializer
+
+    def get_queryset(self):
+
+
+
+        return UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate"))
+
+
+
+
+class ProductsAPI(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+
+
+    def get_queryset(self):
+
+
+        r = self.request.query_params.get('rating')
+        lista = []
+        object_ = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=r)
+        serializer = UserRateSerializer(object_, many = True)
+
+        for x in object_:
+            lista.append(x["rated_products"])
+
+
+        queryset = Product.objects.all()
+
+        rating_queryset = UserRate.objects.all()
+
+        q = self.request.query_params.get('q')
+        c = self.request.query_params.get('c')
+        u = self.request.query_params.get('u')
+
+        multiple_brands_filter = c.split(",")
+
+
+        '''
+        dla przyklady mamy rating = 3 no to
+        '''
+
+        if u != "null" and u != "":
+            multiple_prices_filter = u.split(",")
+
+            first_list = []
+            second_list = []
+
+            for index, s in enumerate(multiple_prices_filter):
+                first, second = s.split('-')
+                first_list.append(float(first))
+                second_list.append(float(second))
+
+
+
+        if q is not None:
+
+                if c == "null" and u == "null" and r == "null":
+                    queryset = queryset.filter(subcategory_name__sub_category=q)
+
+                if c != "null" and u != "null" and r == "null":
+                    queryset = queryset.filter(subcategory_name__sub_category=q, brand__in = multiple_brands_filter, price__range=(first_list[0],second_list[-1]))
+
+                if c == "null" and u != "null" and r == "null":
+                    queryset = queryset.filter(subcategory_name__sub_category=q, price__range=(first_list[0],second_list[-1]))
+
+                if c != "null" and u == "null" and r == "null":
+                    queryset = queryset.filter(subcategory_name__sub_category=q, brand__in = multiple_brands_filter)
+
+
+                if c != "null" and u != "null" and r != "null":
+                    queryset = queryset.filter(id__in = lista, subcategory_name__sub_category=q, brand__in = multiple_brands_filter, price__range=(first_list[0],second_list[-1]))
+
+                if c != "null" and u == "null" and r != "null":
+                    queryset = queryset.filter(id__in = lista, subcategory_name__sub_category=q, brand__in = multiple_brands_filter)
+
+                if c == "null" and u != "null" and r != "null":
+                    queryset = queryset.filter(id__in = lista, subcategory_name__sub_category=q, price__range=(first_list[0],second_list[-1]))
+
+                if c == "null" and u == "null" and r != "null":
+                    queryset = queryset.filter(id__in = lista, subcategory_name__sub_category=q)
+
+
+        return queryset
+
+
+    def post(self, request):
+
+        json_f = json.load(request)["list"]
+        objects_list = []
+
+
+        for id in json_f:
+            objects_list.append(Product.objects.get(id = id))
+
+        serializer = ProductSerializer(objects_list, many=True)
+
+
+        return Response(serializer.data)

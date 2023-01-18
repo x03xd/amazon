@@ -71,14 +71,20 @@
 
 
 :global .product-card-content > div:nth-child(2n) {
-    padding: 12px;
     border: 1px solid lightgrey;
     border-bottom: none;
     border-top: none;
 }
 
+:global .product-card-content > div:nth-child(3n) {
+    border: 1px solid lightgrey;
+    border-bottom: none;
+    border-top: none;
+
+}
+
+
 :global .product-card-content > div:last-child {
-    padding: 12px;
     border: 1px solid lightgrey;
     border-top: none;
 }
@@ -94,7 +100,6 @@
     display: inline-block;
     height: 100%;
 }
-
 
 
 

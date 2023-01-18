@@ -1,28 +1,29 @@
 import arrow from './images/left.png';
 import PropTypes from 'prop-types';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
+import QueryParamsContext from "./QueryParamsContext";
+import {useContext, useState} from 'react';
 
 
 export default function Clear(props){
     const navigate = useNavigate();
-        const [searchParams, setSearchParams] = useSearchParams();
-            const c = searchParams.get("c");
-            const q = searchParams.get("q");
-            const u = searchParams.get("u");
-            const u2 = searchParams.get("u2");
+    let {q_QueryParam, c_QueryParam, u_QueryParam, u2_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
+    const [allUniqueContentArray, setAllUniqueContentArray] = useState(props.arrayProp);
 
     function clearResults(){
 
         switch (props.nut) {
 
             case "c":
-                navigate(`?q=${q}&c=${null}&u=${u}&u2=${u2}`);
+                navigate(`?q=${q_QueryParam}&c=${null}&u=${u_QueryParam}&rating=${rating_QueryParam}`);
                 props.func("c");
+
                 break;
 
             case "u":
-                navigate(`?q=${q}&c=${c}&u=${null}&u2=${null}`);
+                navigate(`?q=${q_QueryParam}&c=${c_QueryParam}&u=${null}&rating=${rating_QueryParam}`);
                 props.func("u");
+
                 break;
 
         }
@@ -40,7 +41,4 @@ export default function Clear(props){
 
 Clear.defaultProps = {
     text: "Wyczyść",
-  //  onClick: () => {
-  //      clearResult
-  //  }
 }

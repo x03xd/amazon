@@ -1,18 +1,34 @@
 from rest_framework.serializers import ModelSerializer
-from frontend.models import Product, Category, SubCategory, User, Cart
+from frontend.models import Product, Category, SubCategory, User, Cart, UserRate
 from rest_framework import serializers
 
 
+class UserRateSerializer(ModelSerializer):
+    average_rate = serializers.FloatField()
+    rated_products = serializers.CharField() # trzeba nadpsiac jako charfield bo foreinkey nie dziala w serializers
 
+    class Meta:
+        model = UserRate
+        fields = ("rated_products", "average_rate")
+
+
+class StandardUserRateSerializer(ModelSerializer):
+
+    class Meta:
+        model = UserRate
+        fields = "__all__"
 
 
 class UserSerializer(ModelSerializer):
+
     class Meta:
         model = User
         fields = "__all__"
 
 
 class ProductSerializer(ModelSerializer):
+
+
     class Meta:
         model = Product
         fields = "__all__"

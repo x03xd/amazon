@@ -40,6 +40,7 @@ export default function Navbar(props){
         else {
             navigate(`s`)
         }
+
     }
 
     function returnHome(){

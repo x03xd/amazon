@@ -2,6 +2,10 @@
     font-size: 1.3rem !important;
 }
 
+:global .star-rating-icon {
+    font-size: 1.15rem !important;
+}
+
 
 :global .star-rating-container {
     display: flex;
@@ -9,12 +13,12 @@
 
 }
 
-:global div svg path {
+:global div.lightgrey-empty svg path {
     color: lightgrey !important;
 }
 
 
-:global div.ranked-up svg path {
+:global div.yellow-filled svg path {
     color: orange !important;
 }
 
