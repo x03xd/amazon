@@ -1,9 +1,9 @@
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
-import stylesLogin from './css_modules/Login.module.css';
+import stylesLogin from './css_modules/Login.css';
 import {useEffect, useState, useRef} from 'react';
-import CSRFToken from './CSRFToken.js';
+import CSRFToken from './CSRFToken.tsx';
 import logo from './images/xd.png';
-import Alert from './Alert.js';
+import Alert from './Alert.tsx';
 
 
 export default function Register(){

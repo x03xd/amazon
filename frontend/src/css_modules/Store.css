@@ -1,5 +1,5 @@
 
-:global .store-content {
+.store-content {
     display: grid;
     grid-template-columns: 1fr 4fr;
     background: white;
@@ -8,42 +8,42 @@
 
 
 
-:global .store-content-products > div:first-child span {
+.store-content-products > div:first-child span {
     font-size: 1.8rem !important;
 }
 
 
-:global .store-content-bar {
+.store-content-bar {
     grid-column: 1 / 2;
 }
 
-:global .store-content-products {
+.store-content-products {
     grid-column: 2 / 3;
 }
 
 
-:global .store-content-results {
+.store-content-results {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 15px;
 }
 
 
-:global .store-content-bar > div span:first-child {
+.store-content-bar > div span:first-child {
     font-weight: 550;
     font-size: 14px !important;
 }
 
-:global .store-content-bar > div ul {
+.store-content-bar > div ul {
     padding: 0;
 }
 
 
-:global .store-content-bar > div {
+.store-content-bar > div {
     padding-top: 15px;
 }
 
-:global .store-content-bar > div ul li:hover {
+.store-content-bar > div ul li:hover {
     cursor:pointer;
     color: var(--dark-orange) !important;
 }
@@ -52,12 +52,12 @@
 
 
 
-:global .product-card-content {
+.product-card-content {
     display: grid;
     justify-content: center;
 }
 
-:global div.store-content-products > div span {
+div.store-content-products > div span {
     font-size: 1.3rem !important;
 }
 
@@ -65,18 +65,18 @@
 
 
 
-:global .product-card-content div:first-child {
+.product-card-content div:first-child {
     background: #f5f2f2
 }
 
 
-:global .product-card-content > div:nth-child(2n) {
+.product-card-content > div:nth-child(2n) {
     border: 1px solid lightgrey;
     border-bottom: none;
     border-top: none;
 }
 
-:global .product-card-content > div:nth-child(3n) {
+.product-card-content > div:nth-child(3n) {
     border: 1px solid lightgrey;
     border-bottom: none;
     border-top: none;
@@ -84,17 +84,17 @@
 }
 
 
-:global .product-card-content > div:last-child {
+.product-card-content > div:last-child {
     border: 1px solid lightgrey;
     border-top: none;
 }
 
-:global .product-card-content > div:last-child p {
+.product-card-content > div:last-child p {
     font-size: 2rem !important;
 }
 
 
-:global .product-card-content div:nth-child(2) span:hover {
+.product-card-content div:nth-child(2) span:hover {
     color: #fc7303 !important;
     cursor: pointer;
     display: inline-block;
@@ -105,12 +105,12 @@
 
 
 
-:global .price-filters input {
+.price-filters input {
     width: 20%;
 }
 
 
-:global .price-filters button {
+.price-filters button {
     height: 20px;
     border-radius: 6px;
     font-size: 13px;

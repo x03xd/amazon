@@ -1,7 +1,7 @@
 
 
 import { useState, useEffect } from 'react';
-import ProductCard from './ProductCard';
+import ProductCard from './ProductCard.tsx';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
 
 

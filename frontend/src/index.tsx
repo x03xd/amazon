@@ -1,17 +1,17 @@
 import React, {useContext} from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import App from './App.tsx';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import Main from './Main.js';
-import AuthLayout from './AuthLayout';
-import Login from './Login';
-import Register from './Register';
+import Main from './Main.tsx';
+import AuthLayout from './AuthLayout.tsx';
+import Login from './Login.tsx';
+import Register from './Register.tsx';
 import 'bootstrap/dist/css/bootstrap.min.css'
-import Store from './Store';
-import Lobby from './Lobby';
-import Card from './Card';
-import { AuthProvider } from './AuthenticationContext';
-import { QueryParamsProvider } from './QueryParamsContext';
+import Store from './Store.tsx';
+import Lobby from './Lobby.tsx';
+import Card from './Card.tsx';
+import { AuthProvider } from './AuthenticationContext.tsx';
+import { QueryParamsProvider } from './QueryParamsContext.tsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

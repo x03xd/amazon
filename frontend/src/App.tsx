@@ -1,25 +1,25 @@
 import {Outlet} from 'react-router-dom';
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import Navbar from "./Navbar.tsx";
+import Footer from "./Footer.tsx";
 import {useState, useEffect, useContext} from 'react';
-import Modal from './Modal';
-import LeftModal from './LeftModal';
-import stylesTags from './css_modules/TagsStyling.module.css';
-import stylesAuthLayout from './css_modules/AuthLayout.module.css';
-import stylesApp from './css_modules/App.module.css';
-import stylesModal from './css_modules/Modal.module.css';
-import AuthLayout from './AuthLayout';
-import stylesMain from './css_modules/Main.module.css';
-import stylesStore from './css_modules/Store.module.css';
-import stylesNavbar from './css_modules/Navbar.module.css';
-import stylesFooter from './css_modules/Footer.module.css';
-import stylesBanner from './css_modules/Banner.module.css';
-import stylesLobby from './css_modules/Lobby.module.css';
-import stylesCard from './css_modules/Card.module.css';
-import stylesCardObject from './css_modules/CardObject.module.css'
-import stylesAlert from './css_modules/Alert.module.css';
-import AuthContext from "./AuthenticationContext";
-import stylesRating from './css_modules/Rating.module.css';
+import Modal from './Modal.tsx';
+import LeftModal from './LeftModal.tsx';
+import  './css_modules/TagsStyling.css';
+import  './css_modules/AuthLayout.css';
+import  './css_modules/App.css';
+import  './css_modules/Modal.css';
+import AuthLayout from './AuthLayout.tsx';
+import './css_modules/Main.css';
+import './css_modules/Store.css';
+import  './css_modules/Navbar.css';
+import  './css_modules/Footer.css';
+import  './css_modules/Banner.css';
+import  './css_modules/Lobby.css';
+import  './css_modules/Card.css';
+import  './css_modules/CardObject.css'
+import  './css_modules/Alert.css';
+import AuthContext from "./AuthenticationContext.tsx";
+import './css_modules/Rating.css';
 
 
 

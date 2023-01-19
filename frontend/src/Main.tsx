@@ -1,4 +1,4 @@
-import GridBox from './GridBox.js';
+import GridBox from './GridBox.tsx';
 import photo1 from './images/f2.jpg';
 import photo2 from './images/oczyszczacz.jpg';
 import photo3 from './images/wef.jpg';
@@ -9,7 +9,7 @@ import yellow2 from './images/yellow2.jpg';
 import yellow3 from './images/yellow3.jpg';
 import yellow4 from './images/yellow4.jpg';
 
-import Banner from './Banner';
+import Banner from './Banner.tsx';
 
 export default function Main(props){
 

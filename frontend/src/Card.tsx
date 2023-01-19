@@ -1,9 +1,9 @@
 import card_picture from './images/cardz.svg';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef, useContext } from 'react';
-import CardObject from './CardObject';
-import AuthContext from "./AuthenticationContext";
-import CSRFToken from './CSRFToken';
+import CardObject from './CardObject.tsx';
+import AuthContext from "./AuthenticationContext.tsx";
+import CSRFToken from './CSRFToken.tsx';
 import jwt_decode from "jwt-decode";
 
 export default function Card(){

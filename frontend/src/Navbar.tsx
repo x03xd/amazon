@@ -3,7 +3,7 @@ import {Routes, Route, useNavigate, useSearchParams} from 'react-router-dom';
 import {useState, useRef } from 'react';
 import logo from './images/xd.png';
 import cart from './images/shopping-cart-xxl.png';
-import Store from './Store';
+import Store from './Store.tsx';
 
 import CSRFToken from './CSRFToken';
 

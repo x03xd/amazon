@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import QueryParamsContext from "./QueryParamsContext";
+import QueryParamsContext from "./QueryParamsContext.tsx";
 
 
 

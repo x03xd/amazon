@@ -4,7 +4,7 @@ import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect, useRef, useContext } from 'react';
 import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
-import QueryParamsContext from "./QueryParamsContext";
+import QueryParamsContext from "./QueryParamsContext.tsx";
 
 
 export default function Rating(props){

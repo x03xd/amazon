@@ -1,6 +1,6 @@
 
 
-:global .home-content {
+.home-content {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 20px;
@@ -8,13 +8,13 @@
 }
 
 
-:global .home-content > div {
+.home-content > div {
     background: white;
 }
 
 
 
-:global .card-nbt {
+.card-nbt {
     margin-top: -360px;
     position: relative;
 }
@@ -22,14 +22,14 @@
 
 
 
-:global .home-header-card {
+.home-header-card {
     padding: 16px;
 }
 
 
 
 
-:global .home-body-card {
+.home-body-card {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
@@ -38,13 +38,13 @@
 }
 
 
-:global .home-body-card img {
+.home-body-card img {
     width: 100%;
     height: auto;
 }
 
 
-:global .home-body-card span {
+.home-body-card span {
     color: black !important;
     float: left;
     padding: 5px;
@@ -52,6 +52,6 @@
 
 
 
-:global .home-footer-card {
+.home-footer-card {
     padding: 16px;
 }

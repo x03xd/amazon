@@ -1,7 +1,7 @@
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
 import {createContext, useEffect, useState, useRef} from 'react';
 import jwt_decode from "jwt-decode";
-import CSRFToken from './CSRFToken.js';
+import CSRFToken from './CSRFToken.tsx';
 
 
 //Context is designed to share data that can be considered “global” for a tree of React components, such as the current authenticated user, theme, or preferred language

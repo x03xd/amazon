@@ -1,24 +1,24 @@
-:global .star-rating-icon {
+.star-rating-icon {
     font-size: 1.3rem !important;
 }
 
-:global .star-rating-icon {
+.star-rating-icon {
     font-size: 1.15rem !important;
 }
 
 
-:global .star-rating-container {
+.star-rating-container {
     display: flex;
     gap: 0.2rem;
 
 }
 
-:global div.lightgrey-empty svg path {
+div.lightgrey-empty svg path {
     color: lightgrey !important;
 }
 
 
-:global div.yellow-filled svg path {
+div.yellow-filled svg path {
     color: orange !important;
 }
 

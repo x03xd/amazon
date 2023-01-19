@@ -1,26 +1,26 @@
-:global a:link {
+a:link {
     text-decoration: none !important;
     color: #007185 !important;
 }
 
-:global h4 {
+ h4 {
     font-size: 1.3rem !important;
 }
 
 
 
-:global a:hover {
+a:hover {
     cursor:pointer;
     color: var(--dark-orange) !important;
 }
 
 
-:global a:visited {
+ a:visited {
     text-decoration: none !important;
     color: #007185 !important;
 }
 
-:global button, :global input {
+ button, :global input {
     color: black !important;
 }
 
@@ -29,39 +29,39 @@
 
 
 
-:global * {
+* {
     color: black !important;
     font-family: Arial !important;
     font-size: 12px  !important;
 }
 
-:global li {
+ li {
     list-style-type: none !important;
 }
 
 
-:global .cr-black {
+.cr-black {
     color: black !important;
 }
 
-:global label {
+label {
 
 }
 
-:global .fw-500 {
+.fw-500 {
     font-weight: 500;
 }
 
-:global .fw-600 {
+.fw-600 {
     font-weight: 600;
 }
 
-:global .fw-550 {
+.fw-550 {
     font-weight:550;
 }
 
 
-:global .fw-525 {
+.fw-525 {
     font-weight:525;
 }
 

@@ -1,6 +1,6 @@
 import {useState, useEffect, useContext} from 'react';
 import {Routes, Route, useNavigate} from 'react-router-dom';
-import AuthContext from "./AuthenticationContext";
+import AuthContext from "./AuthenticationContext.tsx";
 
 export default function Modal(props){
 

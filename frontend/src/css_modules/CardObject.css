@@ -1,19 +1,19 @@
 
 
-:global .card-content-objects-inner {
+.card-content-objects-inner {
     display: grid;
     grid-template-columns: 2fr 6fr 1fr;
     grid-auto-rows: 150px;
 }
 
 
-:global .card-content-objects-inner-col-2 div:last-child input {
+.card-content-objects-inner-col-2 div:last-child input {
     width: 8%;
     border-radius: 6px;
     border: 1px solid;
 }
 
-:global .card-content-objects-inner-col-2 div:last-child {
+.card-content-objects-inner-col-2 div:last-child {
     gap: 8px;
     align-items: center;
     margin-top: 10px;
@@ -22,7 +22,7 @@
 
 
 
-:global .card-content-objects-inner-col-3 {
+.card-content-objects-inner-col-3 {
     display: grid;
     padding-left: 75px;
 

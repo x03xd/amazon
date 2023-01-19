@@ -2,26 +2,50 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a031a4af-263d-4a20-b0d7-fc1ff09c5dc4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/amazonApp/testing.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/QueryParamsContext.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/matrix.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazonApp/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazonApp/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazonApp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazonApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Checkbox.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Checkbox.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Clear.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Clear.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Navbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/ProductCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/ProductCard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Rating.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Rating.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Store.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Store.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Rating.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Rating.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Store.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Store.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Alert.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Alert.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/AuthLayout.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/AuthLayout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/AuthenticationContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/AuthenticationContext.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Banner.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Banner.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/CSRFToken.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/CSRFToken.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Card.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Card.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/CardObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/CardObject.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Checkbox.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Checkbox.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Clear.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Clear.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Footer.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Footer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/GridBox.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/GridBox.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/LeftModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/LeftModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Lobby.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Lobby.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Logout.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Main.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Modal.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Modal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/ProductCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/ProductCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/QueryParamsContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/QueryParamsContext.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Rating.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Rating.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Register.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Store.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Store.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/UList.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/UList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Alert.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Alert.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/App.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/AuthLayout.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/AuthLayout.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Banner.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Banner.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Card.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Card.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/CardObject.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/CardObject.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Footer.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Footer.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Lobby.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Lobby.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Login.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Login.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Main.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Modal.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Modal.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Navbar.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Navbar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Rating.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Rating.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Store.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Store.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/TagsStyling.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/TagsStyling.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

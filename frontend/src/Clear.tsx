@@ -1,7 +1,7 @@
 import arrow from './images/left.png';
 import PropTypes from 'prop-types';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
-import QueryParamsContext from "./QueryParamsContext";
+import QueryParamsContext from "./QueryParamsContext.tsx";
 import {useContext, useState} from 'react';
 
 

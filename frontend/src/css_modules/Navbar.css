@@ -1,4 +1,4 @@
-:global nav {
+ nav {
    width: 100%;
    position: absolute;
    top: 0;
@@ -8,7 +8,7 @@
 }
 
 
-:global nav div.navbar-upper-part {
+ nav div.navbar-upper-part {
     background: var(--top-nav);
     height: 60px;
     display: flex;
@@ -17,19 +17,19 @@
 }
 
 
-:global nav div.navbar-upper-part span {
+nav div.navbar-upper-part span {
     color: white !important;
 }
 
 
 
-:global .navbar-upper-part > div span:first-child {
+.navbar-upper-part > div span:first-child {
     font-size: 11px !important;
     color: white !important;
 }
 
 
-:global .navbar-upper-part > div span:last-child {
+.navbar-upper-part > div span:last-child {
     font-weight: 600 !important;
     font-size: 13px !important;
 }
@@ -37,7 +37,7 @@
 
 
 
-:global nav div.navbar-lower-part {
+nav div.navbar-lower-part {
     background: var(--bot-nav);
     height: 38px;
     display: flex;
@@ -46,13 +46,13 @@
 }
 
 
-:global .navbar-lower-part > div span {
+.navbar-lower-part > div span {
     font-size: 14px !important;
      color: white !important;
 }
 
 
-:global input.main-search-bar {
+input.main-search-bar {
     width: 1200px;
     height: 38px;
     border-radius: 3px;
@@ -61,13 +61,13 @@
 
 
 
-:global .cart {
+.cart {
     width: 35px;
     height: 35px;
 }
 
 
-:global .cart-box {
+.cart-box {
     display: flex;
     align-items: end;
     gap: 5px;

@@ -1,4 +1,4 @@
-:global .login-modal {
+.login-modal {
     background: white;
     position: absolute;
     display: none;
@@ -11,7 +11,7 @@
     pointer-events: all !important;
 }
 
-:global form {
+form {
     display: grid;
     place-items: center;
 }
@@ -19,31 +19,31 @@
 
 
 
-:global .login-modal > div {
+.login-modal > div {
 
     display: grid;
     justify-content: center;
 }
 
-:global .login-modal > div:first-child {
+.login-modal > div:first-child {
     text-align: center;
     margin-top: 10px;
 }
 
-:global .login-modal > div:first-child span {
+.login-modal > div:first-child span {
     margin-top: 10px;
 }
 
 
-:global .login-modal > div:first-child a,
-:global .login-modal > div:first-child span{
+.login-modal > div:first-child a,
+.login-modal > div:first-child span{
     font-size: 12px;
     line-height: 5px;
 }
 
 
 
-:global .login-modal > div + div {
+.login-modal > div + div {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
@@ -51,7 +51,7 @@
 
 
 
-:global .login-modal > div + div ul li:first-child {
+.login-modal > div + div ul li:first-child {
     font-weight: 600;
     font-size: 18px;
 }
@@ -61,7 +61,7 @@
 /* LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL */
 
 
-:global .left-modal {
+.left-modal {
     position: fixed;
     width: 20%;
     background: white;
@@ -74,20 +74,20 @@
     pointer-events: all !important;
 }
 
-:global .left-modal-header {
+.left-modal-header {
     background: #232f3e;
     padding: 24px 41px 15px 41px;
 
 }
 
-:global .left-modal-body {
+.left-modal-body {
     overflow-y : auto;
 }
 
 
 
 
-:global .left-modal > div a {
+.left-modal > div a {
     color: black !important;
     display: inline-block !important;
     width: 100%;
@@ -97,25 +97,25 @@
 
 
 
-:global .left-modal > div a:first-child ~ a:hover {
+.left-modal > div a:first-child ~ a:hover {
     background: lightgrey;
 }
 
-:global .left-modal > div a:first-child {
+.left-modal > div a:first-child {
     font-size: 18px !important;
     font-weight: 550;
     margin-top: 5px;
 }
 
 
-:global .left-modal > div a:first-child ~ a{
+.left-modal > div a:first-child ~ a{
 
 }
 
 
 /* OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY */
 
-:global .overlay {
+.overlay {
     display: none;
     background: rgba(0, 0, 0, .5);
     position: fixed;
@@ -129,6 +129,6 @@
 
 
 
-:global .pointer-event-handler {
+.pointer-event-handler {
     pointer-events: none;
 }

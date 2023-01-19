@@ -2,8 +2,8 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import {useLocation} from 'react-router-dom';
 import adress from './images/loc1.png';
 import padlock2 from './images/padlock2.png';
-import CSRFToken from './CSRFToken';
-import AuthContext from "./AuthenticationContext";
+import CSRFToken from './CSRFToken.tsx';
+import AuthContext from "./AuthenticationContext.tsx";
 
 export default function Lobby(props){
 

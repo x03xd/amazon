@@ -1,13 +1,16 @@
-import Banner from './Banner';
+import Banner from './Banner.tsx';
 import { useState, useEffect, useRef, useContext } from 'react';
-import ProductCard from './ProductCard';
+import ProductCard from './ProductCard.tsx';
 import { useNavigate } from "react-router-dom";
-import UList from './UList';
-import Clear from './Clear';
-import Rating from './Rating';
-import Checkbox from './Checkbox';
+import UList from './UList.tsx';
+import Clear from './Clear.tsx';
+import Rating from './Rating.tsx';
+import Checkbox from './Checkbox.tsx';
 import React from 'react';
-import QueryParamsContext from "./QueryParamsContext";
+import QueryParamsContext from "./QueryParamsContext.tsx";
+
+
+
 
 export default function Store(props){
 

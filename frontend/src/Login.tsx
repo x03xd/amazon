@@ -1,11 +1,11 @@
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
-import stylesLogin from './css_modules/Login.module.css';
+import stylesLogin from './css_modules/Login.css';
 import {useEffect, useState, useRef, useContext} from 'react';
-import CSRFToken from './CSRFToken.js';
+import CSRFToken from './CSRFToken.tsx';
 import logo from './images/xd.png';
-import Alert from './Alert';
+import Alert from './Alert.tsx';
 import jwt_decode from "jwt-decode";
-import AuthContext from "./AuthenticationContext";
+import AuthContext from "./AuthenticationContext.tsx";
 
 const Login = (props) => {
 

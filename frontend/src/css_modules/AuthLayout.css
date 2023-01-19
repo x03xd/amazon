@@ -1,5 +1,5 @@
 
-:global .main-container-auth-layout {
+.main-container-auth-layout {
     display: grid;
     align-content: center;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -10,7 +10,7 @@
 
 
 
-:global .main-container-auth-layout-title {
+.main-container-auth-layout-title {
     grid-column: 1 / 6;
     display: grid;
     justify-content: center;
@@ -19,7 +19,7 @@
 
 
 
-:global .main-container-auth-layout-create-button {
+.main-container-auth-layout-create-button {
     grid-column: 1 / 6;
     display: flex;
     align-items: center;
@@ -27,49 +27,48 @@
 }
 
 
-:global .auth-navbar {
+.auth-navbar {
     grid-column: 1 / 6;
     text-align: center;
     background: #EFEFEF;
 }
 
 
-:global .auth-navbar > div {
+.auth-navbar > div {
     margin-top: 20px;
 }
 
 
 
-:global .auth-navbar span {
+.auth-navbar span {
     line-height: 40px;
 }
 
 
-:global .auth-navbar a {
+.auth-navbar a {
     font-size: 11px;
     padding: 10px;
 }
 
 
 
-:global .text-E01.active a, :global .text-E01.active span {
+.text-E01.active a, :global .text-E01.active span {
     display: block;
 }
 
-
-:global .text-E01 span, :global .text-E01 a {
+.text-E01 span, :global .text-E01 a {
     display: none;
 }
 
 
-:global .label  {
+.label  {
     display: none;
     text-align: start;
 }
 
 
 
-:global .label.active  {
+.label.active  {
     display: block;
 }
 
@@ -78,23 +77,23 @@
 /*  LOGIN AND REGISTER HAVING IN COMMON CODE */
 
 
-:global .modal-container-wrapper {
+.modal-container-wrapper {
     grid-column: 3 / 4;
 }
 
 
-:global .modal-container  {
+.modal-container  {
     padding: 30px;
 }
 
 
-:global .modal-container form > span {
+.modal-container form > span {
     font-weight: 600 !important;
 }
 
 
 
-:global div.modal-container p:first-child {
+div.modal-container p:first-child {
     font-size: 2rem !important;
     font-weight: 600;
 }

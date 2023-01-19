@@ -1,5 +1,5 @@
 
-:global .lobby-content {
+.lobby-content {
     display: grid;
     grid-template-columns: 5fr 1fr;
     background: white !important;
@@ -9,7 +9,7 @@
 
 
 
-:global .lobby-content-gallery {
+.lobby-content-gallery {
     display: grid;
     grid-template-columns: 1fr 1fr;
     justify-content: center;
@@ -18,13 +18,13 @@
 
 
 
-:global .lobby-content-sidebar > div {
+.lobby-content-sidebar > div {
     padding: 10px;
 }
 
 
 
-:global .lobby-content-sidebar div:first-child span {
+.lobby-content-sidebar div:first-child span {
     color: var(--dark-orange) !important;
     font-size: 18px!important;
     line-height: 24px!important;
@@ -32,7 +32,7 @@
 
 
 
-:global #add-to-card-button {
+#add-to-card-button {
     border-radius: 16px;
     border: 0;
     width: 90%;
@@ -41,7 +41,7 @@
 }
 
 
-:global #buy-now-button {
+#buy-now-button {
     border-radius: 16px;
     border: 0;
     width: 90%;
@@ -49,12 +49,12 @@
 }
 
 
-:global .lobby-buttons {
+.lobby-buttons {
     display: grid;
     gap: 10px;
 }
 
-:global #quantity select {
+#quantity select {
     border: 1px solid;
     width: 60px;
 }
