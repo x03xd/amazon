@@ -1,9 +1,14 @@
-import {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {Routes, Route, useNavigate} from 'react-router-dom';
 import AuthContext from "./AuthenticationContext.tsx";
 
-export default function Modal(props){
 
+export interface ModalProps{
+    className: string;
+}
+
+
+const Modal: React.FC<ModalProps> = ({ className }) => {
 
     const navigate = useNavigate();
 
@@ -16,21 +21,17 @@ export default function Modal(props){
     let {logout} = useContext(AuthContext)
 
     return(
-        <div className = {`login-modal ${props.className}`}>
+        <div className = {`login-modal ${className}`}>
 
             <div className = "p-3">
                 <button onClick = {() => { navigateTo() }} className = "login-button">Zaloguj się</button>
-
-
                 {localStorage.getItem("username") == "admin" ? <span className = "mt-4" onClick = {logout}>WYLOGUJ</span> :
                     <>
                         <span className = {`mt-4`}>Pierwszy raz w serwisie Amazon?</span> <br/>
                         <a className = {`$`} href = "#">Rozpocznij tutaj.</a>
                     </>
                 }
-
             </div>
-
 
 
             <div>
@@ -57,6 +58,6 @@ export default function Modal(props){
         </div>
     );
 
-
-
 }
+
+export default Modal;

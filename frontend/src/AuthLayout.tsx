@@ -7,14 +7,12 @@ import Alert from './Alert.tsx';
 import { useSearchParams } from "react-router-dom";
 import AuthContext from "./AuthenticationContext";
 
-export default function AuthLayout(props){
+const AuthLayout: React.FC = () => {
 
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const [generatedText, setGeneratedText] = useState("");
     const [buttonStyle, setButtonStyle] = useState("");
-
-
 
 
     useEffect(() => {
@@ -24,21 +22,15 @@ export default function AuthLayout(props){
         }
     })
 
-  //  function setStyle(style){
-   //     setStyleAlert(style)
-  //  }
-
 
     return(
         <>
-
             <div className = "main-container-auth-layout-title">
                 <div className = "logo-box">
                     <img className = 'logo mt-4' src = {logo} />
                 </div>
 
             </div>
-
 
 
             <div className = "main-container-auth-layout mt-4">
@@ -66,3 +58,5 @@ export default function AuthLayout(props){
     );
 
 }
+
+export default AuthLayout

@@ -3,7 +3,7 @@ import {useEffect, useState, useRef} from 'react';
 import React from 'react';
 
 
-export default function CSRFToken(){
+const CSRFToken: React.FC = () => {
 
 
     function getCookie(name) {
@@ -34,3 +34,4 @@ export default function CSRFToken(){
 
 };
 
+export default CSRFToken;

@@ -2,6 +2,7 @@ import {Outlet} from 'react-router-dom';
 import Navbar from "./Navbar.tsx";
 import Footer from "./Footer.tsx";
 import {useState, useEffect, useContext} from 'react';
+import React from 'react';
 import Modal from './Modal.tsx';
 import LeftModal from './LeftModal.tsx';
 import  './css_modules/TagsStyling.css';
@@ -22,12 +23,26 @@ import AuthContext from "./AuthenticationContext.tsx";
 import './css_modules/Rating.css';
 
 
+export interface setOverlayState {
+    overlayStyle: string;
+}
 
-function App(props) {
+export interface setLoginModalState {
+    loginModalStyle: string;
+}
+
+export interface setLeftModalState {
+    leftModalStyle: string;
+}
+
+export interface setUnclickState {
+    unclick: string;
+}
+
+
+const App: React.FC = () => {
 
     let {authToken, username, loginUser} = useContext(AuthContext)
-
-
 
     useEffect(() => {
         if(authToken != null){
@@ -35,11 +50,11 @@ function App(props) {
         }
     })
 
-    const [overlayStyle, setOverlay] = useState("");
-    const [loginModalStyle, setLoginModal] = useState("");
-    const [leftModalStyle, setLeftModal] = useState("");
 
-    const [unclick, setUnclick] = useState("");
+    const [overlayStyle, setOverlay] = useState<setOverlayState>("");
+    const [loginModalStyle, setLoginModal] = useState<setLoginModalState>("");
+    const [leftModalStyle, setLeftModal] = useState<setLeftModalState>("");
+    const [unclick, setUnclick] = useState<setUnclickState>("");
 
     function overlayStyler(style){
         setOverlay(style);
@@ -58,18 +73,10 @@ function App(props) {
     }
 
 
-    const [param, setParam] = useState("");
-
-
-    function paramSetter(arg){
-        setParam(arg);
-    }
-
-
     return (
             <div className = "main-container">
                     <div className = {`navbar ${unclick} col-12`}>
-                        <Navbar onSubmit = {paramSetter} unclick = {unclick} overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} leftModalStyle = {leftModalStyler} unclickableNavbar = {unclickableNavbar} />
+                        <Navbar unclick = {unclick} overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} leftModalStyle = {leftModalStyler} unclickableNavbarChild = {unclickableNavbar} />
 
                         <Modal className = {loginModalStyle} />
 

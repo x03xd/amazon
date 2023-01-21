@@ -1,18 +1,17 @@
 import Banner from './Banner.tsx';
 import { useState, useEffect, useRef, useContext } from 'react';
+import React from 'react';
 import ProductCard from './ProductCard.tsx';
 import { useNavigate } from "react-router-dom";
 import UList from './UList.tsx';
 import Clear from './Clear.tsx';
 import Rating from './Rating.tsx';
 import Checkbox from './Checkbox.tsx';
-import React from 'react';
 import QueryParamsContext from "./QueryParamsContext.tsx";
 
+let myString: string = 123;
 
-
-
-export default function Store(props){
+const Store: React.FC = () => {
 
     const navigate = useNavigate();
 
@@ -27,6 +26,13 @@ export default function Store(props){
     const aRef = useRef();
     const bRef = useRef();
     const cRef = useRef();
+
+
+    let myString: string = 123;
+
+    console.log(myString)
+
+    myString = "sad"
 
     let {q_QueryParam, c_QueryParam, u_QueryParam, u2_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
 
@@ -59,7 +65,6 @@ export default function Store(props){
 
     },[])
 
-
         let priceLimits = [
             {item: {desc: "Do 20zł", range: {start: 1, end: 20}}},
             {item: {desc: "20 do 50zł", range: {start: 20.01, end: 50}}},
@@ -73,6 +78,7 @@ export default function Store(props){
         for(let product of forData){
             arrayBrands.push(product.brand)
         }
+
         let uniqueArrayBrands = [...new Set(arrayBrands)];
         let brandsFalseFilled = [...new Set(arrayBrands)];
 
@@ -83,18 +89,19 @@ export default function Store(props){
         for(let nums of priceLimits){
             arrayPrices.push(nums)
         }
+
         let uniqueArrayPrices = [...new Set(arrayPrices)];
         let pricesFalseFilled = [...new Set(arrayPrices)];
 
         pricesFalseFilled.fill(false)
 
+        console.log(JSON.stringify(uniqueArrayPrices));
 
         function clearQueryString(arg){
 
             switch (arg) {
                 case "c":
-                    //console.log(storage);
-                    //console.log(checkStorage);
+
 
                     arrayBrands.map((item, index) => {
 
@@ -213,9 +220,6 @@ export default function Store(props){
                             <input ref = {bRef} className = "ms-1" type = "text" placeholder = "Max"/>
                             <button onClick = {handleClickSearch} className = "ms-1 border 0">Szukaj</button>
                         </div>
-
-
-
                 </div>
 
 
@@ -226,9 +230,7 @@ export default function Store(props){
                     </div>
 
                     <div className = "store-content-results mt-3">
-
                         {productsWithRatings}
-
                     </div>
                 </div>
 
@@ -238,3 +240,4 @@ export default function Store(props){
         );
 }
 
+export default Store;

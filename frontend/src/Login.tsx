@@ -1,13 +1,13 @@
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
 import stylesLogin from './css_modules/Login.css';
-import {useEffect, useState, useRef, useContext} from 'react';
+import React, {useEffect, useState, useRef, useContext} from 'react';
 import CSRFToken from './CSRFToken.tsx';
 import logo from './images/xd.png';
 import Alert from './Alert.tsx';
 import jwt_decode from "jwt-decode";
 import AuthContext from "./AuthenticationContext.tsx";
 
-const Login = (props) => {
+const Login: React.FC = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -51,7 +51,7 @@ const Login = (props) => {
 
                     <div className = {`${location.state.style2} p-3 mt-3`} id = "reminder-login">
                          <input type = "checkbox"/>
-                         <span>Nie wylogowuj mnie  </span><a href = "#">Szczegóły</a>
+                         <span>Nie wylogowuj mnie</span><a href = "#">Szczegóły</a>
                     </div>
 
                 </div>

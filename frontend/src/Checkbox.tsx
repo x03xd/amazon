@@ -140,9 +140,6 @@ export default function Checkbox(props){
 
     },[filteredBrands2, filteredPrices2])
 
-
-
-
     function handleResult(e, position){
         setLoading(true);
 
@@ -165,12 +162,10 @@ export default function Checkbox(props){
     return(
         <>
             <li key = {props.index}>
-
                 <input ref = {useRef(props.index)} checked = {ifChecked2} onChange = {(e) => { handleResult(e, props.index); }} type = "checkbox" />
                 {props.name}
             </li>
         </>
     );
-
 
 }

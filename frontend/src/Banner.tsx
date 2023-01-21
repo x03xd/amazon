@@ -1,6 +1,6 @@
 import {Carousel} from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-
+import React from 'react';
 import carousel1 from './images/carousel1.jpg'
 import carousel2 from './images/carousel2.jpg'
 import carousel3 from './images/carousel3.jpg'
@@ -8,7 +8,7 @@ import carousel4 from './images/carousel4.jpg'
 import carousel5 from './images/carousel5.jpg'
 
 
-export default function Banner(){
+const Banner: React.FC = () => {
 
     return(
         <div className = "card-banner position-relative">
@@ -48,3 +48,5 @@ export default function Banner(){
     );
 
 }
+
+export default Banner;

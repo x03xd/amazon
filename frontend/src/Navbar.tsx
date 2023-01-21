@@ -1,38 +1,50 @@
-
 import {Routes, Route, useNavigate, useSearchParams} from 'react-router-dom';
-import {useState, useRef } from 'react';
+import React, {useState, useRef } from 'react';
 import logo from './images/xd.png';
 import cart from './images/shopping-cart-xxl.png';
 import Store from './Store.tsx';
-
 import CSRFToken from './CSRFToken';
 
-export default function Navbar(props){
 
+export interface setValueState{
+    value: string;
+}
+
+
+export interface NavbarProps {
+    overlayStyle: (style: string) => void;
+    loginModalStyle: (style: string) => void;
+    leftModalStyle: (style: string) => void;
+    unclickableNavbarChild: (style: string) => void;
+    unclick: string;
+}
+
+
+const Navbar: React.FC = ({ unclick, overlayStyle, loginModalStyle, leftModalStyle, unclickableNavbarChild }) => {
 
     const navigate = useNavigate();
 
     const activeOverlay = (style) => {
-        props.overlayStyle(style);
+        overlayStyle(style);
     }
 
     const activeLoginModal = (style) => {
-        props.loginModalStyle(style);
+        loginModalStyle(style);
     }
 
     const activeLeftModal = (style) => {
-        props.leftModalStyle(style);
+        leftModalStyle(style);
     }
 
     const unclickableNavbar = (style) => {
-        props.unclickableNavbar(style)
+        unclickableNavbarChild(style)
+
     }
 
     const [searchParams, setSearchParams] = useSearchParams();
 
 
     function subCategoryNavigate(e){
-
         if(value == null){
             navigate("")
         }
@@ -40,24 +52,22 @@ export default function Navbar(props){
         else {
             navigate(`s`)
         }
-
     }
+
 
     function returnHome(){
         navigate("");
     }
 
-
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState("");
     function searchBarHandling(e){
         setValue(e.target.value)
         console.log(value)
     }
 
-
     return(
         <>
-            <nav className = {props.unclick}>
+            <nav className = {unclick}>
                 <div className = 'navbar-upper-part'>
 
                     <div onClick = {returnHome} className = "logo-box">
@@ -129,5 +139,6 @@ export default function Navbar(props){
         </>
     );
 
-
 }
+
+export default Navbar;

@@ -3,7 +3,7 @@ import photo1 from './images/f2.jpg';
 import photo2 from './images/oczyszczacz.jpg';
 import photo3 from './images/wef.jpg';
 import photo4 from './images/xd.jpg';
-
+import React from 'react';
 import yellow1 from './images/yellow1.jpg';
 import yellow2 from './images/yellow2.jpg';
 import yellow3 from './images/yellow3.jpg';
@@ -11,7 +11,9 @@ import yellow4 from './images/yellow4.jpg';
 
 import Banner from './Banner.tsx';
 
-export default function Main(props){
+const Main: React.FC = () => {
+
+    //panel dodawania dodaj
 
     const dlaTwojegoDomu = [
         [photo1, 'Oczyszczacze powietrza'],
@@ -44,6 +46,6 @@ export default function Main(props){
         </div>
 
     );
-
-
 }
+
+export default Main

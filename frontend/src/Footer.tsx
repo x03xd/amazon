@@ -1,10 +1,10 @@
 
 import {useNavigate} from 'react-router-dom';
 import logo from './images/xd.png';
+import React from 'react';
 
 
-
-export default function Footer(){
+const Footer: React.FC = () => {
 
     const navigate = useNavigate();
 
@@ -200,5 +200,5 @@ export default function Footer(){
         </>
     );
 
-
 }
+export default Footer;

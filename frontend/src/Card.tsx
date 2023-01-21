@@ -1,12 +1,12 @@
 import card_picture from './images/cardz.svg';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import CardObject from './CardObject.tsx';
 import AuthContext from "./AuthenticationContext.tsx";
 import CSRFToken from './CSRFToken.tsx';
 import jwt_decode from "jwt-decode";
 
-export default function Card(){
+const Card: React.FC = () => {
 
     const [cardUserGetter, setCardUserGetter] = useState([]);
     const [cardItemsGetter, setCardItemsGetter] = useState([]);
@@ -131,7 +131,6 @@ export default function Card(){
             </div>
 
         );
-
     }
-
 }
+export default Card;

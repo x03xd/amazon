@@ -1,12 +1,12 @@
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
 import stylesLogin from './css_modules/Login.css';
-import {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import CSRFToken from './CSRFToken.tsx';
 import logo from './images/xd.png';
 import Alert from './Alert.tsx';
 
 
-export default function Register(){
+const Register: React.FC = () => {
 
     let usernameRef = useRef(null);
     let emailRef = useRef(null);
@@ -93,3 +93,5 @@ export default function Register(){
     );
 
 }
+
+export default Register;

@@ -1,12 +1,14 @@
+import React from 'react';
+
+export interface LeftModalProps{
+    className: string;
+}
 
 
-
-
-export default function LeftModal(props){
-
+const LeftModal: React.FC<LeftModalProps> = ({ className }) => {
 
     return(
-        <div className = {`left-modal ${props.className}`}>
+        <div className = {`left-modal ${className}`}>
 
             <div className = "left-modal-header">
                 <div className = "">
@@ -68,8 +70,6 @@ export default function LeftModal(props){
         </div>
     );
 
-
-
 }
 
-
+export default LeftModal;
