@@ -1,20 +1,20 @@
 import React from 'react';
 
-export interface AlertProps{
+interface AlertProps{
     style: string;
-    alert: string;
+    text: string;
 }
 
 
-const Alert: React.FC = ({ style, alert }) => {
+const Alert: React.FC<AlertProps> = ({ style, text }) => {
 
-    console.log(props.style);
+    console.log(style);
 
     return(
         <div className = {`alert-container-wrapper ${style}`}>
             <div className = "alert-container border border-danger rounded p-4 mt-2">
                 <h4 className = "text-danger">Wystąpił błąd</h4>
-                <span>{props.text}</span>
+                <span>{text}</span>
             </div>
         </div>
     );

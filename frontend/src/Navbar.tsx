@@ -2,7 +2,7 @@ import {Routes, Route, useNavigate, useSearchParams} from 'react-router-dom';
 import React, {useState, useRef } from 'react';
 import logo from './images/xd.png';
 import cart from './images/shopping-cart-xxl.png';
-import Store from './Store.tsx';
+import Store from './Store';
 import CSRFToken from './CSRFToken';
 
 
@@ -16,27 +16,27 @@ export interface NavbarProps {
     loginModalStyle: (style: string) => void;
     leftModalStyle: (style: string) => void;
     unclickableNavbarChild: (style: string) => void;
-    unclick: string;
+    unclick?: string;
 }
 
 
-const Navbar: React.FC = ({ unclick, overlayStyle, loginModalStyle, leftModalStyle, unclickableNavbarChild }) => {
+const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle, leftModalStyle, unclickableNavbarChild }) => {
 
     const navigate = useNavigate();
 
-    const activeOverlay = (style) => {
+    const activeOverlay = (style: string) => {
         overlayStyle(style);
     }
 
-    const activeLoginModal = (style) => {
+    const activeLoginModal = (style: string) => {
         loginModalStyle(style);
     }
 
-    const activeLeftModal = (style) => {
+    const activeLeftModal = (style: string) => {
         leftModalStyle(style);
     }
 
-    const unclickableNavbar = (style) => {
+    const unclickableNavbar = (style: string) => {
         unclickableNavbarChild(style)
 
     }
@@ -44,13 +44,13 @@ const Navbar: React.FC = ({ unclick, overlayStyle, loginModalStyle, leftModalSty
     const [searchParams, setSearchParams] = useSearchParams();
 
 
-    function subCategoryNavigate(e){
+    function subCategoryNavigate(e: any){
         if(value == null){
             navigate("")
         }
 
         else {
-            navigate(`s`)
+            navigate("s")
         }
     }
 
@@ -60,14 +60,17 @@ const Navbar: React.FC = ({ unclick, overlayStyle, loginModalStyle, leftModalSty
     }
 
     const [value, setValue] = useState("");
-    function searchBarHandling(e){
+    function searchBarHandling(e: any){
         setValue(e.target.value)
         console.log(value)
     }
 
+
+    //<nav className = {unclick}>
+
     return(
         <>
-            <nav className = {unclick}>
+            <nav>
                 <div className = 'navbar-upper-part'>
 
                     <div onClick = {returnHome} className = "logo-box">

@@ -1,18 +1,40 @@
 import card_picture from './images/cardz.svg';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import CardObject from './CardObject.tsx';
-import AuthContext from "./AuthenticationContext.tsx";
-import CSRFToken from './CSRFToken.tsx';
+import CardObject from './CardObject';
+import AuthContext from "./AuthenticationContext";
+import CSRFToken from './CSRFToken';
 import jwt_decode from "jwt-decode";
+
+
+
+
+interface Product {
+    brand: string;
+    description: string;
+    gallery1: boolean | null;
+    gallery2: boolean | null;
+    gallery3: boolean | null;
+    id: number;
+    image: string;
+    price: number;
+    quantity: number;
+    status?: boolean | null;
+    subcategory_name: number;
+    title: string;
+}
+
+
+
+
+
 
 const Card: React.FC = () => {
 
-    const [cardUserGetter, setCardUserGetter] = useState([]);
-    const [cardItemsGetter, setCardItemsGetter] = useState([]);
+    const [cardUserGetter, setCardUserGetter] = useState<number[]>([]);
+    const [cardItemsGetter, setCardItemsGetter] = useState<Product[] | []>([]);
 
     let {username} = useContext(AuthContext);
-    console.log(username.username)
 
     //getting cart of logged user
     useEffect(() => {
@@ -21,7 +43,7 @@ const Card: React.FC = () => {
             headers:{
                 'Content-Type':'application/json'
             },
-            body:JSON.stringify({"username":username.username})
+            body:JSON.stringify({"username":username?.username})
         })
         .then(response => response.json())
         .then(result => (setCardUserGetter(result)));
@@ -43,13 +65,9 @@ const Card: React.FC = () => {
 
     }, [cardUserGetter])
 
-
-
     console.log(cardItemsGetter);
 
-    //{cardItemsGetter.map(item => <CardObject item = {item} /> )}
-
-    if(!cardItemsGetter){
+    if(cardItemsGetter.length == 0){
         return(
             <div className = "card-content mt-5 bg-white">
             <CSRFToken />
@@ -88,7 +106,7 @@ const Card: React.FC = () => {
         );
     }
 
-    else if(cardItemsGetter){
+    else {
 
         return(
 
@@ -109,7 +127,7 @@ const Card: React.FC = () => {
                         </div>
 
                         <div className = "card-content-objects-inner mt-5 bg-light">
-                            {cardItemsGetter.map((item, index) => <CardObject item = {item} key = {index}/>)}
+                            {cardItemsGetter.map((item, index : number) => <CardObject item = {item} key = {index} />)}
                         </div>
 
 

@@ -1,15 +1,33 @@
 
+import React from 'react';
+
+
+interface Item {
+    item: {
+        brand: string;
+        description: string;
+        gallery1: boolean | null;
+        gallery2: boolean | null;
+        gallery3: boolean | null;
+        id: number;
+        image: string;
+        price: number;
+        quantity: number;
+        status?: boolean | null;
+        subcategory_name: number;
+        title: string;
+    }    
+}
 
 
 
 
+const CardObject: React.FC<Item> = ({ item }) => {
+    
+    let statusColor : string;
+    let status: string;
 
-export default function CardObject(props){
-
-    let status = props.item.quantity
-    let statusColor;
-
-    if(status >= 1){
+    if(item.quantity >= 1){
         status = "Dostępny"
         statusColor = "text-success";
     }
@@ -28,7 +46,7 @@ export default function CardObject(props){
 
             <div className = "card-content-objects-inner-col-2">
                 <div>
-                    <span className = "">{props.item.title}</span><br/>
+                    <span className = "">{item.title}</span><br/>
                     <span className = {`fs-12 ${statusColor}`}>{status}</span>
                 </div>
 
@@ -40,10 +58,12 @@ export default function CardObject(props){
 
 
             <div className = "card-content-objects-inner-col-3">
-                <span className = "fw-600">{props.item.price}</span>
+                <span className = "fw-600">{item.price}</span>
             </div>
 
 
         </>
     );
 }
+
+export default CardObject;

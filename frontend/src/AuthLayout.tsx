@@ -1,9 +1,9 @@
 import {Outlet, useNavigate} from 'react-router-dom';
 import logo from './images/xd2.webp';
-import Login from './Login.tsx';
-import Register from './Register.tsx';
-import {useState, useEffect, useContext} from 'react';
-import Alert from './Alert.tsx';
+import Login from './Login';
+import Register from './Register';
+import React, {useState, useEffect, useContext} from 'react';
+import Alert from './Alert';
 import { useSearchParams } from "react-router-dom";
 import AuthContext from "./AuthenticationContext";
 

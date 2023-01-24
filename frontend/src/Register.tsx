@@ -1,29 +1,31 @@
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
-import stylesLogin from './css_modules/Login.css';
 import React, {useEffect, useState, useRef} from 'react';
-import CSRFToken from './CSRFToken.tsx';
+import CSRFToken from './CSRFToken';
 import logo from './images/xd.png';
-import Alert from './Alert.tsx';
+import Alert from './Alert';
+
 
 
 const Register: React.FC = () => {
 
-    let usernameRef = useRef(null);
-    let emailRef = useRef(null);
-    let password1Ref = useRef(null);
-    let password2Ref = useRef(null);
+    let usernameRef = useRef<HTMLInputElement>(null);
+    let emailRef = useRef<HTMLInputElement>(null);
+    let password1Ref = useRef<HTMLInputElement>(null);
+    let password2Ref = useRef<HTMLInputElement>(null);
 
     const [dangerBorder, setDangerBorder] = useState("");
 
     const navigate = useNavigate();
 
-        async function submitForm(e){
-            e.preventDefault();
 
-            if(password1Ref.current.value != password2Ref.current.value){
-                console.log(dangerBorder);
-                setDangerBorder("border border-danger")
-            }
+        async function submitForm(e: any){
+            e.preventDefault();
+            
+                if(password1Ref.current?.value != password2Ref.current?.value){
+                    console.log(dangerBorder);
+                    setDangerBorder("border border-danger")
+                    //throw 
+                }
 
             else{
 
@@ -33,9 +35,8 @@ const Register: React.FC = () => {
                     headers: {
                         'Content-Type':'application/json',
                     },
-                    body: JSON.stringify({"email":emailRef.current.value, "username":usernameRef.current.value, "password":password1Ref.current.value, "password2":password2Ref.current.value})
+                    body: JSON.stringify({"email":emailRef.current?.value, "username":usernameRef.current?.value, "password":password1Ref.current?.value, "password2":password2Ref.current?.value})
                 })
-
 
                 let jsonResponse = await response.json()
                 console.log(jsonResponse);
@@ -48,7 +49,6 @@ const Register: React.FC = () => {
 
         }
 
-//    let formInput = useRef(null);
 
     return(
          <div className = "modal-container-wrapper">

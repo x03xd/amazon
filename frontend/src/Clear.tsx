@@ -1,7 +1,7 @@
 import arrow from './images/left.png';
 import PropTypes from 'prop-types';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
-import QueryParamsContext from "./QueryParamsContext.tsx";
+import QueryParamsContext from "./QueryParamsContext";
 import React, {useContext, useState} from 'react';
 
 
@@ -13,24 +13,26 @@ interface Item {
     };
 }
 
+
+
+
 interface ArrayProps {
     item: Item;
 }
-
 
 
 export interface ClearProps{
     nut: string;
     func: (arg: string) => void;
     text: string;
-    arrayProp: ArrayProps[] ;
+    arrayProp: ArrayProps[] | string[] | unknown[];
 }
 
 
-const Clear: React.FC = ({ func, nut, arrayProp}) => {
+const Clear: React.FC<ClearProps> = ({ func, nut, arrayProp, text }) => {
 
     const navigate = useNavigate();
-    let {q_QueryParam, c_QueryParam, u_QueryParam, u2_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
+    let {q_QueryParam, c_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
     const [allUniqueContentArray, setAllUniqueContentArray] = useState(arrayProp);
 
     function clearResults(){
@@ -55,7 +57,7 @@ const Clear: React.FC = ({ func, nut, arrayProp}) => {
 
     return(
         <div onClick = {() => { clearResults(); }} className = "d-flex align-items-center ms-n2 cursor-pointer">
-            <img src = {arrow}/><span className = "cursor-pointer">Wyczyść</span>
+            <img src = {arrow}/><span className = "cursor-pointer">{text}</span>
         </div>
     );
 

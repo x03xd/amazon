@@ -6,7 +6,7 @@ import React from 'react';
 const CSRFToken: React.FC = () => {
 
 
-    function getCookie(name) {
+    function getCookie(name: string) {
         let cookieValue = null;
 
         if (document.cookie && document.cookie !== '') {

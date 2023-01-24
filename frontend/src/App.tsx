@@ -1,15 +1,14 @@
 import {Outlet} from 'react-router-dom';
-import Navbar from "./Navbar.tsx";
-import Footer from "./Footer.tsx";
-import {useState, useEffect, useContext} from 'react';
-import React from 'react';
-import Modal from './Modal.tsx';
-import LeftModal from './LeftModal.tsx';
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import React, {useState, useEffect, useContext} from 'react';
+import Modal from './Modal';
+import LeftModal from './LeftModal';
 import  './css_modules/TagsStyling.css';
 import  './css_modules/AuthLayout.css';
 import  './css_modules/App.css';
 import  './css_modules/Modal.css';
-import AuthLayout from './AuthLayout.tsx';
+import AuthLayout from './AuthLayout';
 import './css_modules/Main.css';
 import './css_modules/Store.css';
 import  './css_modules/Navbar.css';
@@ -19,25 +18,9 @@ import  './css_modules/Lobby.css';
 import  './css_modules/Card.css';
 import  './css_modules/CardObject.css'
 import  './css_modules/Alert.css';
-import AuthContext from "./AuthenticationContext.tsx";
+import AuthContext from "./AuthenticationContext";
 import './css_modules/Rating.css';
 
-
-export interface setOverlayState {
-    overlayStyle: string;
-}
-
-export interface setLoginModalState {
-    loginModalStyle: string;
-}
-
-export interface setLeftModalState {
-    leftModalStyle: string;
-}
-
-export interface setUnclickState {
-    unclick: string;
-}
 
 
 const App: React.FC = () => {
@@ -50,25 +33,24 @@ const App: React.FC = () => {
         }
     })
 
+    const [overlayStyle, setOverlay] = useState<string>("");
+    const [loginModalStyle, setLoginModal] = useState<string>("");
+    const [leftModalStyle, setLeftModal] = useState<string>("");
+    const [unclick, setUnclick] = useState<string>("");
 
-    const [overlayStyle, setOverlay] = useState<setOverlayState>("");
-    const [loginModalStyle, setLoginModal] = useState<setLoginModalState>("");
-    const [leftModalStyle, setLeftModal] = useState<setLeftModalState>("");
-    const [unclick, setUnclick] = useState<setUnclickState>("");
-
-    function overlayStyler(style){
+    function overlayStyler(style: string){
         setOverlay(style);
     }
 
-    function loginModalStyler(style){
+    function loginModalStyler(style: string){
         setLoginModal(style);
     }
 
-    function leftModalStyler(style){
+    function leftModalStyler(style: string){
         setLeftModal(style);
     }
 
-    function unclickableNavbar(style){
+    function unclickableNavbar(style: string){
         setUnclick(style);
     }
 
@@ -88,7 +70,7 @@ const App: React.FC = () => {
                     <div className = "main">
 
                         <div className = "content mt-4">
-                            <div className = {`overlay ${overlayStyle}`} onClick = {() => {setOverlay(""); loginModalStyler(""); setLeftModal(""); unclickableNavbar('')}}></div>
+                            <div className = {`overlay ${overlayStyle}`} onClick = {() => {setOverlay(""); loginModalStyler(""); setLeftModal(""); unclickableNavbar("")}}></div>
                             <Outlet />
                         </div>
 

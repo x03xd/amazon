@@ -1,23 +1,31 @@
 
 
-import { useState, useEffect } from 'react';
-import ProductCard from './ProductCard.tsx';
+import React, { useState, useEffect } from 'react';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
 
 
+export interface UListProps {
+    key: number;
+    item: string;
+    UListFunction: (item: string) => void;
+}
 
 
-export default function List(props){
 
-    function handleClick(e){
-        props.UListFunction(props.item);
+const UList: React.FC<UListProps> = ({ key, item, UListFunction }) => {
+
+    function handleClick(item: string){
+        UListFunction(item);
     }
 
     return(
         <>
-            <li key = {props.index} onClick = {handleClick} >
-                {props.item}
+            <li key = {key} onClick = {() => {handleClick(item)}} >
+                {item}
             </li>
         </>
     );
 }
+
+
+export default UList;

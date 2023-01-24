@@ -1,4 +1,4 @@
-import GridBox from './GridBox.tsx';
+import GridBox from './GridBox';
 import photo1 from './images/f2.jpg';
 import photo2 from './images/oczyszczacz.jpg';
 import photo3 from './images/wef.jpg';
@@ -9,7 +9,7 @@ import yellow2 from './images/yellow2.jpg';
 import yellow3 from './images/yellow3.jpg';
 import yellow4 from './images/yellow4.jpg';
 
-import Banner from './Banner.tsx';
+import Banner from './Banner';
 
 const Main: React.FC = () => {
 
@@ -36,11 +36,11 @@ const Main: React.FC = () => {
         <div className = "home-content">
             <Banner />
 
-            <GridBox boxTitle = 'Dla twojego domu' list = {dlaTwojegoDomu} class = 'ms-4'  />
-            <GridBox boxTitle = 'Urządzenia Amazon' list = {nowyEchoDot} class = '' />
+            <GridBox boxTitle = 'Dla twojego domu' list = {dlaTwojegoDomu} className = 'ms-4'  />
+            <GridBox boxTitle = 'Urządzenia Amazon' list = {nowyEchoDot} className = '' />
 
-            <GridBox boxTitle = 'Dla twojego domu' list = {dlaTwojegoDomu} class = '' />
-            <GridBox boxTitle = 'Urządzenia Amazon' list = {nowyEchoDot} class = 'me-4' />
+            <GridBox boxTitle = 'Dla twojego domu' list = {dlaTwojegoDomu} className = '' />
+            <GridBox boxTitle = 'Urządzenia Amazon' list = {nowyEchoDot} className = 'me-4' />
 
 
         </div>

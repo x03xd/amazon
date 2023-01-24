@@ -2,10 +2,11 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import {useLocation} from 'react-router-dom';
 import adress from './images/loc1.png';
 import padlock2 from './images/padlock2.png';
-import CSRFToken from './CSRFToken.tsx';
-import AuthContext from "./AuthenticationContext.tsx";
+import CSRFToken from './CSRFToken';
+import AuthContext from "./AuthenticationContext";
+import React from 'react';
 
-export default function Lobby(props){
+const Lobby: React.FC = () => {
 
     let {username} = useContext(AuthContext)
 
@@ -26,7 +27,7 @@ export default function Lobby(props){
 
     console.log(location.state.id_product);
 
-        async function addToCard(e){
+        async function addToCard(e: any){
             e.preventDefault();
 
 
@@ -36,7 +37,7 @@ export default function Lobby(props){
                     headers: {
                         'Content-Type':'application/json',
                     },
-                    body: JSON.stringify({'id': location.state.id_product, 'username': username.username})
+                    body: JSON.stringify({'id': location.state.id_product, 'username': username?.username})
                 })
 
                 let jsonResponse2 = await response2.json();
@@ -72,7 +73,7 @@ export default function Lobby(props){
                     </div>
 
                     <div>
-                        <span className = "">Lub najszybsza dostawa </span>
+                        <span className = "">Lub najszybsza dostawa</span>
                     </div>
 
                     <div className = "d-flex align-items-center">
@@ -125,3 +126,5 @@ export default function Lobby(props){
     );
 
 }
+
+export default Lobby;

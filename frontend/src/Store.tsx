@@ -1,111 +1,139 @@
-import Banner from './Banner.tsx';
-import { useState, useEffect, useRef, useContext } from 'react';
-import React from 'react';
-import ProductCard from './ProductCard.tsx';
+import Banner from './Banner';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import ProductCard from './ProductCard';
 import { useNavigate } from "react-router-dom";
-import UList from './UList.tsx';
-import Clear from './Clear.tsx';
-import Rating from './Rating.tsx';
-import Checkbox from './Checkbox.tsx';
-import QueryParamsContext from "./QueryParamsContext.tsx";
+import UList from './UList';
+import Clear from './Clear';
+import Rating from './Rating';
+import Checkbox from './Checkbox';
+import QueryParamsContext from "./QueryParamsContext";
+import {priceLimits} from './static_ts_files/priceLimits'
 
-let myString: string = 123;
+interface Categories {
+    id: number;
+    category: string;
+}
+
+
+interface Products {
+    brand: string;
+    description: string;
+    gallery1: boolean | null;
+    gallery2: boolean | null;
+    gallery3: boolean | null;
+    id: number;
+    image: string;
+    price: number;
+    quantity: number;
+    status?: boolean | null;
+    subcategory_name: number;
+    title: string;
+}
+
+
+interface Subcategories {
+    id: number;
+    sub_category: string;
+    category_name : number;
+}
+
+
+interface Rate {
+    rated_products: string;
+    average_rate: number;
+}
+
+
+interface PriceLimits {
+    item: {
+        desc: string,
+        range: {start : number, end : number}
+    }
+}
+
 
 const Store: React.FC = () => {
 
+    
+    let {q_QueryParam, c_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
     const navigate = useNavigate();
 
-    //   {priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item} array = {newArray} /> )}
 
-    const [categories, setCategories] = useState([]);
-    const [products, setProducts] = useState([]);
-    const [subs, setSubs] = useState([]);
-    const [forData, setForData] = useState([]);
-    const [averageRate, setAverageRate] = useState([]);
+    const [categories, setCategories] = useState<Categories[]>([]);
+    const [products, setProducts] = useState<Products[]>([]);
+    const [subs, setSubs] = useState<Subcategories[]>([]);
+    const [forData, setForData] = useState<Products[]>([]);
+    const [averageRate, setAverageRate] = useState<Rate[]>([]);
 
-    const aRef = useRef();
-    const bRef = useRef();
-    const cRef = useRef();
+    const [arrayBrands, setArrayBrands] = useState<string[]>([]);
+    const [brandsFalseFilled, setBrandsFalseFilled] = useState<boolean[]>([]);
 
-
-    let myString: string = 123;
-
-    console.log(myString)
-
-    myString = "sad"
-
-    let {q_QueryParam, c_QueryParam, u_QueryParam, u2_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
+    const [arrayPrices, setArrayPrices] = useState<PriceLimits[]>([]);
+    const [pricesFalseFilled, setPricesFalseFilled] = useState<boolean[]>([]);
 
 
-    useEffect(() => {
-
-        fetch(`http://127.0.0.1:8000/api/subcategories/`)
-        .then(response => response.json())
-        .then(result => setSubs(result));
-
-        fetch(`http://127.0.0.1:8000/api/categories/`)
-        .then(response2 => response2.json())
-        .then(result2 => setCategories(result2));
-
-        fetch(`http://127.0.0.1:8000/api/products/?q=${q_QueryParam}&c=${c_QueryParam}&u=${u_QueryParam}&rating=${rating_QueryParam}`)
-        .then(response3 => response3.json())
-        .then(result3 => (console.log(result3), setProducts(result3)));
-
-        fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${q_QueryParam}`)
-        .then(response4 => response4.json())
-        .then(result4 => setForData(result4));
-
-        fetch(`http://127.0.0.1:8000/api/avg-rate`)
-        .then(response5 => response5.json())
-        .then(result5 => (console.log(result5), setAverageRate(result5)));
-
-        fetch(`http://127.0.0.1:8000/api/test`)
-        .then(response6 => response6.json())
-        .then(result6 => console.log(result6));
-
-    },[])
-
-        let priceLimits = [
-            {item: {desc: "Do 20zł", range: {start: 1, end: 20}}},
-            {item: {desc: "20 do 50zł", range: {start: 20.01, end: 50}}},
-            {item: {desc: "50 do 100zł", range: {start: 50.01, end: 100}}},
-            {item: {desc: "100 do 150zł", range: {start: 100.01, end: 150}}},
-            {item: {desc: "150zł i więcej", range: {start: 150.01, end: 99999}}},
-        ]
+    const aRef = useRef<HTMLInputElement>(null);
+    const bRef = useRef<HTMLInputElement>(null);
+    const cRef = useRef<HTMLInputElement>(null);
 
 
-        let arrayBrands = [];
-        for(let product of forData){
-            arrayBrands.push(product.brand)
-        }
+        useEffect(() => {
 
-        let uniqueArrayBrands = [...new Set(arrayBrands)];
-        let brandsFalseFilled = [...new Set(arrayBrands)];
+            fetch(`http://127.0.0.1:8000/api/subcategories/`)
+            .then(response => response.json())
+            .then(result => setSubs(result));
 
-        brandsFalseFilled.fill(false)
+            fetch(`http://127.0.0.1:8000/api/categories/`)
+            .then(response2 => response2.json())
+            .then(result2 => setCategories(result2));
+
+            fetch(`http://127.0.0.1:8000/api/products/?q=${q_QueryParam}&c=${c_QueryParam}&u=${u_QueryParam}&rating=${rating_QueryParam}`)
+            .then(response3 => response3.json())
+            .then(result3 => (setProducts(result3)));
+
+            fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${q_QueryParam}`)
+            .then(response4 => response4.json())
+            .then(result4 => setForData(result4));
+
+            fetch(`http://127.0.0.1:8000/api/avg-rate`)
+            .then(response5 => response5.json())
+            .then(result5 => (setAverageRate(result5)));
+
+        },[])
+
+     
+   
+
+            for(let product of forData){
+                setArrayBrands([...arrayBrands, product.brand]);
+            }
+                
+            for(let i : number = 0; i <= [...new Set(arrayBrands)].length - 1; i++){
+                setBrandsFalseFilled([...brandsFalseFilled, false])
+            }
 
 
-        let arrayPrices = [];
+        let uniqueArrayBrands  = [...new Set(arrayBrands)];
+
         for(let nums of priceLimits){
-            arrayPrices.push(nums)
+            setArrayPrices([...arrayPrices, nums]);
         }
 
         let uniqueArrayPrices = [...new Set(arrayPrices)];
-        let pricesFalseFilled = [...new Set(arrayPrices)];
 
-        pricesFalseFilled.fill(false)
+        for(let i : number = 0; i <= uniqueArrayPrices.length - 1; i++){
+            setPricesFalseFilled([...pricesFalseFilled, false])
+        }
+    
 
-        console.log(JSON.stringify(uniqueArrayPrices));
-
-        function clearQueryString(arg){
+        function clearQueryString(arg: string){
 
             switch (arg) {
                 case "c":
 
+                    arrayBrands.map((item: any, index: number) => {
 
-                    arrayBrands.map((item, index) => {
-
-                        let storage = JSON.parse(localStorage.getItem("c" + index));
+                        let storage = JSON.parse(localStorage.getItem("c" + index) || "");
                         let checkStorage = storage ? storage.value : "";
 
                         if(checkStorage === true){
@@ -117,9 +145,9 @@ const Store: React.FC = () => {
                     break;
 
                 case "u":
-                    arrayPrices.map((item, index) => {
+                    arrayPrices.map((item : any, index: number) => {
 
-                        let storage = JSON.parse(localStorage.getItem("u" + index));
+                        let storage = JSON.parse(localStorage.getItem("u" + index) || "");
                         let checkStorage = storage ? storage.value : "";
 
                         if(checkStorage === true){
@@ -135,34 +163,32 @@ const Store: React.FC = () => {
 
 
         function handleClickSearch(){
-            navigate(`?q=${q_QueryParam}&c=${c_QueryParam}&u=${aRef.current.value}-${bRef.current.value}&rating=${rating_QueryParam}`);
+            navigate(`?q=${q_QueryParam}&c=${c_QueryParam}&u=${aRef.current?.value}-${bRef.current?.value}&rating=${rating_QueryParam}`);
 
             window.location.reload();
         }
 
 
-        function changeQ(qValue){
+        function changeQ(qValue: string){
             navigate(`?q=${qValue.toLowerCase()}&c=${c_QueryParam}&u=${u_QueryParam}`);
             window.location.reload();
         }
 
-
-        let productsWithRatings = [];
+        const [productsWithRatings, setProductsWithRatings] = useState<JSX.Element[]>([]);
+        //let helpArray = []
 
         aLoop:
         for(let item of products){
             for(let rate of averageRate){
 
-                if(Number(rate.rated_products) === item.id){
+                if(Number(rate["rated_products"]) === item["id"]){
 
-                    productsWithRatings.push(<ProductCard key = {item.id} item = {item} rate = {rate.average_rate} />);
-
+                    setProductsWithRatings([...productsWithRatings, <ProductCard key = {item["id"]} item = {item} rate = {rate["average_rate"]} />])
+                   
                     continue aLoop;
                 }
             }
         }
-
-
 
         return(
             <div className = "store-content mt-5">
@@ -180,7 +206,7 @@ const Store: React.FC = () => {
                         <span>Kategoria</span>
 
                         <ul>
-                            {subs.map((item, index) => <UList UListFunction = {changeQ} key = {index} item = {item.sub_category} /> )}
+                            {subs.map((item : any, index: number) => <UList UListFunction = {changeQ} key = {index} item = {item["sub_category"]} /> )}
                         </ul>
                      </div>
 
@@ -192,7 +218,7 @@ const Store: React.FC = () => {
 
                     <div>
                         <span>Marka</span><br/>
-                        <Clear nut = "c" func = {clearQueryString} arrayProp = {uniqueArrayBrands} />
+                        <Clear nut = "c" func = {clearQueryString} arrayProp = {uniqueArrayBrands} text = "Wyczyść"/>
                         <ul className = "checkbox-list">
                             {uniqueArrayBrands.map((item, index) => {
                                 return(
@@ -204,7 +230,7 @@ const Store: React.FC = () => {
 
                     <div>
                         <span>Cena</span>
-                        <Clear nut = "u" func = {clearQueryString} arrayProp = {uniqueArrayPrices} />
+                        <Clear nut = "u" func = {clearQueryString} arrayProp = {uniqueArrayPrices} text = "Wyczyść"/>
                         <ul className = "checkbox-list">
                             {priceLimits.map((item, index) => {
                                 return(
@@ -213,7 +239,6 @@ const Store: React.FC = () => {
                             })}
                         </ul>
                     </div>
-
 
                         <div className = "d-flex align-items-center price-filters">
                             <input ref = {aRef} className = "" type = "text" placeholder = "Min"/>
