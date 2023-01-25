@@ -27,6 +27,10 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
+
+
+
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -115,28 +119,7 @@ class LoginAPI(APIView):
 
             return JsonResponse({'authenticated':'false'})
 
-'''
-class Login2API(APIView):
 
-    def post(self, request, *args, **kwargs):
-
-        json_data = json.load(request)
-
-        user = User.objects.get(username=json_data['username'])
-
-
-        user = authenticate(request, username = json_data['username'], password= json_data['password'])
-
-        if user is not None:
-            login(request, user)
-            return JsonResponse({'password': 'correct'})
-
-
-        else:
-            return JsonResponse({'password': "wrong"})
-
-
-'''
 class LogoutView(APIView):
     def get(self, request, *args, **kwargs):
         pass
@@ -180,19 +163,6 @@ class ProductsBySubsAPI(generics.ListAPIView):
         return queryset
 
 
-class TestXD(APIView):
-
-    def get(self, request, format = None):
-
-        lista = []
-        object_ = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=4)
-        serializer = UserRateSerializer(object_, many = True)
-
-        for x in object_:
-            lista.append(x["rated_products"])
-
-        #return Response(serializer.data)
-        return Response(lista)
 
 class CountAvgRate(generics.ListAPIView):
     serializer_class = UserRateSerializer
@@ -206,9 +176,9 @@ class CountAvgRate(generics.ListAPIView):
 
 
 
+
 class ProductsAPI(generics.ListAPIView):
     serializer_class = ProductSerializer
-
 
 
     def get_queryset(self):
@@ -295,3 +265,29 @@ class ProductsAPI(generics.ListAPIView):
 
 
         return Response(serializer.data)
+
+
+
+
+
+
+
+
+
+
+
+
+class TestXD(APIView):
+
+    def get(self, request, format = None):
+
+        lista = []
+        object_ = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=4)
+        serializer = UserRateSerializer(object_, many = True)
+
+        for x in object_:
+            lista.append(x["rated_products"])
+
+        #return Response(serializer.data)
+        return Response(lista)
+

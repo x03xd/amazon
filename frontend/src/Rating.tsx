@@ -58,10 +58,10 @@ const Rating: React.FC = () => {
 
                     return(
                         <div key = {index} className = "star-rating-container mt-1">
-                            {ratingStars.map((star, key) => {
-
+                            {ratingStars.map((star, key) => {        
+                    
                                 return(
-                                    <div onClick = {() => {ratingFilter(row[1]["key"])}} key = {key} >
+                                    <div onClick = {() => {ratingFilter(row[1]["key"])}} key = {key} className = {ratingStars[key][1]}>
                                         <FontAwesomeIcon icon = {faStar} className = "star-rating-icon" />
                                     </div>
                                 );

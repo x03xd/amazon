@@ -9,6 +9,9 @@ interface Destination {
 };
 
 
+interface RatingStars {
+    array: string[]
+}
 
 
 const ratingLevels: Destination["final"][] = [
@@ -18,12 +21,12 @@ const ratingLevels: Destination["final"][] = [
     ["1 and more", {"key": 1}]
 ]   
 
-const ratingStars = [
-    ["first", null],
-    ["second", null],
-    ["third", null],
-    ["fourth", null],
-    ["fifth", null]
+const ratingStars : RatingStars["array"][] = [
+    ["first", ""],
+    ["second", ""],
+    ["third", ""],
+    ["fourth", ""],
+    ["fifth", ""]
 ]
 
 

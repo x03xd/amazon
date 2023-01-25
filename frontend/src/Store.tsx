@@ -1,5 +1,5 @@
 import Banner from './Banner';
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import ProductCard from './ProductCard';
 import { useNavigate } from "react-router-dom";
 import UList from './UList';
@@ -8,6 +8,7 @@ import Rating from './Rating';
 import Checkbox from './Checkbox';
 import QueryParamsContext from "./QueryParamsContext";
 import {priceLimits} from './static_ts_files/priceLimits'
+import { Console } from 'console';
 
 interface Categories {
     id: number;
@@ -54,28 +55,34 @@ interface PriceLimits {
 
 const Store: React.FC = () => {
 
-    
-    let {q_QueryParam, c_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
-    const navigate = useNavigate();
+        const [productsWithRatings, setProductsWithRatings] = useState<JSX.Element[]>([]);
+        const [arrayPrices, setArrayPrices] = useState<PriceLimits[]>([]);
+        const [pricesFalseFilled, setPricesFalseFilled] = useState<boolean[]>([]);
 
+        const [arrayBrands, setArrayBrands] = useState<string[]>([]);
+        const [brandsFalseFilled, setBrandsFalseFilled] = useState<boolean[]>([]);
 
-    const [categories, setCategories] = useState<Categories[]>([]);
-    const [products, setProducts] = useState<Products[]>([]);
-    const [subs, setSubs] = useState<Subcategories[]>([]);
-    const [forData, setForData] = useState<Products[]>([]);
-    const [averageRate, setAverageRate] = useState<Rate[]>([]);
+        const navigate = useNavigate();
 
-    const [arrayBrands, setArrayBrands] = useState<string[]>([]);
-    const [brandsFalseFilled, setBrandsFalseFilled] = useState<boolean[]>([]);
+        //   {priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item} array = {newArray} /> )}
 
-    const [arrayPrices, setArrayPrices] = useState<PriceLimits[]>([]);
-    const [pricesFalseFilled, setPricesFalseFilled] = useState<boolean[]>([]);
+        const [categories, setCategories] = useState<Categories[]>([]);
+        const [products, setProducts] = useState<Products[]>([]);
+        const [subs, setSubs] = useState<Subcategories[]>([]);
+        const [forData, setForData] = useState<Products[]>([]);
+        const [averageRate, setAverageRate] = useState<Rate[]>([]);
 
+        
+        const aRef = useRef<HTMLInputElement>(null);
+        const bRef = useRef<HTMLInputElement>(null);
+        const cRef = useRef<HTMLInputElement>(null);
 
-    const aRef = useRef<HTMLInputElement>(null);
-    const bRef = useRef<HTMLInputElement>(null);
-    const cRef = useRef<HTMLInputElement>(null);
+        let {q_QueryParam, c_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
 
+        let a1 = [];
+        let a2 = [];
+        let a3 = [];
+        let a4 = [];
 
         useEffect(() => {
 
@@ -89,7 +96,7 @@ const Store: React.FC = () => {
 
             fetch(`http://127.0.0.1:8000/api/products/?q=${q_QueryParam}&c=${c_QueryParam}&u=${u_QueryParam}&rating=${rating_QueryParam}`)
             .then(response3 => response3.json())
-            .then(result3 => (setProducts(result3)));
+            .then(result3 => (console.log(result3[0].image), setProducts(result3)));
 
             fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${q_QueryParam}`)
             .then(response4 => response4.json())
@@ -97,47 +104,52 @@ const Store: React.FC = () => {
 
             fetch(`http://127.0.0.1:8000/api/avg-rate`)
             .then(response5 => response5.json())
-            .then(result5 => (setAverageRate(result5)));
+            .then(result5 => (console.log(result5), setAverageRate(result5)));
+
+            fetch(`http://127.0.0.1:8000/api/test`)
+            .then(response6 => response6.json())
+            .then(result6 => console.log(result6));
+
+            for(let nums of priceLimits){
+                setArrayPrices(ar1 => [...ar1, nums]);
+            }   
 
         },[])
 
-     
-   
 
+        useEffect(() => {
             for(let product of forData){
-                setArrayBrands([...arrayBrands, product.brand]);
+                setArrayBrands(ar1 => [...ar1, product.brand]);
             }
-                
+        },[forData])    
+       
+
+        useEffect(() => {
+            for(let i : number = 0; i <= [...new Set(arrayPrices)].length - 1; i++){
+                setPricesFalseFilled(ar2 => [...ar2, false])
+            }
+        },[arrayPrices])    
+       
+
+        useEffect(() => {        
             for(let i : number = 0; i <= [...new Set(arrayBrands)].length - 1; i++){
-                setBrandsFalseFilled([...brandsFalseFilled, false])
+                setBrandsFalseFilled(ar2 => [...ar2, false])
             }
-
-
-        let uniqueArrayBrands  = [...new Set(arrayBrands)];
-
-        for(let nums of priceLimits){
-            setArrayPrices([...arrayPrices, nums]);
-        }
-
-        let uniqueArrayPrices = [...new Set(arrayPrices)];
-
-        for(let i : number = 0; i <= uniqueArrayPrices.length - 1; i++){
-            setPricesFalseFilled([...pricesFalseFilled, false])
-        }
+        },[arrayBrands])     
+        
     
-
         function clearQueryString(arg: string){
 
             switch (arg) {
                 case "c":
 
-                    arrayBrands.map((item: any, index: number) => {
+                    arrayBrands.map((item : string, index:number) => {
 
                         let storage = JSON.parse(localStorage.getItem("c" + index) || "");
                         let checkStorage = storage ? storage.value : "";
 
                         if(checkStorage === true){
-                            let object = {value: false, nut: "c", id: (uniqueArrayBrands || [])[index] }
+                            let object = {value: false, nut: "c", id: ([...new Set(arrayBrands)] || [])[index] }
                             localStorage.setItem("c" + index, JSON.stringify(object));
                         }
 
@@ -145,13 +157,13 @@ const Store: React.FC = () => {
                     break;
 
                 case "u":
-                    arrayPrices.map((item : any, index: number) => {
+                    arrayPrices.map((item : any, index:number) => {
 
                         let storage = JSON.parse(localStorage.getItem("u" + index) || "");
                         let checkStorage = storage ? storage.value : "";
 
                         if(checkStorage === true){
-                            let object = {value: false, nut: "u", id: (uniqueArrayPrices || [])[index] }
+                            let object = {value: false, nut: "u", id: ([...new Set(arrayPrices)] || [])[index] }
                             localStorage.setItem("u" + index, JSON.stringify(object));
                         }
 
@@ -164,31 +176,33 @@ const Store: React.FC = () => {
 
         function handleClickSearch(){
             navigate(`?q=${q_QueryParam}&c=${c_QueryParam}&u=${aRef.current?.value}-${bRef.current?.value}&rating=${rating_QueryParam}`);
-
             window.location.reload();
         }
 
 
-        function changeQ(qValue: string){
+        function changeQ(qValue : string){
             navigate(`?q=${qValue.toLowerCase()}&c=${c_QueryParam}&u=${u_QueryParam}`);
             window.location.reload();
         }
 
-        const [productsWithRatings, setProductsWithRatings] = useState<JSX.Element[]>([]);
-        //let helpArray = []
 
-        aLoop:
-        for(let item of products){
-            for(let rate of averageRate){
+        let helper : any = [];
 
-                if(Number(rate["rated_products"]) === item["id"]){
+        useEffect(() => {
+            aLoop:
+            for(let item of products){
+                for(let rate of averageRate){
 
-                    setProductsWithRatings([...productsWithRatings, <ProductCard key = {item["id"]} item = {item} rate = {rate["average_rate"]} />])
-                   
-                    continue aLoop;
+                    if(Number(rate["rated_products"]) === item["id"]){
+
+                        setProductsWithRatings(helper => [...helper, <ProductCard key = {item["id"]} item = {item} rate = {rate["average_rate"]} />])
+
+                        continue aLoop;
+                    }
                 }
             }
-        }
+        },[products, averageRate])   
+        
 
         return(
             <div className = "store-content mt-5">
@@ -206,7 +220,7 @@ const Store: React.FC = () => {
                         <span>Kategoria</span>
 
                         <ul>
-                            {subs.map((item : any, index: number) => <UList UListFunction = {changeQ} key = {index} item = {item["sub_category"]} /> )}
+                            {subs.map((item, index) => <UList index = {index} UListFunction = {changeQ} key = {index} item = {item["sub_category"]} /> )}
                         </ul>
                      </div>
 
@@ -218,11 +232,11 @@ const Store: React.FC = () => {
 
                     <div>
                         <span>Marka</span><br/>
-                        <Clear nut = "c" func = {clearQueryString} arrayProp = {uniqueArrayBrands} text = "Wyczyść"/>
+                        <Clear text = "Wyczyść" nut = "c" func = {clearQueryString} arrayProp = {[...new Set(arrayBrands)]} />
                         <ul className = "checkbox-list">
-                            {uniqueArrayBrands.map((item, index) => {
+                            {[...new Set(arrayBrands)].map((item, index: number) => {
                                 return(
-                                    <Checkbox nut = "c" q = {q_QueryParam} c = {item} u = {u_QueryParam} rating = {rating_QueryParam} index = {index} key = {index} name = {item} array = {brandsFalseFilled} arrayProp = {uniqueArrayBrands} />
+                                    <Checkbox nut = "c" q = {q_QueryParam} c = {item} u = {u_QueryParam} rating = {rating_QueryParam} index = {index} key = {index + "c"} name = {item} array = {brandsFalseFilled} arrayProp = {[...new Set(arrayBrands)]} />
                                 );
                             })}
                         </ul>
@@ -230,21 +244,25 @@ const Store: React.FC = () => {
 
                     <div>
                         <span>Cena</span>
-                        <Clear nut = "u" func = {clearQueryString} arrayProp = {uniqueArrayPrices} text = "Wyczyść"/>
+                        <Clear text = "Wyczyść" nut = "u" func = {clearQueryString} arrayProp = {[...new Set(arrayPrices)]} />
                         <ul className = "checkbox-list">
-                            {priceLimits.map((item, index) => {
+                            {priceLimits.map((item, index: number) => {
                                 return(
-                                    <Checkbox nut = "u" q = {q_QueryParam} c = {c_QueryParam} u = {item.item.range} rating = {rating_QueryParam} index = {index} key = {index} name = {item.item.desc} array = {pricesFalseFilled} arrayProp = {uniqueArrayPrices} />
+                                    <Checkbox nut = "u" q = {q_QueryParam} c = {c_QueryParam} u = {item.item.range} rating = {rating_QueryParam} index = {index} key = {index + "u"} name = {item.item.desc} array = {pricesFalseFilled} arrayProp = {[...new Set(arrayPrices)]} />
                                 )
                             })}
                         </ul>
                     </div>
+
 
                         <div className = "d-flex align-items-center price-filters">
                             <input ref = {aRef} className = "" type = "text" placeholder = "Min"/>
                             <input ref = {bRef} className = "ms-1" type = "text" placeholder = "Max"/>
                             <button onClick = {handleClickSearch} className = "ms-1 border 0">Szukaj</button>
                         </div>
+
+
+
                 </div>
 
 
@@ -255,7 +273,9 @@ const Store: React.FC = () => {
                     </div>
 
                     <div className = "store-content-results mt-3">
+
                         {productsWithRatings}
+
                     </div>
                 </div>
 

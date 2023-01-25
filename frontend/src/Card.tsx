@@ -27,8 +27,6 @@ interface Product {
 
 
 
-
-
 const Card: React.FC = () => {
 
     const [cardUserGetter, setCardUserGetter] = useState<number[]>([]);

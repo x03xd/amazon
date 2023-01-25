@@ -5,14 +5,14 @@ import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom
 
 
 export interface UListProps {
-    key: number;
+    index: number;
     item: string;
     UListFunction: (item: string) => void;
 }
 
 
 
-const UList: React.FC<UListProps> = ({ key, item, UListFunction }) => {
+const UList: React.FC<UListProps> = ({ index, item, UListFunction }) => {
 
     function handleClick(item: string){
         UListFunction(item);
@@ -20,7 +20,7 @@ const UList: React.FC<UListProps> = ({ key, item, UListFunction }) => {
 
     return(
         <>
-            <li key = {key} onClick = {() => {handleClick(item)}} >
+            <li key = {index} onClick = {() => {handleClick(item)}} >
                 {item}
             </li>
         </>

@@ -37,10 +37,12 @@ const CardObject: React.FC<Item> = ({ item }) => {
         statusColor = "text-danger";
     }
 
+    console.log(`http://127.0.0.1:8000${item.image}`);
 
     return(
         <>
             <div className = "card-content-objects-inner-col-1">
+                <img width = "300" height = "300" loading = "lazy" alt = "" src= {item.image} />
             </div>
 
 
@@ -60,8 +62,6 @@ const CardObject: React.FC<Item> = ({ item }) => {
             <div className = "card-content-objects-inner-col-3">
                 <span className = "fw-600">{item.price}</span>
             </div>
-
-
         </>
     );
 }
