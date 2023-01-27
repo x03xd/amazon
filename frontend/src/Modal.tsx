@@ -17,15 +17,16 @@ const Modal: React.FC<ModalProps> = ({ className }) => {
     }
 
     const [style, setStyle] = useState("active");
-
-    let {logout} = useContext(AuthContext)
+    
+    
+    let {logout, username} = useContext(AuthContext)
 
     return(
         <div className = {`login-modal ${className}`}>
 
             <div className = "p-3">
                 <button onClick = {() => { navigateTo() }} className = "login-button">Zaloguj się</button>
-                {localStorage.getItem("username") == "admin" ? <span className = "mt-4" onClick = {logout}>WYLOGUJ</span> :
+                {username != null? <span className = "mt-4" onClick = {logout}>WYLOGUJ</span> :
                     <>
                         <span className = {`mt-4`}>Pierwszy raz w serwisie Amazon?</span> <br/>
                         <a className = {`$`} href = "#">Rozpocznij tutaj.</a>

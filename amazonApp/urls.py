@@ -10,9 +10,11 @@ urlpatterns = [
     path("products/", views.ProductsAPI.as_view()),
     path("categories/", views.CategoriesAPI.as_view()),
     path("subcategories/", views.SubCategoriesAPI.as_view()),
+
     path("process/", views.ProcessAPI.as_view()),
+    path("remove-item/", views.RemoveItemCart.as_view()),
+
     path("login/", views.LoginAPI.as_view()),
-  #  path("login2/", views.Login2API.as_view()),
     path("cart/", views.CardAPI.as_view()),
     path("products-by-subs/", views.ProductsBySubsAPI.as_view()),
     path("registration/", views.RegisterSystem.as_view()),
@@ -23,5 +25,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
 
-    path("test/", views.TestXD.as_view()),
+    path("token-cookie/", views.StoringUserToken.as_view()),
+
+ 
 ]

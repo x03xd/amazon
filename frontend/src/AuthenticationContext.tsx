@@ -2,6 +2,8 @@ import {useNavigate, useParams, useLocation} from 'react-router-dom';
 import React, {createContext, useEffect, useState, useRef} from 'react';
 import jwt_decode from "jwt-decode";
 import CSRFToken from './CSRFToken';
+import {parsedCookies} from './static_ts_files/parsingCookie'
+
 
 interface ContextProvider {
     children: React.ReactNode
@@ -56,23 +58,19 @@ export default AuthContext;
 
 export const AuthProvider = ({children}: ContextProvider) => {
 
-    useEffect(() => {
-        const adress = window.location.href;
-        if(adress == 'http://localhost:3000/login' || adress == 'http://localhost:3000/login/'){
-            setAlertStyle("hidden");
-        }
-    }, [])
 
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [authToken, setAuthToken] = useState<AuthToken | null>(() => localStorage.getItem("authToken") ? JSON.parse(localStorage.getItem("authToken") || "") : null);
-    const [username, setUsername] = useState<UserData | null>(() => localStorage.getItem('authToken') ? jwt_decode(localStorage.getItem('authToken') || "") : null);
-    let [loading, setLoading] = useState<boolean>(true);
+    const [authToken, setAuthToken] = useState<AuthToken | null>(parsedCookies ? parsedCookies.authToken : null);
+    const [username, setUsername] = useState<UserData | null>(parsedCookies ? jwt_decode(parsedCookies.username) : null);
+
+    const [loading, setLoading] = useState<boolean>(true);
 
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
     const [email, setEmail] = useState("");
+
 
 
     function navigateBack(){
@@ -88,6 +86,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
     }
 
 
+
     async function usernameFilter(e: any){
 
         e.preventDefault();
@@ -97,14 +96,12 @@ export const AuthProvider = ({children}: ContextProvider) => {
                     credentials: 'include',
                     headers: {
                         'Content-Type':'application/json',
-                        //sprawdz czy nie brakuje
                     },
                     body: JSON.stringify({'username': e.target.usernameorpassword.value})
                 })
 
                 let jsonResponse = await response.json();
-
-                console.log(jsonResponse);
+          
                 setUsername(jsonResponse.username)
 
                 if(jsonResponse.authenticated == 'false'){
@@ -117,10 +114,11 @@ export const AuthProvider = ({children}: ContextProvider) => {
                     navigateToPasswordInput();
                     setAlertStyle("hidden");
                 }
-
-             e.target.usernameorpassword.value = "";
-
+            e.target.usernameorpassword.value = "";
         }
+
+    
+
 
 
     async function loginUser(e: any){
@@ -137,17 +135,16 @@ export const AuthProvider = ({children}: ContextProvider) => {
             })
 
             let data = await response.json()
-
-            console.log(data)
+            console.log(jwt_decode(data.access));
 
             if(response.status === 200){
+                
+                document.cookie = `username=${JSON.stringify(data.access)}`
+                document.cookie = `authToken=${JSON.stringify(data)}`;
+
                 setAuthToken(data)
-                setUsername(jwt_decode(data.access))
-
-                localStorage.setItem("authToken", JSON.stringify(data))
-                localStorage.setItem("username", username?.username || "")
-
-                console.log(jwt_decode(localStorage.getItem("authToken") || ""));
+                setUsername(data.access)
+                
                 navigateToHome()
             }
 
@@ -161,13 +158,16 @@ export const AuthProvider = ({children}: ContextProvider) => {
     }
 
 
+
     function logout(){
         setAuthToken(null);
         setUsername(null);
-        localStorage.removeItem("authToken");
+
+        document.cookie = "username = null"
+        document.cookie = "authToken = null"
 
         navigateToHome()
-        //console.log("bidon");
+        window.location.reload();
     }
 
 
@@ -187,7 +187,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
         if (response.status === 200){
             setAuthToken(data)
             setUsername(jwt_decode(data.access))
-            localStorage.setItem('authToken', JSON.stringify(data))
         }
 
         else{

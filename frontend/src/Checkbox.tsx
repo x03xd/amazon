@@ -54,6 +54,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
 
     const [cLink, setCLink] = useState<string[] | []>([]);
     const [uLink, setULink] = useState<string[] | []>([]);
+    const [ratingLink, setRatingLink] = useState<string| null>(localStorage.getItem("rating"));
 
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingLink, setLoadingLink] = useState<boolean>(false);
@@ -124,7 +125,6 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
 
         Object.entries(localStorage).map(([key, value], index) => {
 
-     
             let temp = JSON.parse(localStorage.getItem(key) || "");
             let tempNut = temp ? temp.nut : "";
             let tempValue = temp ? temp.value : "";
@@ -144,11 +144,14 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
 
         if(!loading){
 
-            if(window.location.href == `http://localhost:3000/s?q=${q_QueryParam}` && ([...new Set(cLink)].length > 0 && [...new Set(uLink)].length > 0)){
-                //console.log(`/s?q=${q_QueryParam}&c=${[...new Set(cLink)].join()}&u${[...new Set(uLink)].join()}`)
-                navigate(`?q=${q_QueryParam}&c=${[...new Set(cLink)].join()}&u=${[...new Set(uLink)].join()}`);
-                window.location.reload();
+            const cLinkCheck = [...new Set(cLink)].length > 0 ? [...new Set(cLink)].join() : null;
+            const uLinkCheck = [...new Set(uLink)].length > 0 ? [...new Set(uLink)].join() : null;
+
+            if(window.location.href == (`http://localhost:3000/s?q=${q_QueryParam}`) && ([...new Set(cLink)].length > 0 || [...new Set(uLink)].length > 0) ){
+                navigate(`?q=${q_QueryParam}&c=${cLinkCheck}&u=${uLinkCheck}&rating=${ratingLink}`);
+                window.location.reload()
             }
+            
         }
 
         else if(loading){
@@ -162,7 +165,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
                 }
 
                 else{
-                    navigate(`?q=${q}&c=${uniqueFilteredBrands2.join()}&u=${u_QueryParam}&rating=${rating_QueryParam}`);
+                    navigate(`?q=${q}&c=${uniqueFilteredBrands2.join()}&u=${u_QueryParam}&rating=${2}`);
                 }
 
             }

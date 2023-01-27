@@ -8,7 +8,7 @@ interface AlertProps{
 
 const Alert: React.FC<AlertProps> = ({ style, text }) => {
 
-    console.log(style);
+    //console.log(style);
 
     return(
         <div className = {`alert-container-wrapper ${style}`}>

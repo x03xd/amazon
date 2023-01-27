@@ -30,7 +30,6 @@ const Lobby: React.FC = () => {
         async function addToCard(e: any){
             e.preventDefault();
 
-
                 let response2 = await fetch(`http://127.0.0.1:8000/api/process/`, {
                     method: 'POST',
                     credentials: 'include',
@@ -42,7 +41,6 @@ const Lobby: React.FC = () => {
 
                 let jsonResponse2 = await response2.json();
                 console.log(jsonResponse2)
-
         }
 
 

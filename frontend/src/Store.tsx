@@ -79,6 +79,7 @@ const Store: React.FC = () => {
 
         let {q_QueryParam, c_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
 
+
         let a1 = [];
         let a2 = [];
         let a3 = [];
@@ -96,7 +97,7 @@ const Store: React.FC = () => {
 
             fetch(`http://127.0.0.1:8000/api/products/?q=${q_QueryParam}&c=${c_QueryParam}&u=${u_QueryParam}&rating=${rating_QueryParam}`)
             .then(response3 => response3.json())
-            .then(result3 => (console.log(result3[0].image), setProducts(result3)));
+            .then(result3 => (setProducts(result3)));
 
             fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${q_QueryParam}`)
             .then(response4 => response4.json())
@@ -104,11 +105,7 @@ const Store: React.FC = () => {
 
             fetch(`http://127.0.0.1:8000/api/avg-rate`)
             .then(response5 => response5.json())
-            .then(result5 => (console.log(result5), setAverageRate(result5)));
-
-            fetch(`http://127.0.0.1:8000/api/test`)
-            .then(response6 => response6.json())
-            .then(result6 => console.log(result6));
+            .then(result5 => (console.log(result5), setAverageRate(result5)));;
 
             for(let nums of priceLimits){
                 setArrayPrices(ar1 => [...ar1, nums]);
@@ -260,8 +257,6 @@ const Store: React.FC = () => {
                             <input ref = {bRef} className = "ms-1" type = "text" placeholder = "Max"/>
                             <button onClick = {handleClickSearch} className = "ms-1 border 0">Szukaj</button>
                         </div>
-
-
 
                 </div>
 

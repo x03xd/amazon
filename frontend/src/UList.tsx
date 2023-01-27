@@ -11,7 +11,6 @@ export interface UListProps {
 }
 
 
-
 const UList: React.FC<UListProps> = ({ index, item, UListFunction }) => {
 
     function handleClick(item: string){

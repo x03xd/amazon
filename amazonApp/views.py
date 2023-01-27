@@ -22,11 +22,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Avg, Sum, Count
 from django.db.models.functions import Concat
-
+import datetime
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-
-
+from django.http import HttpResponse
+from django.conf import settings
 
 
 
@@ -44,6 +44,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+
+
 
 
 
@@ -78,6 +81,24 @@ class ProcessAPI(APIView):
 
         except:
             return JsonResponse({"done": False})
+
+
+class RemoveItemCart(APIView):
+
+    def post(self, request, *args, **kwargs):
+  
+        try:
+            json_data = json.load(request)
+            product = Product.objects.get(id = json_data["id"])
+
+            cart = Cart.objects.get(owner__username = json_data["username"])
+            cart.products.remove(product)
+
+            return JsonResponse({"done": True, "product_id": product.id})
+
+        except:
+            return JsonResponse({"done": False})
+
 
 
 
@@ -120,10 +141,10 @@ class LoginAPI(APIView):
             return JsonResponse({'authenticated':'false'})
 
 
-class LogoutView(APIView):
-    def get(self, request, *args, **kwargs):
-        pass
 
+class LogoutView(APIView):
+    def get(self, request, format = None):
+        pass
 
 
 class RegisterSystem(CreateAPIView):
@@ -164,12 +185,11 @@ class ProductsBySubsAPI(generics.ListAPIView):
 
 
 
+
 class CountAvgRate(generics.ListAPIView):
     serializer_class = UserRateSerializer
 
     def get_queryset(self):
-
-
 
         return UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate"))
 
@@ -223,19 +243,6 @@ class ProductsAPI(generics.ListAPIView):
 
         if q is not None:
 
-                if c == "null" and u == "null" and r == "null":
-                    queryset = queryset.filter(subcategory_name__sub_category=q)
-
-                if c != "null" and u != "null" and r == "null":
-                    queryset = queryset.filter(subcategory_name__sub_category=q, brand__in = multiple_brands_filter, price__range=(first_list[0],second_list[-1]))
-
-                if c == "null" and u != "null" and r == "null":
-                    queryset = queryset.filter(subcategory_name__sub_category=q, price__range=(first_list[0],second_list[-1]))
-
-                if c != "null" and u == "null" and r == "null":
-                    queryset = queryset.filter(subcategory_name__sub_category=q, brand__in = multiple_brands_filter)
-
-
                 if c != "null" and u != "null" and r != "null":
                     queryset = queryset.filter(id__in = lista, subcategory_name__sub_category=q, brand__in = multiple_brands_filter, price__range=(first_list[0],second_list[-1]))
 
@@ -269,25 +276,61 @@ class ProductsAPI(generics.ListAPIView):
 
 
 
+'''
+        username = json.loads(request)["username"]
+        auth_token = json.load(request)["authToken"]
+
+        response_username = HttpResponse(username)
+        response_username.set_cookie("username", username)
+
+        response_auth_token = HttpResponse(auth_token)
+        response_auth_token.set_cookie("auth_token", auth_token)
+
+        value = request.COOKIES.get("auth_token")
+    
+        return JsonResponse({value})       
+'''
 
 
 
+'''
+    def post(self, request, *args, **kwargs):
+        
+        json_data = json.load(request)
+
+        response = HttpResponse("username") 
+
+        response.set_cookie("username", json_data["username"], samesite='None', secure=True)
+
+        return response
+'''
 
 
 
+class StoringUserToken(APIView):
+    
+    def post(self, request, *args, **kwargs):
+        json_data = json.load(request)
 
 
-class TestXD(APIView):
+        response = HttpResponse("cookie setting") 
 
-    def get(self, request, format = None):
+        response.set_cookie("username", json_data["username"], samesite='None', secure=True, httponly= False)
+        response.set_cookie("authToken", json_data["authToken"], samesite='None', secure=True, httponly= False)
 
-        lista = []
-        object_ = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=4)
-        serializer = UserRateSerializer(object_, many = True)
+        return response
 
-        for x in object_:
-            lista.append(x["rated_products"])
 
-        #return Response(serializer.data)
-        return Response(lista)
+    def get(self, request, *args, **kwargs):
+
+        try:
+            username_cookie = request.COOKIES.get('username')
+            authToken_cookie = request.COOKIES.get('authToken')
+
+            return JsonResponse({"cookie_to_update": True}) 
+
+        except:
+            return JsonResponse({"cookie_to_update": False})
+
+
 

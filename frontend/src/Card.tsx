@@ -5,8 +5,9 @@ import CardObject from './CardObject';
 import AuthContext from "./AuthenticationContext";
 import CSRFToken from './CSRFToken';
 import jwt_decode from "jwt-decode";
-
-
+import CardFinalizing from './CardFinalizing';
+import CartSideBar from './CartSideBar'
+import { setUncaughtExceptionCaptureCallback } from 'process';
 
 
 interface Product {
@@ -32,9 +33,11 @@ const Card: React.FC = () => {
     const [cardUserGetter, setCardUserGetter] = useState<number[]>([]);
     const [cardItemsGetter, setCardItemsGetter] = useState<Product[] | []>([]);
 
+    const [total, setTotal] = useState<number>(0);
+
     let {username} = useContext(AuthContext);
 
-    //getting cart of logged user
+
     useEffect(() => {
          let response = fetch('http://127.0.0.1:8000/api/cart/', {
             method:'post',
@@ -47,9 +50,8 @@ const Card: React.FC = () => {
         .then(result => (setCardUserGetter(result)));
     }, [])
 
-    console.log(cardUserGetter)
+    //console.log(cardItemsGetter)
 
-    //getting objects from cart
     useEffect(() => {
          let response = fetch('http://127.0.0.1:8000/api/products/', {
             method:'post',
@@ -63,7 +65,29 @@ const Card: React.FC = () => {
 
     }, [cardUserGetter])
 
-    console.log(cardItemsGetter);
+    //let prev: number = 0;
+
+    useEffect(() => {
+        let prevValue : number = 0;
+
+        cardItemsGetter.map(item => prevValue += item.price)
+
+        setTotal(prevValue)
+
+    }, [cardItemsGetter])
+   
+
+
+
+
+    const removeProduct = (num : number) => {
+
+        setCardUserGetter(prevItems => prevItems.filter(item => item !== num));
+
+        //if(cardUserGetter.length <= 1) window.location.reload();
+    }
+
+
 
     if(cardItemsGetter.length == 0){
         return(
@@ -97,7 +121,7 @@ const Card: React.FC = () => {
 
 
                 <div className = "card-content-right bg-light">
-                    SIDEBAR
+                    <CartSideBar />  
                 </div>
 
             </div>
@@ -125,7 +149,11 @@ const Card: React.FC = () => {
                         </div>
 
                         <div className = "card-content-objects-inner mt-5 bg-light">
-                            {cardItemsGetter.map((item, index : number) => <CardObject item = {item} key = {index} />)}
+                            {cardItemsGetter.map((item, index : number) => {
+                                return(
+                                    <CardObject item = {item} key = {index} index = {cardUserGetter[index]} ajaxFunction = {removeProduct} />
+                                )    
+                            })}
                         </div>
 
 
@@ -140,8 +168,10 @@ const Card: React.FC = () => {
                     </div>
                 </div>
 
-                <div className = "card-content-right bg-light">
-                    SIDEBAR
+                <div className = "card-content-right">
+                    <CardFinalizing num = {cardUserGetter.length} total = {total} />
+
+                    <CartSideBar />              
                 </div>
 
             </div>

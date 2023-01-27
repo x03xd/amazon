@@ -18,7 +18,9 @@ const Login: React.FC = () => {
 
     useEffect(() => {
         setAdress(window.location.href);
-    })
+    })  
+
+    console.log(location.state.content);
 
     return(
         <div className = "modal-container-wrapper">
