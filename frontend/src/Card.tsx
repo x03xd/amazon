@@ -91,7 +91,7 @@ const Card: React.FC = () => {
 
     if(cardItemsGetter.length == 0){
         return(
-            <div className = "card-content mt-5 bg-white">
+            <div className = "card-content mt-5">
             <CSRFToken />
                 <div className = "card-content-left">
                     <div className = "card-content-left-first bg-light">
@@ -132,7 +132,7 @@ const Card: React.FC = () => {
 
         return(
 
-             <div className = "card-content mt-5 bg-white">
+             <div className = "card-content mt-5">
 
                 <div className = "card-content-left">
 

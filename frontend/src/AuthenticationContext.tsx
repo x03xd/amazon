@@ -58,19 +58,20 @@ export default AuthContext;
 
 export const AuthProvider = ({children}: ContextProvider) => {
 
-
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [authToken, setAuthToken] = useState<AuthToken | null>(parsedCookies ? parsedCookies.authToken : null);
-    const [username, setUsername] = useState<UserData | null>(parsedCookies ? jwt_decode(parsedCookies.username) : null);
+    console.log(parsedCookies);
 
+    const [authToken, setAuthToken] = useState<AuthToken | null>(parsedCookies.authToken ? parsedCookies.authToken : null);
+    const [username, setUsername] = useState<UserData | null>(parsedCookies.username ? jwt_decode(parsedCookies.username) : null);
     const [loading, setLoading] = useState<boolean>(true);
+
+    console.log(authToken);
 
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
     const [email, setEmail] = useState("");
-
 
 
     function navigateBack(){
@@ -135,7 +136,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
             })
 
             let data = await response.json()
-            console.log(jwt_decode(data.access));
 
             if(response.status === 200){
                 

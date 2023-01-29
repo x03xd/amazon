@@ -12,6 +12,9 @@ import Lobby from './Lobby';
 import Card from './Card';
 import { AuthProvider } from './AuthenticationContext';
 import { QueryParamsProvider } from './QueryParamsContext';
+import MyAccount from './MyAccount';
+import NarrowGrid from './NarrowGrid';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
@@ -27,6 +30,11 @@ root.render(
                         <Route path = "/s" element = {<Store />} />
                         <Route path = "/l/:slug" element = {<Lobby />} />
                         <Route path = "/card" element = {<Card />} />
+                       
+                        <Route element = {<NarrowGrid />}>
+                            <Route path = "/account" element = {<MyAccount />} />
+                        </Route>
+
                     </Route>
 
 
@@ -35,6 +43,8 @@ root.render(
                         <Route path = "/login2" element = {<Login />} />
                         <Route path = "/registration" element = {<Register />} />
                     </Route>
+
+
 
                 </Routes>
             </QueryParamsProvider>

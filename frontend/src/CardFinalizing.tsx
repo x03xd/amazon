@@ -16,15 +16,20 @@ const CardFinalizing : React.FC<Num> = ({ num, total }) => {
             <div className = "cart-finalizing-container-sideL"></div>
 
             <div className = "cart-finalizing-container-main">
-                <div className = "p-3 pt-5">
+                <div className = "p-3 pt-4">
                     <span className = "text-success">Niektóre przedmioty w zamówieniu kwalifikują się do DARMOWEJ dostawy. Wybierz tę opcję przy kasie. Obowiązują ograniczenia</span>
                 </div>
 
 
                 <div className = "p-3">
-                    <span>Suma: (ilość produktów wynosi: {num}):<span className = "fw-600">{total}</span></span> 
+                    <span>Suma: (ilość produktów wynosi: {num}):{'\u00a0'}{'\u00a0'}<span className = "fw-600">{total}</span></span> 
                 </div>
 
+                <div className = "pe-3">
+                    <input type = "checkbox" />
+                    
+                    <span>Zamów jako prezent / wyślij z dedykacją</span>
+                </div>
 
                 <div className = "pb-5 pt-3">
                     <input type = "button" id = "finalize-cart" className = "bg-warning" value = "Przejdź do finalizacji zamówienia" />

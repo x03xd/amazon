@@ -22,8 +22,9 @@ import  './css_modules/Alert.css';
 import AuthContext from "./AuthenticationContext";
 import './css_modules/Rating.css';
 import CardFinalizing from './CardFinalizing';
-
-
+import './css_modules/NarrowGrid.css'
+import './css_modules/MyAccount.css';
+import './css_modules/MyAccountCard.css';
 
 const App: React.FC = () => {
 
@@ -33,12 +34,19 @@ const App: React.FC = () => {
         if(authToken != null){
             console.log("loggedIn");
         }
+
+        if(window.location.href == "http://localhost:3000/"){
+            setContentStyle("bg-light");
+        }
+    
     })
 
     const [overlayStyle, setOverlay] = useState<string>("");
     const [loginModalStyle, setLoginModal] = useState<string>("");
     const [leftModalStyle, setLeftModal] = useState<string>("");
     const [unclick, setUnclick] = useState<string>("");
+
+    const [contentStyle, setContentStyle] = useState<string>("");
 
     function overlayStyler(style: string){
         setOverlay(style);
@@ -57,9 +65,10 @@ const App: React.FC = () => {
     }
 
 
+
     return (
             <div className = "main-container">
-                    <div className = {`navbar ${unclick} col-12`}>
+                    <div className = {`navbar ${unclick} col-12 `}>
                         <Navbar unclick = {unclick} overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} leftModalStyle = {leftModalStyler} unclickableNavbarChild = {unclickableNavbar} />
 
                         <Modal className = {loginModalStyle} />
@@ -67,18 +76,18 @@ const App: React.FC = () => {
                         <LeftModal className = {`left-modal ${leftModalStyle}`}/>
                     </div>
 
-                    <div className = "side-main"></div>
+                    <div className = {`side-main ${contentStyle}`}></div>
 
                     <div className = "main">
 
-                        <div className = "content mt-4">
+                        <div className = {`content mt-4 ${contentStyle}`}>
                             <div className = {`overlay ${overlayStyle}`} onClick = {() => {setOverlay(""); loginModalStyler(""); setLeftModal(""); unclickableNavbar("")}}></div>
                             <Outlet />
                         </div>
 
                     </div>
 
-                    <div className = "side-main-2"></div>
+                    <div className = {`side-main-2 ${contentStyle}`}></div>
 
                     <div className = "footer">
                         <Footer />

@@ -16,6 +16,15 @@ const Modal: React.FC<ModalProps> = ({ className }) => {
         navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
     }
 
+
+    const navigateToMyAccout = () => {
+
+        navigate("/account/");
+    }
+
+
+
+
     const [style, setStyle] = useState("active");
     
     
@@ -45,7 +54,7 @@ const Modal: React.FC<ModalProps> = ({ className }) => {
 
                 <div>
                     <ul className = "p-5">
-                        <li>Moje konto</li>
+                        <li onClick = {navigateToMyAccout}>Moje konto</li>
                         <li>Moje konto</li>
                         <li>Moje zamówienia</li>
                         <li>Kup ponownie</li>
