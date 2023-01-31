@@ -1,0 +1,40 @@
+
+
+.edit-profile-container {
+    display: grid;
+    grid-template-columns: 2fr 6fr 2fr;
+}
+
+.edit-profile-container-title {
+    font-size: 2.3rem !important;
+}
+
+.edit-profile-container-main > div > div {
+    border: 0.1rem solid gray;
+    padding: 2.5rem;
+
+}
+
+.edit-profile-container-main > div span:first-child {
+    font-weight: 600;
+    font-size: 1.15rem !important;
+}
+
+
+.edit-profile-card {
+    display:grid;
+    grid-template-columns: 6fr 1fr;
+}
+
+.edit-profile-card-content {
+    
+}
+
+
+
+.edit-profile-card-button {
+
+}
+
+
+/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */

@@ -14,7 +14,7 @@ import { AuthProvider } from './AuthenticationContext';
 import { QueryParamsProvider } from './QueryParamsContext';
 import MyAccount from './MyAccount';
 import NarrowGrid from './NarrowGrid';
-
+import EditProfile from './EditProfile'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
@@ -33,6 +33,7 @@ root.render(
                        
                         <Route element = {<NarrowGrid />}>
                             <Route path = "/account" element = {<MyAccount />} />
+                            <Route path = "/account/edit-profile" element = {<EditProfile />} />
                         </Route>
 
                     </Route>

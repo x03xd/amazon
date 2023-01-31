@@ -13,6 +13,7 @@ const Login: React.FC = () => {
     const location = useLocation();
 
     let {loginUser, usernameFilter, email, alertStyle, alertText} = useContext(AuthContext);
+    console.log(email)
 
     const [adress, setAdress] = useState(window.location.href);
 

@@ -22,6 +22,10 @@ const AuthLayout: React.FC = () => {
         }
     })
 
+    const navigateTo = () => {
+        navigate("/registration")
+    }
+
 
     return(
         <>
@@ -37,7 +41,7 @@ const AuthLayout: React.FC = () => {
                     <Outlet />
 
                     <div className = "main-container-auth-layout-create-button">
-                        <button className = {`login-button ${buttonStyle}`}>Utwórz nowe konto</button><br/>
+                        <button className = {`login-button ${buttonStyle}`} onClick = {navigateTo} >Utwórz nowe konto</button><br/>
                     </div>
 
 

@@ -16,36 +16,43 @@
 .main-container {
     display: grid;
     grid-template-columns: 1fr 7.4fr 1fr;
+    align-items: start !important;
+    grid-template-rows: auto 1fr auto;
 }
 
 
 .footer {
     grid-column: 1 / 4;
+    z-index: 10;
+    grid-row: 3;
 }
 
 .navbar {
     grid-column: 1 / 4;
+    z-index: 10;
+    grid-row: 1;
 }
+
 
 
 .main {
     grid-column: 2 / 3;
-
+    grid-row: 2;
+    margin-top: -2rem;
 }
-
 
 
 
 .side-main-2 {
     grid-column: 3 / 4;
-
+    grid-row: 2;
 }
 
 
 
 .side-main {
     grid-column: 1 / 2;
-
+    grid-row: 2;
 }
 
 
@@ -78,10 +85,22 @@
 }
 
 
+.button-standard-gradient {
+    height: 2.4rem;
+    background: -webkit-linear-gradient(top,#f8e3ad,#EEBA37);
+    box-shadow: inset 0 1px 0 0 #fcf3dc;
+    cursor: pointer;
+    outline: 0;
+    border: 1px solid;
+    width: 6rem;
+    border-radius:4px;
+    border: 1px solid lightgrey;
+}
+
+
 .login-button {
     height: 33px;
     background: -webkit-linear-gradient(top,#f8e3ad,#EEBA37);
-    font-size: 13px;
     box-shadow: inset 0 1px 0 0 #fcf3dc;
     cursor: pointer;
     outline: 0;
@@ -93,22 +112,21 @@
 
 
 .line-separator {
-    width: 97%;
+    width: 90%;
     background: grey;
     height: 1px;
 }
 
 
-
-.main {
-    margin-top: 68px;
-
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
 .content {
-
-   min-height: 1600px;
+  
 }
 
 

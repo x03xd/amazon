@@ -1,37 +1,36 @@
 
-import React from 'react';
+import React, {useState} from 'react';
 import {Outlet} from 'react-router-dom';
-
-
+import MiniNavbar from './MiniNavbar';
+import EditProfileModal from './EditProfileModal';
 
 
 
 const NarrowGrid : React.FC = () => {
 
+    //const [modal, setModal] = useState<string>("");
 
+    //const setEditModal = (style: string) => {
+    //    setModal(style)
+    //}
 
     return(
         <div className = "narrow-container">
             
-            <div className = "bg-white">
-
+            <div>
             </div>
-
-            <div className = "bg-white">
+            
+            <div>
                 <Outlet />
             </div>
 
-            <div className = "bg-white">
-
+            <div>
             </div>
 
         </div>
     );
 
 }
-
-
-
 
 
 

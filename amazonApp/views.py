@@ -38,6 +38,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Add custom claims
         token['username'] = user.username
+       
         # ...
 
         return token
@@ -161,13 +162,6 @@ class RegisterSystem(CreateAPIView):
         except:
             pass
 
-    '''
-    def get_initial(self, request, *args, **kwargs):
-        initial = super().get_initial(**kwargs)
-        initial["sub_category"] = "enter"
-        return initial
-#serializer.data, status=status.HTTP_201_CREATED
-'''
 
 
 
@@ -276,34 +270,6 @@ class ProductsAPI(generics.ListAPIView):
 
 
 
-'''
-        username = json.loads(request)["username"]
-        auth_token = json.load(request)["authToken"]
-
-        response_username = HttpResponse(username)
-        response_username.set_cookie("username", username)
-
-        response_auth_token = HttpResponse(auth_token)
-        response_auth_token.set_cookie("auth_token", auth_token)
-
-        value = request.COOKIES.get("auth_token")
-    
-        return JsonResponse({value})       
-'''
-
-
-
-'''
-    def post(self, request, *args, **kwargs):
-        
-        json_data = json.load(request)
-
-        response = HttpResponse("username") 
-
-        response.set_cookie("username", json_data["username"], samesite='None', secure=True)
-
-        return response
-'''
 
 
 
@@ -311,7 +277,6 @@ class StoringUserToken(APIView):
     
     def post(self, request, *args, **kwargs):
         json_data = json.load(request)
-
 
         response = HttpResponse("cookie setting") 
 
@@ -334,3 +299,12 @@ class StoringUserToken(APIView):
 
 
 
+class EditUsername(APIView):
+    
+    def patch(self, request):
+
+        json_data = json.load(request)
+        
+        user = User.objects.get(username = json_data["username"], email = json_data["email"])
+
+        

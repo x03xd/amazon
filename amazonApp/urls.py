@@ -27,5 +27,5 @@ urlpatterns = [
 
     path("token-cookie/", views.StoringUserToken.as_view()),
 
- 
+    path("edit-username/", views.EditUsername.as_view())
 ]

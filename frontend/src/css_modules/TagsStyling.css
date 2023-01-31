@@ -16,14 +16,13 @@ a:hover {
 
 
 span.link:hover {
-    cursor:pointer !important;;
+    cursor:pointer !important;
     color: var(--dark-orange) !important;
-    
 }
 
 
 
- a:visited {
+a:visited {
     text-decoration: none !important;
     color: #007185 !important;
 }

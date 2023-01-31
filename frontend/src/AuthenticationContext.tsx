@@ -6,7 +6,7 @@ import {parsedCookies} from './static_ts_files/parsingCookie'
 
 
 interface ContextProvider {
-    children: React.ReactNode
+    children: React.ReactNode;
 }
 
 //Context is designed to share data that can be considered “global” for a tree of React components, such as the current authenticated user, theme, or preferred language
@@ -37,6 +37,7 @@ interface UserData {
     jti: string;
     user_id: number;
     username: string;
+    email: string;
 }
 
 

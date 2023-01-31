@@ -58,6 +58,19 @@ form {
 
 
 
+.login-modal li:hover {
+    cursor:pointer !important;
+    color: var(--dark-orange) !important;
+}
+
+
+.login-modal > div:first-child span:last-child {
+    font-size: 0.95rem !important;
+    margin-top: -0.2rem;
+}
+
+
+
 /* LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL */
 
 
@@ -126,6 +139,17 @@ form {
     z-index: 5;
 }
 
+
+.overlay-high {
+    display: none;
+    background: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 12;
+}
 
 
 

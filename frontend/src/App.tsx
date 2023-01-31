@@ -1,7 +1,7 @@
-import {Outlet} from 'react-router-dom';
+import {Outlet, useLocation} from 'react-router-dom';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import React, {useState, useEffect, useContext, useMemo} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import Modal from './Modal';
 import LeftModal from './LeftModal';
 import  './css_modules/TagsStyling.css';
@@ -25,21 +25,20 @@ import CardFinalizing from './CardFinalizing';
 import './css_modules/NarrowGrid.css'
 import './css_modules/MyAccount.css';
 import './css_modules/MyAccountCard.css';
+import './css_modules/MiniNavbar.css';
+import './css_modules/EditProfile.css';
+import './css_modules/EditProfileModal.css';
+import MiniNavbar from './MiniNavbar';
 
 const App: React.FC = () => {
 
     let {authToken, username, loginUser} = useContext(AuthContext)
 
-    useEffect(() => {
-        if(authToken != null){
-            console.log("loggedIn");
-        }
+    const location = useLocation();
 
-        if(window.location.href == "http://localhost:3000/"){
-            setContentStyle("bg-light");
-        }
-    
-    })
+    const path = location.pathname.slice(-1) === "/" ? location.pathname.slice(0, -1) : location.pathname;
+    const paths = ["/account", "/account/edit-profile"]
+
 
     const [overlayStyle, setOverlay] = useState<string>("");
     const [loginModalStyle, setLoginModal] = useState<string>("");
@@ -47,6 +46,7 @@ const App: React.FC = () => {
     const [unclick, setUnclick] = useState<string>("");
 
     const [contentStyle, setContentStyle] = useState<string>("");
+
 
     function overlayStyler(style: string){
         setOverlay(style);
@@ -64,14 +64,15 @@ const App: React.FC = () => {
         setUnclick(style);
     }
 
-
+    console.log(unclick);
 
     return (
             <div className = "main-container">
-                    <div className = {`navbar ${unclick} col-12 `}>
+                    <div className = {`navbar ${unclick} `}>
                         <Navbar unclick = {unclick} overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} leftModalStyle = {leftModalStyler} unclickableNavbarChild = {unclickableNavbar} />
+                        { paths.map((link, index) => link === path ? <MiniNavbar key = {index} /> : null) }
 
-                        <Modal className = {loginModalStyle} />
+                        <Modal className = {loginModalStyle} modalOFF = {loginModalStyler} overlayOFF = {overlayStyler} navbarStatus = {unclickableNavbar} />
 
                         <LeftModal className = {`left-modal ${leftModalStyle}`}/>
                     </div>

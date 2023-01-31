@@ -4,7 +4,7 @@ import logo from './images/xd.png';
 import cart from './images/shopping-cart-xxl.png';
 import Store from './Store';
 import CSRFToken from './CSRFToken';
-
+import MiniNavbar from './MiniNavbar';
 
 export interface setValueState{
     value: string;
@@ -69,7 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
     //<nav className = {unclick}>
 
     return(
-        <>
+
             <nav>
                 <div className = 'navbar-upper-part'>
 
@@ -137,9 +137,9 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
                     </div>
 
                 </div>
-
+            
             </nav>
-        </>
+      
     );
 
 }

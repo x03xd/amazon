@@ -1,6 +1,8 @@
 
 
-
+.my-account-content {
+    margin-top: 2rem !important;
+}
 
 
 
@@ -14,4 +16,9 @@
 .my-account-content > div > span {
     font-size: 2.3rem !important;
   
+}
+
+.my-account-cards-container.second {
+
+    margin-top: 50px !important;
 }

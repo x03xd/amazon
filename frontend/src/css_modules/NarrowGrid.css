@@ -5,3 +5,13 @@
     display: grid;
     grid-template-columns: 1fr 4fr 1fr;
 }
+
+
+
+
+
+
+
+.narrow-container > div {
+    background: white !important;
+}
