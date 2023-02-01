@@ -67,3 +67,17 @@ class ProductSerializer(ModelSerializer):
         model = Product
         fields = "__all__"
 
+
+
+class EditUsernameSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('username')
+
+
+class EditEmailSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ("email")

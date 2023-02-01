@@ -1,4 +1,5 @@
 # Python program to print all paths from a source to destination.
+import datetime
 
 from collections import defaultdict
 
@@ -104,4 +105,7 @@ print("Following are all different paths from % d to % d :" % (s, d))
 g.printAllPaths(s, d)
 # This code is contributed by Neelam Yadav
 
-
+from datetime import datetime
+currentDateAndTime = datetime.now()
+print(
+currentDateAndTime)

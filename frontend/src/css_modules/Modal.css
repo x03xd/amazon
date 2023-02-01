@@ -11,12 +11,11 @@
     pointer-events: all !important;
 }
 
-form {
+
+form  {
     display: grid;
     place-items: center;
 }
-
-
 
 
 .login-modal > div {

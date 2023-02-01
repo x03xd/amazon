@@ -5,6 +5,10 @@
     grid-template-columns: 2fr 6fr 2fr;
 }
 
+
+
+
+
 .edit-profile-container-title {
     font-size: 2.3rem !important;
 }
@@ -21,9 +25,10 @@
 }
 
 
-.edit-profile-card {
+.edit-profile-card form {
     display:grid;
     grid-template-columns: 6fr 1fr;
+    place-items: unset !important;
 }
 
 .edit-profile-card-content {

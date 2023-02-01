@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from django.http.response import JsonResponse
 import json
 from django.db.models import Q, F, When, Value, Case
-from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, CreateAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, CreateAPIView, UpdateAPIView
 from frontend.models import User, Cart
 from django.contrib.auth import login, logout, authenticate
 from django.views.generic.edit import CreateView, FormView
@@ -22,12 +22,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Avg, Sum, Count
 from django.db.models.functions import Concat
-import datetime
+from datetime import datetime, timedelta, date
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.http import HttpResponse
 from django.conf import settings
-
+from django.views.generic.detail import SingleObjectMixin
 
 
 
@@ -267,7 +267,15 @@ class ProductsAPI(generics.ListAPIView):
 
         return Response(serializer.data)
 
+'''class UserUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    fields = ['username', 'email']
+    template_name = 'user_form.html'
+    success_url = reverse_lazy('home')
 
+    def get_object(self, queryset=None):
+        return self.request.user
+        '''
 
 
 
@@ -298,13 +306,71 @@ class StoringUserToken(APIView):
             return JsonResponse({"cookie_to_update": False})
 
 
+from .serializers import EditUsernameSerializer, EditEmailSerializer
+
 
 class EditUsername(APIView):
-    
-    def patch(self, request):
 
-        json_data = json.load(request)
-        
-        user = User.objects.get(username = json_data["username"], email = json_data["email"])
 
+    def patch(self, request, *args, **kwargs):
+
+        try:
+            json_data = json.load(request)
+
+            try:
+                User.objects.get(email = json_data["change"])      
+                return JsonResponse({"status": "User with passed username already exists"})
+
+
+            except User.DoesNotExist:
+
+                user = User.objects.get(id = self.kwargs.get("id"))
+
+                user.username = json_data["change"]
+                user.save()
+
+                return JsonResponse({"status":"Username has been changed"})
+
+        except:
+            return JsonResponse({"status":"ERROR"})
+
+
+
+    def post(self, request, *args, **kwargs):
         
+        user = User.objects.get(id = self.kwargs.get("id"))
+
+        user.username_change_allowed = datetime.now() + timedelta(days=30) 
+        user.username_change_allowed.date()
+        user.save()
+
+        return JsonResponse({"Xd":123})
+
+
+
+
+
+class EditEmail(APIView):
+
+    def patch(self, request, *args, **kwargs):
+
+        try:
+            json_data = json.load(request)
+
+            try:
+                User.objects.get(email = json_data["change"])      
+                return JsonResponse({"status": "User with passed email already exists"})
+
+
+            except User.DoesNotExist:
+
+                user = User.objects.get(id = self.kwargs.get("id"))
+
+                user.username = json_data["change"]
+                user.save()
+
+                return JsonResponse({"status":"Email has been changed"})
+
+        except:
+            return JsonResponse({"status":"ERROR"})
+
