@@ -36,10 +36,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        # Add custom claims
-        token['username'] = user.username
        
-        # ...
+        token['username'] = user.username
+        token['email'] = user.email
 
         return token
 
@@ -280,7 +279,7 @@ class ProductsAPI(generics.ListAPIView):
 
 
 
-
+'''
 class StoringUserToken(APIView):
     
     def post(self, request, *args, **kwargs):
@@ -305,46 +304,86 @@ class StoringUserToken(APIView):
         except:
             return JsonResponse({"cookie_to_update": False})
 
-
+'''
 from .serializers import EditUsernameSerializer, EditEmailSerializer
 
 
-class EditUsername(APIView):
 
+class AccessToChangeStatus(APIView):
+        
+    def get(self, request, *args, **kwargs):
+        
+        date = datetime.now()
+        today_date = date.date()
+        user = User.objects.get(id = self.kwargs.get("id"))
+
+
+        if user.username_change_allowed.date() >= today_date:
+            status_username = False
+
+        elif user.email_change_allowed.date() < today_date:
+            status_username = True
+
+
+        if user.email_change_allowed.date() >= today_date:
+            status_email = False
+
+        elif user.email_change_allowed.date() < today_date:
+            status_email = True
+                
+
+        return JsonResponse({"username": status_username, "email":status_email})
+
+
+
+class EditUsername(APIView):
+    
 
     def patch(self, request, *args, **kwargs):
 
-        try:
-            json_data = json.load(request)
+        date = datetime.now()
+        today_date = date.date()
 
+        user = User.objects.get(id = self.kwargs.get("id"))
+        json_data = json.load(request)
+
+        if json_data["access"]["username"] == False or "false":
+            return Response("cant edit username")
+
+        else:
             try:
-                User.objects.get(email = json_data["change"])      
-                return JsonResponse({"status": "User with passed username already exists"})
+                try:
+                    User.objects.get(username = json_data["change"])      
+                    return JsonResponse({"status": "User with passed username already exists"})
 
 
-            except User.DoesNotExist:
+                except User.DoesNotExist:
 
-                user = User.objects.get(id = self.kwargs.get("id"))
+                    user.username = json_data["change"]
+                    user.save()
 
-                user.username = json_data["change"]
-                user.save()
+                    return JsonResponse({"status":"Username has been changed"})
 
-                return JsonResponse({"status":"Username has been changed"})
-
-        except:
-            return JsonResponse({"status":"ERROR"})
+            except:
+                return JsonResponse({"status":"ERROR"})
 
 
 
     def post(self, request, *args, **kwargs):
-        
-        user = User.objects.get(id = self.kwargs.get("id"))
 
-        user.username_change_allowed = datetime.now() + timedelta(days=30) 
-        user.username_change_allowed.date()
-        user.save()
+        json_data = json.load(request)
 
-        return JsonResponse({"Xd":123})
+        if json_data["access"]["username"] == False or "false":
+            return Response("cant new date")
+
+        else:
+            user = User.objects.get(id = self.kwargs.get("id"))
+            date = datetime.now()
+
+            date = date.date() + timedelta(days=30) 
+
+            user.email_change_allowed = date
+            user.save()
 
 
 
@@ -354,23 +393,47 @@ class EditEmail(APIView):
 
     def patch(self, request, *args, **kwargs):
 
-        try:
-            json_data = json.load(request)
+        date = datetime.now()
+        today_date = date.date()
+            
+        user = User.objects.get(id = self.kwargs.get("id"))
+        json_data = json.load(request)
 
+        if json_data["access"]["email"] == False or "false":
+            return Response("cant change")
+
+        else: 
             try:
-                User.objects.get(email = json_data["change"])      
-                return JsonResponse({"status": "User with passed email already exists"})
+
+                try:
+                    User.objects.get(email = json_data["change"])      
+                    return JsonResponse({"status": "User with passed email already exists"})
 
 
-            except User.DoesNotExist:
+                except User.DoesNotExist:
 
-                user = User.objects.get(id = self.kwargs.get("id"))
+                    user.email = json_data["change"]
+                    user.save()
 
-                user.username = json_data["change"]
-                user.save()
+                    return JsonResponse({"status":"Email has been changed"})
 
-                return JsonResponse({"status":"Email has been changed"})
+            except:
+                return JsonResponse({"status":"ERROR"})
 
-        except:
-            return JsonResponse({"status":"ERROR"})
 
+
+    def post(self, request, *args, **kwargs):
+
+        json_data = json.load(request)
+
+        if json_data["access"] == True or "true":
+            return Response("cant change")
+
+        else:
+            user = User.objects.get(id = self.kwargs.get("id"))
+            date = datetime.now()
+
+            date = date.date() + timedelta(days=30) 
+
+            user.username_change_allowed = date
+            user.save()

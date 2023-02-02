@@ -2,7 +2,7 @@
 
 .edit-profile-container {
     display: grid;
-    grid-template-columns: 2fr 6fr 2fr;
+    grid-template-columns: 2fr 7fr 2fr;
 }
 
 
@@ -27,7 +27,7 @@
 
 .edit-profile-card form {
     display:grid;
-    grid-template-columns: 6fr 1fr;
+    grid-template-columns: 6fr 1.5fr;
     place-items: unset !important;
 }
 
@@ -37,8 +37,8 @@
 
 
 
-.edit-profile-card-button {
-
+.edit-profile-card-button img {
+    margin-left: 0.5rem;
 }
 
 

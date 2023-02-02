@@ -25,9 +25,12 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
 
-    path("token-cookie/", views.StoringUserToken.as_view()),
+    #path("token-cookie/", views.StoringUserToken.as_view()),
 
     path("edit-username/<id>", views.EditUsername.as_view()),
-    path("edit-email/<id>", views.EditEmail.as_view())
+    path("edit-email/<id>", views.EditEmail.as_view()),
+
+
+    path("access-to-change-status/<id>", views.AccessToChangeStatus.as_view())
 
 ]
