@@ -1,0 +1,23 @@
+
+
+
+.mini-navbar {
+    width: 100%;
+    background: white;
+    border-bottom: 0.1rem solid gray;
+}
+
+
+.mini-navbar ul {
+    display: flex;
+    gap: 15px;
+    justify-content: start !important;
+    height: 1rem;
+    padding: 0.25rem 0 0 3rem;
+}
+
+
+
+.mini-navbar ul li {
+    font-size: 0.9rem !important;
+}
