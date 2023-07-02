@@ -25,23 +25,28 @@ const Lobby: React.FC = () => {
         statusColor = "text-success";
     }
 
-    console.log(location.state.id_product);
 
-        async function addToCard(e: any){
-            e.preventDefault();
+    async function addToCard(e: React.MouseEvent<HTMLInputElement>){
+        e.preventDefault();
 
-                let response2 = await fetch(`http://127.0.0.1:8000/api/process/`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type':'application/json',
-                    },
-                    body: JSON.stringify({'id': location.state.id_product, 'username': username?.username})
-                })
+        try{
 
-                let jsonResponse2 = await response2.json();
-                console.log(jsonResponse2)
+            const response2 = await fetch(`http://127.0.0.1:8000/api/process/`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify({'id': location.state.id_product, 'username': username?.username})
+            })
+            let jsonResponse2 = await response2.json();
         }
+
+        catch(error){
+            console.log("Error: ", error)
+        }
+
+    }
 
 
     return(

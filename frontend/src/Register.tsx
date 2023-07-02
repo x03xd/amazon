@@ -1,5 +1,5 @@
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, FormEvent} from 'react';
 import CSRFToken from './CSRFToken';
 import logo from './images/xd.png';
 import Alert from './Alert';
@@ -17,18 +17,18 @@ const Register: React.FC = () => {
 
     const navigate = useNavigate();
 
-
-        async function submitForm(e: any){
-            e.preventDefault();
+    async function submitForm(e: FormEvent<HTMLFormElement>){
+        e.preventDefault();
             
-                if(password1Ref.current?.value != password2Ref.current?.value){
-                    console.log(dangerBorder);
-                    setDangerBorder("border border-danger")
-                }
+        if(password1Ref.current?.value !== password2Ref.current?.value){
+            console.log(dangerBorder);
+            setDangerBorder("border border-danger")
+        }
 
-            else{
+        else{
 
-                let response = await fetch("http://127.0.0.1:8000/api/registration/", {
+            try{
+                const response = await fetch("http://127.0.0.1:8000/api/registration/", {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -36,17 +36,20 @@ const Register: React.FC = () => {
                     },
                     body: JSON.stringify({"email":emailRef.current?.value, "username":usernameRef.current?.value, "password":password1Ref.current?.value, "password2":password2Ref.current?.value})
                 })
-
-                let jsonResponse = await response.json()
-                console.log(jsonResponse);
+            
+                const jsonResponse = await response.json()
 
                 if(jsonResponse){
-                     navigate("/");
+                    navigate("/");
                 }
 
             }
 
+            catch(error){
+                console.log("Error: ", error)
+            }
         }
+    }
 
 
     return(

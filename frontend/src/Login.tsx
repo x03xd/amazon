@@ -13,15 +13,12 @@ const Login: React.FC = () => {
     const location = useLocation();
 
     let {loginUser, usernameFilter, email, alertStyle, alertText} = useContext(AuthContext);
-    console.log(email)
 
     const [adress, setAdress] = useState(window.location.href);
 
     useEffect(() => {
         setAdress(window.location.href);
     })  
-
-    console.log(location.state.content);
 
     return(
         <div className = "modal-container-wrapper">
@@ -37,7 +34,7 @@ const Login: React.FC = () => {
 
                     <p>{email}</p>
 
-                    <form onSubmit = {(adress == 'http://localhost:3000/login' || adress == 'http://localhost:3000/login/') ? usernameFilter : loginUser} method = "POST">
+                    <form onSubmit = {(adress === 'http://localhost:3000/login' || adress === 'http://localhost:3000/login/') ? usernameFilter : loginUser} method = "POST">
                         <CSRFToken />
                         <span>{location.state.content}</span>
 

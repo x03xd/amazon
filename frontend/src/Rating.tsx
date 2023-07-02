@@ -17,28 +17,22 @@ const Rating: React.FC = () => {
 
     useEffect(() => {
         let rate = JSON.parse(localStorage.getItem("rating") || "");
-
-        if(rate){
-            setRate(rate);
-        }
+        if(rate){ setRate(rate); }
     },[]);
     
 
     useEffect(() => {
         console.log(rate)
         localStorage.setItem("rating", JSON.stringify(rate))
-
     }, [rate]);
 
 
     let {c_QueryParam, q_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
 
 
-    function ratingFilter(x: number){
-        setRate(x);
-
-        navigate(`?q=${q_QueryParam}&c=${c_QueryParam}&u=${u_QueryParam}&rating=${x}`);
-
+    function ratingFilter(rating: number){
+        setRate(rating);
+        navigate(`?q=${q_QueryParam}&c=${c_QueryParam}&u=${u_QueryParam}&rating=${rating}`);
         window.location.reload();
     }
 

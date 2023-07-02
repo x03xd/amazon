@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QueryParamsContext from "./QueryParamsContext";
-//import { LargeNumberLike } from 'crypto'; //????
-
-
 
 interface PriceRange {
     item: {
@@ -41,7 +38,6 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
     const [items, setItems] = useState<boolean[]>(array);
     const [allUniqueContentArray, setAllUniqueContentArray] = useState<PriceRange[] | string[]>(arrayProp); //defined w interfejsie
     
-    console.log("reren");
     useEffect(() => {
         setItems(array)
         setAllUniqueContentArray(arrayProp)
@@ -64,14 +60,12 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
 
     useEffect(() => {
         items.map((item : boolean, index : number) => {
-            
             let temp = JSON.parse(localStorage.getItem(nut + index) || "");
             let temp2: boolean = temp ? temp.value : "";
-            items[index] = temp2;
-            
+            items[index] = temp2;     
         });
     },[items]);
-
+    
 
     const prevDependencyFilteredBrands2 = useRef<string[] | []>([]);
     const prevDependencyFilteredPrices2 = useRef<string[] | []>([]);
@@ -84,6 +78,8 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
         return (value as PriceRange).item !== undefined;
     }
       
+
+
     useEffect(() => {
 
             prevDependencyFilteredBrands2.current = filteredBrands2;
@@ -124,12 +120,12 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
             let tempNut = temp ? temp.nut : "";
             let tempValue = temp ? temp.value : "";
 
-            if(tempNut == "c" && tempValue == true){
+            if(tempNut === "c" && tempValue){
                 let tempID = temp ? temp.id : "";
                 setCLink(testArray => [...testArray, tempID])
             }
 
-            else if(tempNut == "u" && tempValue == true){
+            else if(tempNut === "u" && tempValue){
                 let tempID = temp ? temp.id : "";
                 setULink(testArray2 => [...testArray2, tempID["start"] + "-" + tempID["end"]])
             }
@@ -142,7 +138,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
             const cLinkCheck = [...new Set(cLink)].length > 0 ? [...new Set(cLink)].join() : null;
             const uLinkCheck = [...new Set(uLink)].length > 0 ? [...new Set(uLink)].join() : null;
 
-            if(window.location.href == (`http://localhost:3000/s?q=${q_QueryParam}`) && ([...new Set(cLink)].length > 0 || [...new Set(uLink)].length > 0) ){
+            if(window.location.href === (`http://localhost:3000/s?q=${q_QueryParam}`) && ([...new Set(cLink)].length > 0 || [...new Set(uLink)].length > 0) ){
                 navigate(`?q=${q_QueryParam}&c=${cLinkCheck}&u=${uLinkCheck}&rating=${ratingLink}`);
                 window.location.reload()
             }
@@ -152,9 +148,9 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
         else if(loading){
          
             if([...new Set(prevDependencyFilteredBrands2.current)].length !== uniqueFilteredBrands2.length){
-                if(u_QueryParam == "") {u_QueryParam = "null";}
+                if(u_QueryParam === "") {u_QueryParam = "null";}
 
-                if(uniqueFilteredBrands2.length == 0){
+                if(uniqueFilteredBrands2.length === 0){
                     let nullQuery : string = "null"
                     navigate(`?q=${q}&c=${nullQuery}&u=${u_QueryParam}&rating=${rating_QueryParam}`);
                 }
@@ -166,7 +162,8 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
             }
 
             else if([...new Set(prevDependencyFilteredPrices2.current)].length !== uniqueFilteredPrices2.length){
-                if(c_QueryParam == "") {c_QueryParam = "null";}
+                if(c_QueryParam === "") {c_QueryParam = "null";}
+
 
                 if(uniqueFilteredPrices2.length == 0){
                     let nullQuery : string = "null"
@@ -192,11 +189,11 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
      
         items.map((item : boolean, index : number) => {
             if(index === position) {
-                if(items[index] == false) {
+                if(!items[index]) {
                     items[index] = true;
                 }
 
-                else if(items[index] == true) {
+                else if(items[index]) {
                     items[index] = false;
                 }
             }
@@ -206,6 +203,8 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
 
     let ifChecked = JSON.parse(localStorage.getItem(nut + index) || "");
     let ifChecked2 = ifChecked ? ifChecked.value : false;
+
+    
 
     return(
         <>

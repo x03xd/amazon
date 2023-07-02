@@ -5,17 +5,12 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-const object = ["Amazon.pl", "Okazje", "Prime Video", "Amazon Musuic", "Aplikacja Amazon"]
-
-
-
-
 const MiniNavbar = () => {
 
     const navigate = useNavigate()
 
     const navigateFunction = () => {
-        navigate(``);
+        navigate("");
     }
 
 

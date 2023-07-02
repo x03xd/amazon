@@ -25,7 +25,7 @@ const GridBox: React.FC<GridBoxProps> = ({ className, boxTitle, list }) => {
                     {list.map(
                             ((element, index) =>
                                 <div key = {index}>
-                                    <img src = {element[0]} />
+                                    <img src = {element[0]} loading = "lazy" />
                                     <span>{element[1]}</span>
                                 </div>
                             )

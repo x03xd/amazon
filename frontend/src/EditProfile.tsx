@@ -31,9 +31,16 @@ const EditProfile : React.FC = () => {
 
     
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/access-to-change-status/${username?.user_id}`)
-        .then(response => response.json())
-        .then(result => setAccessToChangeUsername(result))
+        try{
+            fetch(`http://127.0.0.1:8000/api/access-to-change-status/${username?.user_id}`)
+            .then(response => response.json())
+            .then(result => setAccessToChangeUsername(result))
+        }
+
+        catch(error){
+            console.log("Error: ", error)
+        }
+
     }, [])
    
     const handleModalStyleFunction = (style: string) => {
@@ -42,7 +49,6 @@ const EditProfile : React.FC = () => {
 
     return(
         <div className = "my-account-content">
-
             <EditProfileModal className = {style} />
 
             <div></div>
@@ -72,7 +78,6 @@ const EditProfile : React.FC = () => {
             </div>
 
             <div></div>
-
 
         </div>
     )

@@ -1,5 +1,5 @@
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
-import React, {createContext, useEffect, useState, useRef} from 'react';
+import React, {createContext, useEffect, useState, useRef, FormEvent, ChangeEvent} from 'react';
 import jwt_decode from "jwt-decode";
 import CSRFToken from './CSRFToken';
 import {parsedCookies} from './static_ts_files/parsingCookie'
@@ -48,7 +48,7 @@ interface InitialValuesTypes {
     email: null | string;
     alertStyle: string;
     alertText: string;
-    username: null | UserData;  // [username: string]: any; unknown obj handle interface
+    username: null | UserData;
     authToken: null | AuthToken;
 }
 
@@ -62,13 +62,13 @@ export const AuthProvider = ({children}: ContextProvider) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    console.log(parsedCookies);
+    //console.log(parsedCookies);
 
     const [authToken, setAuthToken] = useState<AuthToken | null>(parsedCookies.authToken ? parsedCookies.authToken : null);
     const [username, setUsername] = useState<UserData | null>(parsedCookies.username ? jwt_decode(parsedCookies.username) : null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    console.log(authToken);
+    //onsole.log(authToken);
 
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
@@ -89,48 +89,57 @@ export const AuthProvider = ({children}: ContextProvider) => {
 
 
 
-    async function usernameFilter(e: any){
-
+    async function usernameFilter(e: ChangeEvent<HTMLFormElement>){
         e.preventDefault();
 
-                let response = await fetch("http://127.0.0.1:8000/api/login/", {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type':'application/json',
-                    },
-                    body: JSON.stringify({'username': e.target.usernameorpassword.value})
-                })
+        try{
 
-                let jsonResponse = await response.json();
-          
-                setUsername(jsonResponse.username)
+            const response = await fetch("http://127.0.0.1:8000/api/login/", {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify({'username': e.target.usernameorpassword.value})
+            })
 
-
-
-                if(jsonResponse.authenticated){
-                    navigateToPasswordInput();
-                    setAlertStyle("hidden");
-                }
+            const jsonResponse = await response.json();
+            console.log(jsonResponse)
+            
+            setUsername(jsonResponse.username)
 
 
-                else {
-                    navigateBack();
-                    setAlertStyle("active");
-                    setAlertText("Użytkownik nie istnieje");
-                }
-            e.target.usernameorpassword.value = "";
+            if(jsonResponse.authenticated){
+                navigateToPasswordInput();
+                setAlertStyle("hidden");
+            }
+
+
+            else {
+                navigateBack();
+                setAlertStyle("active");
+                setAlertText("Użytkownik nie istnieje");
+            }
+                e.target.usernameorpassword.value = "";
+
         }
+
+        catch(error){
+            console.log('Error:', error);
+        }
+
+    }
 
     
 
 
 
-    async function loginUser(e: any){
-
+    async function loginUser(e: ChangeEvent<HTMLFormElement>){
         e.preventDefault();
 
-            let response = await fetch("http://127.0.0.1:8000/api/token/", {
+        try {
+
+            const response = await fetch("http://127.0.0.1:8000/api/token/", {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -139,7 +148,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
                 body: JSON.stringify({'username': username, 'password': e.target.usernameorpassword.value})
             })
 
-            let data = await response.json()
+            const data = await response.json()
 
             if(response.status === 200){
                 
@@ -148,7 +157,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
 
                 setAuthToken(data)
                 setUsername(data.access)
-                
                 navigateToHome()
             }
 
@@ -159,8 +167,12 @@ export const AuthProvider = ({children}: ContextProvider) => {
             }
 
             e.target.usernameorpassword.value = "";
+        }
+        
+        catch(error){
+            console.log('Error:', error);
+        }
     }
-
 
 
     function logout(){
@@ -175,26 +187,33 @@ export const AuthProvider = ({children}: ContextProvider) => {
     }
 
 
-    let updateToken = async () => {
+    const updateToken = async () => {
 
-        let response = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({'refresh':authToken?.refresh})
-        })
+        try{
+            let response = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({'refresh':authToken?.refresh})
+            })
 
-        let data = await response.json()
-        console.log(data)
+            let data = await response.json()
+                console.log(data)
 
-        if (response.status === 200){
-            setAuthToken(data)
-            setUsername(jwt_decode(data.access))
+            if (response.status === 200){
+                setAuthToken(data)
+                setUsername(jwt_decode(data.access))
+            }
+
+            else{
+                logout();
+            }
+
         }
 
-        else{
-            logout();
+        catch (error) {
+            console.error('Error updating token:', error);
         }
 
     }

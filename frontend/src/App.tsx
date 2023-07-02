@@ -64,7 +64,6 @@ const App: React.FC = () => {
         setUnclick(style);
     }
 
-    console.log(unclick);
 
     return (
             <div className = "main-container">

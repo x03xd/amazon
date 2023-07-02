@@ -45,7 +45,7 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
 
 
     function subCategoryNavigate(e: any){
-        if(value == null){
+        if(value === null){
             navigate("")
         }
 

@@ -44,17 +44,22 @@ const CardObject: React.FC<Item> = ({ item, index, ajaxFunction }) => {
 
 
     const removeProduct = (index: number) => {
-        
-        const response = fetch("http://127.0.0.1:8000/api/remove-item/", {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type':'application/json',
-            },
-            body: JSON.stringify({"id": index, "username": username?.username})
-        })
-        .then(response => response.json())
-        .then(result => (setData(result)))  
+        try{
+            const response = fetch("http://127.0.0.1:8000/api/remove-item/", {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify({"id": index, "username": username?.username})
+            })
+            .then(response => response.json())
+            .then(result => (setData(result)))  
+        }
+
+        catch(error){
+            console.log("Error: ", error)
+        }
         
     }
 

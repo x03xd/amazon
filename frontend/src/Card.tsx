@@ -39,29 +39,45 @@ const Card: React.FC = () => {
 
 
     useEffect(() => {
-         let response = fetch('http://127.0.0.1:8000/api/cart/', {
-            method:'post',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({"username":username?.username})
-        })
-        .then(response => response.json())
-        .then(result => (setCardUserGetter(result)));
+
+        try{
+            const response = fetch('http://127.0.0.1:8000/api/cart/', {
+                method:'post',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({"username":username?.username})
+            })
+            .then(response => response.json())
+            .then(result => (setCardUserGetter(result)));
+        }
+
+        catch(error){
+            console.log("Error: ", error)
+        }
+
     }, [])
 
     //console.log(cardItemsGetter)
 
     useEffect(() => {
-         let response = fetch('http://127.0.0.1:8000/api/products/', {
-            method:'post',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({"list":cardUserGetter})
-        })
-        .then(response => response.json())
-        .then(result => (setCardItemsGetter(result)));
+
+        try{
+
+            const response = fetch('http://127.0.0.1:8000/api/products/', {
+                method:'post',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({"list":cardUserGetter})
+            })
+            .then(response => response.json())
+            .then(result => (setCardItemsGetter(result)));
+        }
+
+        catch(error){
+            console.log("Error: ", error)
+        }
 
     }, [cardUserGetter])
 
@@ -69,9 +85,7 @@ const Card: React.FC = () => {
 
     useEffect(() => {
         let prevValue : number = 0;
-
         cardItemsGetter.map(item => prevValue += item.price)
-
         setTotal(prevValue)
 
     }, [cardItemsGetter])
@@ -81,15 +95,13 @@ const Card: React.FC = () => {
 
 
     const removeProduct = (num : number) => {
-
         setCardUserGetter(prevItems => prevItems.filter(item => item !== num));
-
         //if(cardUserGetter.length <= 1) window.location.reload();
     }
 
 
 
-    if(cardItemsGetter.length == 0){
+    if(cardItemsGetter.length === 0){
         return(
             <div className = "card-content mt-5">
             <CSRFToken />

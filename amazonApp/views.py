@@ -55,7 +55,7 @@ class CardAPI(APIView):
     def post(self, request):
 
         try:
-            json_data = json.load(request)
+            json_data = json.loads(request)
 
             cart = Cart.objects.get(owner__username = json_data["username"])
             serializer = CartSerializer(cart)
@@ -82,7 +82,7 @@ class ProcessAPI(APIView):
     def post(self, request, *args, **kwargs):
 
         try:
-            json_data = json.load(request)
+            json_data = json.loads(request)
             product = Product.objects.get(id = json_data["id"])
 
             cart = Cart.objects.get(owner__username = json_data["username"])
@@ -99,7 +99,7 @@ class RemoveItemCart(APIView):
     def post(self, request, *args, **kwargs):
   
         try:
-            json_data = json.load(request)
+            json_data = json.loads(request)
             product = Product.objects.get(id = json_data["id"])
 
             cart = Cart.objects.get(owner__username = json_data["username"])
@@ -144,26 +144,20 @@ class SubCategoriesAPI(generics.ListAPIView):
 
 
 class LoginAPI(APIView):
-
-
     def post(self, request, *args, **kwargs):
-
-        json_data = json.load(request)
-
         try:
-            user_object = User.objects.get(username = json_data['username'])
+            json_data = json.loads(request)
+            user_object = User.objects.get(username=json_data['username'])
             return JsonResponse({'authenticated': True, 'email': user_object.email, 'username': json_data['username']})
-
-
-        except json.JSONDecodeError as e:
-            return JsonResponse({'authenticated': False, "error": "Error decoding JSON", "detail": str(e)}, status=400)
-
+        
         except User.DoesNotExist:
             return JsonResponse({'authenticated': False, "error": "Object does not exist"}, status=404)
-
+        
+        except json.JSONDecodeError as e:
+            return JsonResponse({'authenticated': False, "error": "Error decoding JSON", "detail": str(e)}, status=400)
+        
         except Exception as e:
             return JsonResponse({'authenticated': False, "error": "Internal Server Error", "detail": str(e)}, status=500)
-
 
 
 
@@ -277,6 +271,7 @@ class ProductsAPI(generics.ListAPIView):
 
         json_f = json.load(request)["list"]
         objects_list = []
+
 
         for id in json_f:
             objects_list.append(Product.objects.get(id = id))

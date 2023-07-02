@@ -77,35 +77,39 @@ const Store: React.FC = () => {
         const cRef = useRef<HTMLInputElement>(null);
 
         let {q_QueryParam, c_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
-
         let [a1, a2, a3, a4] = [[], [], [], []];
 
         useEffect(() => {
+            try {
+                fetch(`http://127.0.0.1:8000/api/subcategories/`)
+                .then(response => response.json())
+                .then(result => setSubs(result));
 
-            fetch(`http://127.0.0.1:8000/api/subcategories/`)
-            .then(response => response.json())
-            .then(result => setSubs(result));
+                fetch(`http://127.0.0.1:8000/api/categories/`)
+                .then(response2 => response2.json())
+                .then(result2 => setCategories(result2));
 
-            fetch(`http://127.0.0.1:8000/api/categories/`)
-            .then(response2 => response2.json())
-            .then(result2 => setCategories(result2));
+                fetch(`http://127.0.0.1:8000/api/products/?q=${q_QueryParam}&c=${c_QueryParam}&u=${u_QueryParam}&rating=${rating_QueryParam}`)
+                .then(response3 => response3.json())
+                .then(result3 => (setProducts(result3)));
 
-            fetch(`http://127.0.0.1:8000/api/products/?q=${q_QueryParam}&c=${c_QueryParam}&u=${u_QueryParam}&rating=${rating_QueryParam}`)
-            .then(response3 => response3.json())
-            .then(result3 => (setProducts(result3)));
+                fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${q_QueryParam}`)
+                .then(response4 => response4.json())
+                .then(result4 => setForData(result4));
 
-            fetch(`http://127.0.0.1:8000/api/products-by-subs/?q=${q_QueryParam}`)
-            .then(response4 => response4.json())
-            .then(result4 => setForData(result4));
+                fetch(`http://127.0.0.1:8000/api/avg-rate`)
+                .then(response5 => response5.json())
+                .then(result5 => (console.log(result5), setAverageRate(result5)));;
 
-            fetch(`http://127.0.0.1:8000/api/avg-rate`)
-            .then(response5 => response5.json())
-            .then(result5 => (console.log(result5), setAverageRate(result5)));;
+                for(let nums of priceLimits){
+                    setArrayPrices(ar1 => [...ar1, nums]);
+                }   
+            }
 
-            for(let nums of priceLimits){
-                setArrayPrices(ar1 => [...ar1, nums]);
-            }   
-
+            catch (error){
+                console.error("Error fetching data:", error);
+            }
+            
         },[])
 
 
@@ -140,7 +144,7 @@ const Store: React.FC = () => {
                         let storage = JSON.parse(localStorage.getItem("c" + index) || "");
                         let checkStorage = storage ? storage.value : "";
 
-                        if(checkStorage === true){
+                        if(checkStorage){
                             let object = {value: false, nut: "c", id: ([...new Set(arrayBrands)] || [])[index] }
                             localStorage.setItem("c" + index, JSON.stringify(object));
                         }
@@ -154,11 +158,12 @@ const Store: React.FC = () => {
                         let storage = JSON.parse(localStorage.getItem("u" + index) || "");
                         let checkStorage = storage ? storage.value : "";
 
-                        if(checkStorage === true){
+                        if(checkStorage){
                             let object = {value: false, nut: "u", id: ([...new Set(arrayPrices)] || [])[index] }
                             localStorage.setItem("u" + index, JSON.stringify(object));
                         }
-
+                        
+                        return null;
                     })
                     break;
             }
@@ -179,7 +184,7 @@ const Store: React.FC = () => {
 
 
         let helper : any = [];
-
+    
         useEffect(() => {
             aLoop:
             for(let item of products){
