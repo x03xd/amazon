@@ -62,28 +62,26 @@ export const AuthProvider = ({children}: ContextProvider) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    //console.log(parsedCookies);
+
 
     const [authToken, setAuthToken] = useState<AuthToken | null>(parsedCookies.authToken ? parsedCookies.authToken : null);
     const [username, setUsername] = useState<UserData | null>(parsedCookies.username ? jwt_decode(parsedCookies.username) : null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    //onsole.log(authToken);
-
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState<string>("");
 
 
-    function navigateBack(){
+    const navigateBack = (): void => {
         navigate("/login/", {state: {link: 'http://127.0.0.1:8000/api/login/', type: 'text', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
     }
 
-    function navigateToPasswordInput(){
+    const navigateToPasswordInput = (): void => {
         navigate("/login2/", {state: {link: 'http://127.0.0.1:8000/api/login2/', type: 'password', inputValue: 'Zaloguj się', style: 'hidden', style2: 'active', content: 'Hasło'}});
     }
 
-    function navigateToHome(){
+    const navigateToHome = (): void => {
         navigate("/");
     }
 
@@ -104,10 +102,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
             })
 
             const jsonResponse = await response.json();
-            console.log(jsonResponse)
-            
             setUsername(jsonResponse.username)
-
 
             if(jsonResponse.authenticated){
                 navigateToPasswordInput();

@@ -13,7 +13,7 @@ export interface UListProps {
 
 const UList: React.FC<UListProps> = ({ index, item, UListFunction }) => {
 
-    function handleClick(item: string){
+    const handleClick = (item: string): void => {
         UListFunction(item);
     }
 

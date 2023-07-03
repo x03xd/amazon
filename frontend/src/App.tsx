@@ -48,19 +48,19 @@ const App: React.FC = () => {
     const [contentStyle, setContentStyle] = useState<string>("");
 
 
-    function overlayStyler(style: string){
+    const overlayStyler = (style: string): void => {
         setOverlay(style);
     }
-
-    function loginModalStyler(style: string){
+    
+    const loginModalStyler = (style: string): void => {
         setLoginModal(style);
     }
-
-    function leftModalStyler(style: string){
+    
+    const leftModalStyler = (style: string): void => {
         setLeftModal(style);
     }
-
-    function unclickableNavbar(style: string){
+    
+    const unclickableNavbar = (style: string): void => {
         setUnclick(style);
     }
 

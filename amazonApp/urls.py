@@ -15,7 +15,7 @@ urlpatterns = [
     path("remove-item/", views.RemoveItemCart.as_view()),
 
     path("login/", views.LoginAPI.as_view()),
-    path("cart/", views.CardAPI.as_view()),
+    path("cart/", views.CartAPI.as_view()),
     path("products-by-subs/", views.ProductsBySubsAPI.as_view()),
     path("registration/", views.RegisterSystem.as_view()),
     path('logout/', views.LogoutView.as_view()),

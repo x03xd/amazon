@@ -1,6 +1,6 @@
 import card_picture from './images/cardz.svg';
 import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext} from 'react';
 import CardObject from './CardObject';
 import AuthContext from "./AuthenticationContext";
 import CSRFToken from './CSRFToken';
@@ -34,19 +34,25 @@ const Card: React.FC = () => {
     const [cardItemsGetter, setCardItemsGetter] = useState<Product[] | []>([]);
 
     const [total, setTotal] = useState<number>(0);
+    const navigate = useNavigate()
 
-    let {username} = useContext(AuthContext);
+    let {username, authToken} = useContext(AuthContext);
 
 
     useEffect(() => {
+        if(authToken == null) navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
+    }, [])
 
+    
+
+    useEffect(() => {
         try{
-            const response = fetch('http://127.0.0.1:8000/api/cart/', {
-                method:'post',
+            fetch('http://127.0.0.1:8000/api/cart/', {
+                method: 'post',
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({"username":username?.username})
+                body:JSON.stringify({"username": username?.username})
             })
             .then(response => response.json())
             .then(result => (setCardUserGetter(result)));
@@ -61,15 +67,14 @@ const Card: React.FC = () => {
     //console.log(cardItemsGetter)
 
     useEffect(() => {
-
         try{
-
-            const response = fetch('http://127.0.0.1:8000/api/products/', {
+            //const response
+            fetch('http://127.0.0.1:8000/api/products/', {
                 method:'post',
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({"list":cardUserGetter})
+                body:JSON.stringify({"list": cardUserGetter})
             })
             .then(response => response.json())
             .then(result => (setCardItemsGetter(result)));
@@ -89,9 +94,14 @@ const Card: React.FC = () => {
         setTotal(prevValue)
 
     }, [cardItemsGetter])
-   
-
-
+    
+    /*
+    if (authToken === null) {
+        window.location.href = '/login';
+        return null; // You can return null or any other placeholder while the redirection happens
+    }
+    */
+    
 
 
     const removeProduct = (num : number) => {

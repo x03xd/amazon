@@ -1,5 +1,5 @@
 import {Routes, Route, useNavigate, useSearchParams} from 'react-router-dom';
-import React, {useState, useRef } from 'react';
+import React, {useState, useRef, ChangeEvent, FormEvent} from 'react';
 import logo from './images/xd.png';
 import cart from './images/shopping-cart-xxl.png';
 import Store from './Store';
@@ -44,8 +44,8 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
     const [searchParams, setSearchParams] = useSearchParams();
 
 
-    function subCategoryNavigate(e: any){
-        if(value === null){
+    const subCategoryNavigate = (e: FormEvent<HTMLFormElement>): void => {
+        if(value == null){
             navigate("")
         }
 
@@ -55,14 +55,19 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
     }
 
 
-    function returnHome(){
+    const returnHome = (): void => {
         navigate("");
     }
 
-    const [value, setValue] = useState("");
-    function searchBarHandling(e: any){
+    const userCart = (): void => {
+        navigate("cart")
+    }
+
+    const [value, setValue] = useState<string>("");
+
+    const searchBarHandling = (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value)
-        console.log(value)
+        //console.log(value)
     }
 
 
@@ -74,7 +79,7 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
                 <div className = 'navbar-upper-part'>
 
                     <div onClick = {returnHome} className = "logo-box">
-                        <img className = 'logo mt-2 ms-4' src = {logo} />
+                        <img className = 'logo mt-2 ms-4' loading = "lazy" src = {logo} />
                     </div>
 
                     <div>
@@ -99,7 +104,7 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
                     </div>
 
                     <div className = "cart-box">
-                        <img className = "cart" src = {cart} />
+                        <img onClick = {userCart} className = "cart" src = {cart} loading = "lazy" />
                         <span>Koszyk</span>
                     </div>
 

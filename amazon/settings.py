@@ -79,17 +79,17 @@ WSGI_APPLICATION = 'amazon.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'amazon',
-        'USER': 'root',
-        'PASSWORD': 'zxc!!@123Q',
-        'PORT': '3306',
-        'HOST': 'localhost',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',  # Usually 'localhost' for local development
+        'PORT': '5432',  # Usually '5432' for PostgreSQL
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -142,7 +142,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'frontend/build/static/media'
 
 
-AUTH_USER_MODEL = 'frontend.User'
+AUTH_USER_MODEL = 'amazonApp.User'
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
@@ -150,7 +150,6 @@ CORS_ALLOW_CREDENTIALS = True
 REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
-
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 

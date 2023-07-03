@@ -1,4 +1,4 @@
-from django.db import models
+'''from django.db import models
 from django.contrib.auth.models import AbstractUser
 import base64, os, requests, json
 from django.dispatch import receiver
@@ -82,12 +82,12 @@ class User(AbstractUser):
 
 
 
-'''
+
     @classmethod
     def post_create(cls, sender, instance, created, *args, **kwargs):
         if not created:
             return
-'''
+
 
 class Cart(models.Model):
     test_name = models.CharField(max_length = 30, null = True)
@@ -127,5 +127,5 @@ def create_one_to_one(sender, instance, created, **kwargs):
 
         instance.username_change_allowed = date.date()
         instance.email_change_allowed = date.date()
-        instance.save()
+        instance.save()'''
 

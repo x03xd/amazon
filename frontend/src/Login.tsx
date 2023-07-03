@@ -13,8 +13,7 @@ const Login: React.FC = () => {
     const location = useLocation();
 
     let {loginUser, usernameFilter, email, alertStyle, alertText} = useContext(AuthContext);
-
-    const [adress, setAdress] = useState(window.location.href);
+    const [adress, setAdress] = useState<string>(window.location.href);
 
     useEffect(() => {
         setAdress(window.location.href);
@@ -50,8 +49,8 @@ const Login: React.FC = () => {
                     </div>
 
                     <div className = {`${location.state.style2} p-3 mt-3`} id = "reminder-login">
-                         <input type = "checkbox"/>
-                         <span>Nie wylogowuj mnie</span><a href = "#">Szczegóły</a>
+                        <input type = "checkbox"/>
+                        <span>Nie wylogowuj mnie</span><a href = "#">Szczegóły</a>
                     </div>
 
                 </div>

@@ -16,45 +16,58 @@ interface EditProfileCardProps {
 }
 
 
-
 interface AccessToChangeUsernameStateProp {
     username: boolean;
     email: boolean;
 }
-
-
 
 const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, buttonValue, id, modalStyleFunction, accessLink, access }) => {
 
     const inputValue = useRef<HTMLInputElement>(null)
     const {username} = useContext(AuthContext);
 
-    console.log(access);
+    console.log(link)
+    console.log(access)
 
-
-    const submitChange = async (e: any) => {
+    const submitChange = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        const setNewDate = async () => { 
+
+            try{
+                const response = await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
+                    method: 'POST',
+                    credentials: 'include', 
+                    headers: {
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify({"access": access})
+                })
+                let responseJSON = await response.json();
+                console.log(responseJSON)
+
+            }
+
+            catch(error){
+                console.log(`Error: ${error}`)
+            }
+        }
+
         try{
-            let response = await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
                 method: 'PATCH',
                 credentials: 'include', 
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({"access": access,"change": inputValue.current?.value})
+                body: JSON.stringify({"access": access, "change": inputValue.current?.value})
             })
-            let responseJSON = await response.json();
+            const responseJSON = await response.json();
             console.log(responseJSON)
 
-                if(responseJSON.status === 200){
-                    console.log(responseJSON)
-                }
-
-
-                else{
-
-                }
+            if (responseJSON.status) {
+                setNewDate();
+            }
 
         }
 
@@ -62,34 +75,6 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
             console.log(`Error: ${error}`)
         }
 
-
-
-        try{
-            let response2 = await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
-                method: 'POST',
-                credentials: 'include', 
-                headers: {
-                    'Content-Type':'application/json',
-                },
-                body: JSON.stringify({"access": access})
-            })
-            let responseJSON2 = await response2.json();
-            console.log(responseJSON2)
-
-                if(responseJSON2.status === 200){
-                    console.log(responseJSON2)
-                }
-
-
-                else{
-
-                }
-
-        }
-
-        catch(error){
-            console.log(`Error: ${error}`)
-        }
         
     }
 
@@ -111,6 +96,7 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
 
                 <div className = "edit-profile-card-button">
                     <button className = "button-standard-gradient">{buttonValue}</button>
+
                     {link === "edit-username" && !access?.username ? <img src = {blocked_padlock} alt = "blocked" loading = "lazy" /> : null}
                     {link === "edit-email" && !access?.email ? <img src = {blocked_padlock} alt = "blocked" loading = "lazy" /> : null}
                 </div>

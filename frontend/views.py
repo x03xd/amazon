@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, View
 import json
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import DetailView
-from .models import User, Product, Cart
+from amazonApp.models import User, Product, Cart
 
 from django.http.response import JsonResponse, HttpResponse
 from django.contrib.auth import login, logout, authenticate

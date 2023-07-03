@@ -16,7 +16,7 @@ const Modal: React.FC<ModalProps> = ({ className, modalOFF, overlayOFF, navbarSt
     const navigate = useNavigate();
 
 
-    const navigateTo = () => {
+    const navigateTo = (): void => {
         navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
     }
 
@@ -35,12 +35,21 @@ const Modal: React.FC<ModalProps> = ({ className, modalOFF, overlayOFF, navbarSt
         <div className = {`login-modal ${className}`}>
 
             <div className = "p-3">
-                <button onClick = {() => { navigateTo() }} className = "login-button">Zaloguj się</button>
-                {username != null? <span></span>:
+                {username == null
+                    ?
+                    <button onClick = {() => { navigateTo() }} className = "login-button">Zaloguj się</button>
+                    :
+                    <button onClick = {logout} className = "login-button">Wyloguj się</button>
+                }
+
+                {username == null 
+                    ?
                     <>
                         <span className = {`mt-4`}>Pierwszy raz w serwisie Amazon?</span> <br/>
                         <span className = "link" onClick = {() => {navigate("/registration")}}>Rozpocznij tutaj.</span>
                     </>
+                    :
+                    <span></span>
                 }
             </div>
             
@@ -66,7 +75,6 @@ const Modal: React.FC<ModalProps> = ({ className, modalOFF, overlayOFF, navbarSt
                         <li>Moje rekomendacje</li>
                         <li>Mój Prime</li>
                         <li>Sprzedawaj na Amazon</li>
-                        {username == null ? <span></span> : <li className = " link mt-4" onClick = {logout}>Wyloguj się</li>}
                     </ul>
                 </div>
             </div>

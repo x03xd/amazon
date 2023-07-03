@@ -1,5 +1,5 @@
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
-import React, {useEffect, useState, useRef, FormEvent} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import CSRFToken from './CSRFToken';
 import logo from './images/xd.png';
 import Alert from './Alert';
@@ -17,7 +17,7 @@ const Register: React.FC = () => {
 
     const navigate = useNavigate();
 
-    async function submitForm(e: FormEvent<HTMLFormElement>){
+    async function submitForm(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault();
             
         if(password1Ref.current?.value !== password2Ref.current?.value){

@@ -9,7 +9,7 @@ import Register from './Register';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Store from './Store';
 import Lobby from './Lobby';
-import Card from './Card';
+import Cart from './Cart';
 import { AuthProvider } from './AuthenticationContext';
 import { QueryParamsProvider } from './QueryParamsContext';
 import MyAccount from './MyAccount';
@@ -29,7 +29,7 @@ root.render(
                         <Route path = "/" element = {<Main />} />
                         <Route path = "/s" element = {<Store />} />
                         <Route path = "/l/:slug" element = {<Lobby />} />
-                        <Route path = "/card" element = {<Card />} />
+                        <Route path = "/cart" element = {<Cart />} />
                        
                         <Route element = {<NarrowGrid />}>
                             <Route path = "/account" element = {<MyAccount />} />

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from frontend.models import Product, Category, SubCategory, UserRate
+from .models import Product, Category, SubCategory, UserRate, User, Cart
 from .serializers import ProductSerializer, CategorySerializer, SubCategorySerializer, UserSerializer, CartSerializer, UserRateSerializer, StandardUserRateSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,7 +8,6 @@ from django.http.response import JsonResponse
 import json
 from django.db.models import Q, F, When, Value, Case
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, CreateAPIView, UpdateAPIView
-from frontend.models import User, Cart
 from django.contrib.auth import login, logout, authenticate
 from django.views.generic.edit import CreateView, FormView
 from .forms import RegisterForm
@@ -36,11 +35,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-       
         token['username'] = user.username
         token['email'] = user.email
 
         return token
+
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -49,13 +48,12 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 
-
-class CardAPI(APIView):
+class CartAPI(APIView):
 
     def post(self, request):
 
         try:
-            json_data = json.loads(request)
+            json_data = json.load(request)
 
             cart = Cart.objects.get(owner__username = json_data["username"])
             serializer = CartSerializer(cart)
@@ -72,8 +70,6 @@ class CardAPI(APIView):
             return JsonResponse({'authenticated': False, "error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
-#@login_required
-
 
 
 
@@ -82,7 +78,7 @@ class ProcessAPI(APIView):
     def post(self, request, *args, **kwargs):
 
         try:
-            json_data = json.loads(request)
+            json_data = json.load(request)
             product = Product.objects.get(id = json_data["id"])
 
             cart = Cart.objects.get(owner__username = json_data["username"])
@@ -99,7 +95,7 @@ class RemoveItemCart(APIView):
     def post(self, request, *args, **kwargs):
   
         try:
-            json_data = json.loads(request)
+            json_data = json.load(request)
             product = Product.objects.get(id = json_data["id"])
 
             cart = Cart.objects.get(owner__username = json_data["username"])
@@ -145,8 +141,9 @@ class SubCategoriesAPI(generics.ListAPIView):
 
 class LoginAPI(APIView):
     def post(self, request, *args, **kwargs):
+        
         try:
-            json_data = json.loads(request)
+            json_data = json.load(request)
             user_object = User.objects.get(username=json_data['username'])
             return JsonResponse({'authenticated': True, 'email': user_object.email, 'username': json_data['username']})
         
@@ -232,9 +229,6 @@ class ProductsAPI(generics.ListAPIView):
         multiple_brands_filter = c.split(",")
 
 
-        '''
-        dla przyklady mamy rating = 3 no to
-        '''
 
         if u != "null" and u != "":
             multiple_prices_filter = u.split(",")
@@ -337,7 +331,7 @@ class AccessToChangeStatus(APIView):
             if user.username_change_allowed.date() >= today_date:
                 status_username = False
 
-            elif user.email_change_allowed.date() < today_date:
+            elif user.username_change_allowed.date() < today_date:
                 status_username = True
 
 
@@ -349,10 +343,6 @@ class AccessToChangeStatus(APIView):
                     
 
             return JsonResponse({"username": status_username, "email":status_email})
-        
- 
-        except json.JSONDecodeError as e:
-            return JsonResponse({"error": "Error decoding JSON", "detail": str(e)}, status=400)
 
 
         except User.DoesNotExist:
@@ -370,50 +360,41 @@ class EditUsername(APIView):
     
 
     def patch(self, request, *args, **kwargs):
-
+        
         date = datetime.now()
         today_date = date.date()
 
-        user = User.objects.get(id = self.kwargs.get("id"))
-        json_data = json.load(request)
+        try:
+            json_data = json.load(request)
 
-        if json_data["access"]["username"] == False or "false":
-            return Response("cant edit username")
+            if not json_data["access"]["username"]:
+                return JsonResponse({"error": "Impossible"})
+            
+            user = User.objects.get(id = self.kwargs.get("id"))
+ 
+            if User.objects.filter(username=json_data["change"]).exists():
+                return JsonResponse({"status": "User with passed username already exists"})
+            
+            user.username = json_data["change"]
+            user.save()
 
-        else:
-            try:
-                try:
-                    User.objects.get(username = json_data["change"])      
-                    return JsonResponse({"status": "User with passed username already exists"})
+            return JsonResponse({"status":True})
 
-
-                except User.DoesNotExist:
-
-                    user.username = json_data["change"]
-                    user.save()
-
-                    return JsonResponse({"status":"Username has been changed"})
-
-            except:
-                return JsonResponse({"status":"ERROR"})
+        
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Object does not exist"}, status=404)
 
 
 
     def post(self, request, *args, **kwargs):
 
-        json_data = json.load(request)
+        user = User.objects.get(id = self.kwargs.get("id"))
+        date = datetime.now()
 
-        if json_data["access"]["username"] == False or "false":
-            return Response("cant new date")
+        new_date = date.date() + timedelta(days=30) 
 
-        else:
-            user = User.objects.get(id = self.kwargs.get("id"))
-            date = datetime.now()
-
-            date = date.date() + timedelta(days=30) 
-
-            user.email_change_allowed = date
-            user.save()
+        user.username_change_allowed = new_date
+        user.save()
 
 
 
@@ -425,45 +406,35 @@ class EditEmail(APIView):
 
         date = datetime.now()
         today_date = date.date()
+
+        try:
+            json_data = json.load(request)
+
+            if not json_data["access"]["email"]:
+                return JsonResponse({"error": "Impossible"})
             
-        user = User.objects.get(id = self.kwargs.get("id"))
-        json_data = json.load(request)
+            user = User.objects.get(id = self.kwargs.get("id"))
+ 
+            if User.objects.filter(email=json_data["change"]).exists():
+                return JsonResponse({"status": "User with passed email already exists"})
+            
+            user.email = json_data["change"]
+            user.save()
 
-        if json_data["access"]["email"] == False or "false":
-            return Response("cant change")
+            return JsonResponse({"status":True})
 
-        else: 
-            try:
-
-                try:
-                    User.objects.get(email = json_data["change"])      
-                    return JsonResponse({"status": "User with passed email already exists"})
-
-
-                except User.DoesNotExist:
-
-                    user.email = json_data["change"]
-                    user.save()
-
-                    return JsonResponse({"status":"Email has been changed"})
-
-            except:
-                return JsonResponse({"status":"ERROR"})
+        
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Object does not exist"}, status=404)
 
 
 
     def post(self, request, *args, **kwargs):
 
-        json_data = json.load(request)
+        user = User.objects.get(id = self.kwargs.get("id"))
+        date = datetime.now()
 
-        if json_data["access"] == True or "true":
-            return Response("cant change")
+        new_date = date.date() + timedelta(days=30) 
 
-        else:
-            user = User.objects.get(id = self.kwargs.get("id"))
-            date = datetime.now()
-
-            date = date.date() + timedelta(days=30) 
-
-            user.username_change_allowed = date
-            user.save()
+        user.email_change_allowed = new_date
+        user.save()

@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from frontend.models import Product, Category, SubCategory, User, Cart, UserRate
+from .models import Product, Category, SubCategory, User, Cart, UserRate
 from rest_framework import serializers
 
 

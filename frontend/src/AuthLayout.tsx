@@ -17,7 +17,7 @@ const AuthLayout: React.FC = () => {
 
     useEffect(() => {
         const adress = window.location.href;
-        if(adress == 'http://localhost:3000/login2' || adress == 'http://localhost:3000/login2/' || adress == "http://localhost:3000/registration" || adress == "http://localhost:3000/registration/"){
+        if(adress === 'http://localhost:3000/login2' || adress === 'http://localhost:3000/login2/' || adress === "http://localhost:3000/registration" || adress === "http://localhost:3000/registration/"){
             setButtonStyle("hidden");
         }
     })
@@ -31,7 +31,7 @@ const AuthLayout: React.FC = () => {
         <>
             <div className = "main-container-auth-layout-title">
                 <div className = "logo-box">
-                    <img className = 'logo mt-4' src = {logo} />
+                    <img className = 'logo mt-4' src = {logo} alt = "logo"/>
                 </div>
 
             </div>

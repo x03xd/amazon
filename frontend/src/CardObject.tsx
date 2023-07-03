@@ -38,7 +38,7 @@ const CardObject: React.FC<Item> = ({ item, index, ajaxFunction }) => {
     let {username} = useContext(AuthContext);
     const [data, setData] = useState<Data | null>(null);
 
-    const handleAjaxRequest = (num : number) => {
+    const handleAjaxRequest = (num : number): void => {
         ajaxFunction(num);
     }
 
