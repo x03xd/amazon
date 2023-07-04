@@ -206,32 +206,30 @@ class CountAvgRate(generics.ListAPIView):
 class ProductsAPI(generics.ListAPIView):
     serializer_class = ProductSerializer
 
-
+   
     def get_queryset(self):
-
-        '''RATING'''
-
+      
         r = self.request.query_params.get('rating')
-        lst = []
-
-        rates = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=r)
-        serializer = UserRateSerializer(rates, many = True)
-
-        for rate in rates:
-            lst.append(rate["rated_products"])
-    
-        rating_queryset = UserRate.objects.all()
-
-        '''/RATING'''
-
-
         q = self.request.query_params.get('q')
         c = self.request.query_params.get('c')
         u = self.request.query_params.get('u')
+        
+        lst = []
 
-        multiple_brands_filter = c.split(",")
-        queryset = Product.objects.all()
+        if r is not None:
+            rates = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=r)
+            serializer = UserRateSerializer(rates, many = True)
 
+            for rate in rates:
+                lst.append(rate["rated_products"])
+    
+        #rating_queryset = UserRate.objects.all()
+        
+       
+        if c is not None:
+            multiple_brands_filter = c.split(",")
+     
+        
         if u is not None:
             multiple_prices_filter = u.split(",")
 
@@ -241,65 +239,64 @@ class ProductsAPI(generics.ListAPIView):
                 first, second = s.split('-')
                 first_lst.append(float(first))
                 second_lst.append(float(second))
-        
-        ''' 
+      
+
+        queryset = Product.objects.all()
+      
+  
         if q is None:
 
-            if (c) and (u) and (r):
+            if (c is not None) and (u is not None) and (r is not None):
                 queryset = queryset.filter(id__in = lst, brand__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
 
-            if (c) and (u) and (not r or r == "null"):
+            if (c is not None) and (u is not None) and (r is None):
                 queryset = queryset.filter(brand__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
 
-            if (c) and (not u or u == "null") and (r):
+            if (c is not None) and (u is None) and (r is not None):
                 queryset = queryset.filter(id__in = lst, brand__in = multiple_brands_filter)
 
-            if (not c or c == "null") and (u) and (r):
+            if (c is None) and (u is not None) and (r is not None):
                 queryset = queryset.filter(id__in = lst, price__range=(first_lst[0], second_lst[-1]))
             
-            if (not c or c == "null") and (not u or u == "null") and (r):
+            if (c is None) and (u is None) and (r is not None):
                 queryset = queryset.filter(id__in = lst)
 
-            if (c) and (not u or u == "null") and (not r or r == "null"):
+            if (c is not None) and (u is None) and (r is None):
                 queryset = queryset.filter(brand__in = multiple_brands_filter)
 
-            if (not c or c == "null") and (u) and (not r or r == "null"):
+            if (c is None) and (u is not None) and (r is None):
                 queryset = queryset.filter(price__range=(first_lst[0], second_lst[-1]))
 
         
         else:
 
-            if (c) and (u) and (r):
+            if (c is not None) and (u is not None) and (r is not None):
                 queryset = queryset.filter(subcategory_name__sub_category=q, id__in = lst, brand__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
 
-            if (c) and (u) and (not r or r == "null"):
+            if (c is not None) and (u is not None) and (r is None):
                 queryset = queryset.filter(subcategory_name__sub_category=q, brand__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
 
-            if (c) and (not u or u == "null") and (r):
+            if (c is not None) and (u is None) and (r is not None):
                 queryset = queryset.filter(subcategory_name__sub_category=q, id__in = lst, brand__in = multiple_brands_filter)
 
-            if (not c or c == "null") and (u) and (r):
+            if (c is None) and (u is not None) and (r is not None):
                 queryset = queryset.filter(subcategory_name__sub_category=q, id__in = lst, price__range=(first_lst[0], second_lst[-1]))
             
-            if (not c or c == "null") and (not u or u == "null") and (r):
+            if (c is None) and (u is None) and (r is not None):
                 queryset = queryset.filter(subcategory_name__sub_category=q, id__in = lst)
 
-            if (c) and (not u or u == "null") and (not r or r == "null"):
+            if (c is not None) and (u is None) and (r is None):
                 queryset = queryset.filter(subcategory_name__sub_category=q, brand__in = multiple_brands_filter)
 
-            if (not c or c == "null") and (u) and (not r or r == "null"):
+            if (c is None) and (u is not None) and (r is None):
                 queryset = queryset.filter(subcategory_name__sub_category=q, price__range=(first_lst[0], second_lst[-1]))
 
-            if (not c or c == "null") and (not u or u == "null") and (not r or r == "null"):
-                queryset = queryset.filter(subcategory_name__sub_category=q)'''
-
-
+            if (c is None) and (u is None) and (r is None):
+                queryset = queryset.filter(subcategory_name__sub_category=q)
+   
 
         return queryset
-
-
-
-
+ 
 
     def post(self, request):
 
@@ -314,7 +311,11 @@ class ProductsAPI(generics.ListAPIView):
 
         return Response(serializer.data)
 
-'''class UserUpdateView(LoginRequiredMixin, UpdateView):
+
+
+
+'''
+class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     fields = ['username', 'email']
     template_name = 'user_form.html'
@@ -322,8 +323,8 @@ class ProductsAPI(generics.ListAPIView):
 
     def get_object(self, queryset=None):
         return self.request.user
-        '''
-
+      
+'''
 
 
 
@@ -351,8 +352,8 @@ class StoringUserToken(APIView):
 
         except:
             return JsonResponse({"cookie_to_update": False})
-
 '''
+
 from .serializers import EditUsernameSerializer, EditEmailSerializer
 
 

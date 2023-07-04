@@ -13,13 +13,13 @@ const Rating: React.FC = () => {
     const searchParams = new URLSearchParams(window.location.search);
 
     useEffect(() => {
-        let rate = localStorage.getItem("rating");
+        const rate = localStorage.getItem("rating");
         if (rate) {
             try {
                 const parsedRate = JSON.parse(rate);
                 setRate(parsedRate);
             } catch (error) {
-                console.error("Error parsing rate from localStorage:", error);
+                console.error("Error parsing rate from localStorage: ", error);
             }
         }
     },[]);
@@ -28,6 +28,7 @@ const Rating: React.FC = () => {
     useEffect(() => {
         localStorage.setItem("rating", JSON.stringify(rate))
     }, [rate]);
+
 
     function ratingFilter(rating: number){
         setRate(rating);

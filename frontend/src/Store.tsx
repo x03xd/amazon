@@ -75,10 +75,16 @@ const Store: React.FC = () => {
         //const cRef = useRef<HTMLInputElement>(null);
 
         let {q_QueryParam, c_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
-        //let [a1, a2, a3, a4] = [[], [], [], []];
 
+        const url = window.location.href;
+
+        const index = url.indexOf('http://localhost:3000/s');
+        const queryLinkPart = url.substring(index + 'http://localhost:3000/s'.length);
+        
+        console.log(queryLinkPart)
 
         useEffect(() => {
+            
             try {
                 fetch(`http://127.0.0.1:8000/api/subcategories/`)
                 .then(response => response.json())
@@ -88,7 +94,7 @@ const Store: React.FC = () => {
                 .then(response2 => response2.json())
                 .then(result2 => setCategories(result2));
 
-                fetch(`http://127.0.0.1:8000/api/products/?q=${q_QueryParam}&c=${c_QueryParam}&u=${u_QueryParam}&rating=${rating_QueryParam}`)
+                fetch(`http://127.0.0.1:8000/api/products/${queryLinkPart}`)
                 .then(response3 => response3.json())
                 .then(result3 => (setProducts(result3)));
 
@@ -110,6 +116,8 @@ const Store: React.FC = () => {
             }
             
         },[])
+
+        console.log(products)
 
 
         useEffect(() => {
