@@ -209,56 +209,96 @@ class ProductsAPI(generics.ListAPIView):
 
     def get_queryset(self):
 
+        '''RATING'''
+
         r = self.request.query_params.get('rating')
-        lista = []
-        object_ = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=r)
-        serializer = UserRateSerializer(object_, many = True)
+        lst = []
 
-        for x in object_:
-            lista.append(x["rated_products"])
+        rates = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=r)
+        serializer = UserRateSerializer(rates, many = True)
 
-
-        queryset = Product.objects.all()
-
+        for rate in rates:
+            lst.append(rate["rated_products"])
+    
         rating_queryset = UserRate.objects.all()
+
+        '''/RATING'''
+
 
         q = self.request.query_params.get('q')
         c = self.request.query_params.get('c')
         u = self.request.query_params.get('u')
 
         multiple_brands_filter = c.split(",")
+        queryset = Product.objects.all()
 
-
-
-        if u != "null" and u != "":
+        if u is not None:
             multiple_prices_filter = u.split(",")
 
-            first_list = []
-            second_list = []
+            first_lst, second_lst = [], []
 
             for index, s in enumerate(multiple_prices_filter):
                 first, second = s.split('-')
-                first_list.append(float(first))
-                second_list.append(float(second))
+                first_lst.append(float(first))
+                second_lst.append(float(second))
+        
+        ''' 
+        if q is None:
 
+            if (c) and (u) and (r):
+                queryset = queryset.filter(id__in = lst, brand__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
 
+            if (c) and (u) and (not r or r == "null"):
+                queryset = queryset.filter(brand__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
 
-        if q is not None:
+            if (c) and (not u or u == "null") and (r):
+                queryset = queryset.filter(id__in = lst, brand__in = multiple_brands_filter)
 
-                if c != "null" and u != "null" and r != "null":
-                    queryset = queryset.filter(id__in = lista, subcategory_name__sub_category=q, brand__in = multiple_brands_filter, price__range=(first_list[0],second_list[-1]))
+            if (not c or c == "null") and (u) and (r):
+                queryset = queryset.filter(id__in = lst, price__range=(first_lst[0], second_lst[-1]))
+            
+            if (not c or c == "null") and (not u or u == "null") and (r):
+                queryset = queryset.filter(id__in = lst)
 
-                if c != "null" and u == "null" and r != "null":
-                    queryset = queryset.filter(id__in = lista, subcategory_name__sub_category=q, brand__in = multiple_brands_filter)
+            if (c) and (not u or u == "null") and (not r or r == "null"):
+                queryset = queryset.filter(brand__in = multiple_brands_filter)
 
-                if c == "null" and u != "null" and r != "null":
-                    queryset = queryset.filter(id__in = lista, subcategory_name__sub_category=q, price__range=(first_list[0],second_list[-1]))
+            if (not c or c == "null") and (u) and (not r or r == "null"):
+                queryset = queryset.filter(price__range=(first_lst[0], second_lst[-1]))
 
-                if c == "null" and u == "null" and r != "null":
-                    queryset = queryset.filter(id__in = lista, subcategory_name__sub_category=q)
+        
+        else:
+
+            if (c) and (u) and (r):
+                queryset = queryset.filter(subcategory_name__sub_category=q, id__in = lst, brand__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
+
+            if (c) and (u) and (not r or r == "null"):
+                queryset = queryset.filter(subcategory_name__sub_category=q, brand__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
+
+            if (c) and (not u or u == "null") and (r):
+                queryset = queryset.filter(subcategory_name__sub_category=q, id__in = lst, brand__in = multiple_brands_filter)
+
+            if (not c or c == "null") and (u) and (r):
+                queryset = queryset.filter(subcategory_name__sub_category=q, id__in = lst, price__range=(first_lst[0], second_lst[-1]))
+            
+            if (not c or c == "null") and (not u or u == "null") and (r):
+                queryset = queryset.filter(subcategory_name__sub_category=q, id__in = lst)
+
+            if (c) and (not u or u == "null") and (not r or r == "null"):
+                queryset = queryset.filter(subcategory_name__sub_category=q, brand__in = multiple_brands_filter)
+
+            if (not c or c == "null") and (u) and (not r or r == "null"):
+                queryset = queryset.filter(subcategory_name__sub_category=q, price__range=(first_lst[0], second_lst[-1]))
+
+            if (not c or c == "null") and (not u or u == "null") and (not r or r == "null"):
+                queryset = queryset.filter(subcategory_name__sub_category=q)'''
+
 
 
         return queryset
+
+
+
 
 
     def post(self, request):

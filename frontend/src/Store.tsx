@@ -1,14 +1,12 @@
-import Banner from './Banner';
-import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import ProductCard from './ProductCard';
-import { useNavigate } from "react-router-dom";
 import UList from './UList';
 import Clear from './Clear';
 import Rating from './Rating';
 import Checkbox from './Checkbox';
 import QueryParamsContext from "./QueryParamsContext";
 import {priceLimits} from './static_ts_files/priceLimits'
-import { Console } from 'console';
+
 
 interface Categories {
     id: number;
@@ -54,6 +52,8 @@ interface PriceLimits {
 
 
 const Store: React.FC = () => {
+    
+        const searchParams = new URLSearchParams(window.location.search);
 
         const [productsWithRatings, setProductsWithRatings] = useState<JSX.Element[]>([]);
         const [arrayPrices, setArrayPrices] = useState<PriceLimits[]>([]);
@@ -62,9 +62,7 @@ const Store: React.FC = () => {
         const [arrayBrands, setArrayBrands] = useState<string[]>([]);
         const [brandsFalseFilled, setBrandsFalseFilled] = useState<boolean[]>([]);
 
-        const navigate = useNavigate();
-
-        //   {priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item} array = {newArray} /> )}
+        //{priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item} array = {newArray} /> )}
 
         const [categories, setCategories] = useState<Categories[]>([]);
         const [products, setProducts] = useState<Products[]>([]);
@@ -74,10 +72,11 @@ const Store: React.FC = () => {
 
         const aRef = useRef<HTMLInputElement>(null);
         const bRef = useRef<HTMLInputElement>(null);
-        const cRef = useRef<HTMLInputElement>(null);
+        //const cRef = useRef<HTMLInputElement>(null);
 
         let {q_QueryParam, c_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
-        let [a1, a2, a3, a4] = [[], [], [], []];
+        //let [a1, a2, a3, a4] = [[], [], [], []];
+
 
         useEffect(() => {
             try {
@@ -139,7 +138,7 @@ const Store: React.FC = () => {
             switch (arg) {
                 case "c":
 
-                    arrayBrands.map((item : string, index:number) => {
+                    arrayBrands.map((item: string, index: number) => {
 
                         let storage = JSON.parse(localStorage.getItem("c" + index) || "");
                         let checkStorage = storage ? storage.value : "";
@@ -148,40 +147,61 @@ const Store: React.FC = () => {
                             let object = {value: false, nut: "c", id: ([...new Set(arrayBrands)] || [])[index] }
                             localStorage.setItem("c" + index, JSON.stringify(object));
                         }
-
+               
                     })
                     break;
 
                 case "u":
-                    arrayPrices.map((item : any, index:number) => {
+                    arrayPrices.map((item: any, index: number) => {
 
-                        let storage = JSON.parse(localStorage.getItem("u" + index) || "");
-                        let checkStorage = storage ? storage.value : "";
+                        const storage = JSON.parse(localStorage.getItem("u" + index) || "");
+                        const checkStorage = storage ? storage.value : "";
 
                         if(checkStorage){
-                            let object = {value: false, nut: "u", id: ([...new Set(arrayPrices)] || [])[index] }
+                            const object = {value: false, nut: "u", id: ([...new Set(arrayPrices)] || [])[index] }
                             localStorage.setItem("u" + index, JSON.stringify(object));
                         }
                         
-                        return null;
+         
                     })
                     break;
+
+                case "rating":
+                    arrayPrices.map((item : any, index: number) => {
+
+                        const storage = JSON.parse(localStorage.getItem("rating") || "");
+                        const checkStorage = storage ? storage.value : "";
+
+                        if(checkStorage){
+                            localStorage.setItem("rating", "0");
+                        }
+                        
+                    })
+                    break;
+
             }
             window.location.reload();
         }
 
 
-        function handleClickSearch(){
-            navigate(`?q=${q_QueryParam}&c=${c_QueryParam}&u=${aRef.current?.value}-${bRef.current?.value}&rating=${rating_QueryParam}`);
-            window.location.reload();
+        function customPrice(){
+            searchParams.set('u', `${aRef.current?.value}-${bRef.current?.value}`);
+
+            const modifiedQueryString = searchParams.toString();
+            const baseUrl = window.location.href.split('?')[0];
+            const updatedUrl = baseUrl + '?' + modifiedQueryString;
+            window.location.href = updatedUrl;
         }
 
 
         function changeQ(qValue : string){
-            navigate(`?q=${qValue.toLowerCase()}&c=${c_QueryParam}&u=${u_QueryParam}`);
-            window.location.reload();
+            searchParams.set('q', qValue.toLowerCase());
+            
+            const modifiedQueryString = searchParams.toString();
+            const baseUrl = window.location.href.split('?')[0];
+            const updatedUrl = baseUrl + '?' + modifiedQueryString;
+            window.location.href = updatedUrl;
         }
-
 
         let helper : any = [];
     
@@ -189,11 +209,9 @@ const Store: React.FC = () => {
             aLoop:
             for(let item of products){
                 for(let rate of averageRate){
-
+                    
                     if(Number(rate["rated_products"]) === item["id"]){
-
                         setProductsWithRatings(helper => [...helper, <ProductCard key = {item["id"]} item = {item} rate = {rate["average_rate"]} />])
-
                         continue aLoop;
                     }
                 }
@@ -208,7 +226,6 @@ const Store: React.FC = () => {
 
                     <div className = "pt-0">
                         <span>Możliwość darmowej dostawy</span> <br/>
-
                         <input type = "checkbox" /> <a className = "" href = ""> Darmowa wysyłka przez Amazon <br/>
                         Darmowa dostawa dla wszystkich klientów <br/> przy zamówieniach o wartosci powyżej 40 zł, wysyłanych przez Amazon</a>
                     </div>
@@ -223,6 +240,7 @@ const Store: React.FC = () => {
 
                     <div>
                         <span>Recenzja klienta</span>
+                        <Clear text = "Wyczyść" nut = "rating" func = {clearQueryString}  />
                         <Rating />
                     </div>
 
@@ -230,7 +248,7 @@ const Store: React.FC = () => {
 
                     <div>
                         <span>Marka</span><br/>
-                        <Clear text = "Wyczyść" nut = "c" func = {clearQueryString} arrayProp = {[...new Set(arrayBrands)]} />
+                        <Clear text = "Wyczyść" nut = "c" func = {clearQueryString}  />
                         <ul className = "checkbox-list">
                             {[...new Set(arrayBrands)].map((item, index: number) => {
                                 return(
@@ -242,7 +260,7 @@ const Store: React.FC = () => {
 
                     <div>
                         <span>Cena</span>
-                        <Clear text = "Wyczyść" nut = "u" func = {clearQueryString} arrayProp = {[...new Set(arrayPrices)]} />
+                        <Clear text = "Wyczyść" nut = "u" func = {clearQueryString} />
                         <ul className = "checkbox-list">
                             {priceLimits.map((item, index: number) => {
                                 return(
@@ -256,7 +274,7 @@ const Store: React.FC = () => {
                         <div className = "d-flex align-items-center price-filters">
                             <input ref = {aRef} className = "" type = "text" placeholder = "Min"/>
                             <input ref = {bRef} className = "ms-1" type = "text" placeholder = "Max"/>
-                            <button onClick = {handleClickSearch} className = "ms-1 border 0">Szukaj</button>
+                            <button onClick = {customPrice} className = "ms-1 border 0">Szukaj</button>
                         </div>
 
                 </div>
@@ -269,9 +287,7 @@ const Store: React.FC = () => {
                     </div>
 
                     <div className = "store-content-results mt-3">
-
                         {productsWithRatings}
-
                     </div>
                 </div>
 

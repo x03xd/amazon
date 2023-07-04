@@ -1,8 +1,5 @@
 import arrow from './images/left.png';
-import PropTypes from 'prop-types';
-import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
-import QueryParamsContext from "./QueryParamsContext";
-import React, {useContext, useState} from 'react';
+import React from 'react';
 
 
 interface Item {
@@ -14,50 +11,45 @@ interface Item {
 }
 
 
-
-
-interface ArrayProps {
-    item: Item;
-}
-
-
 export interface ClearProps{
     nut: string;
     func: (arg: string) => void;
     text: string;
-    arrayProp: ArrayProps[] | string[] | unknown[];
 }
 
 
-const Clear: React.FC<ClearProps> = ({ func, nut, arrayProp, text }) => {
+const Clear: React.FC<ClearProps> = ({ func, nut, text }) => {
 
-    const navigate = useNavigate();
-    let {q_QueryParam, c_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
-    const [allUniqueContentArray, setAllUniqueContentArray] = useState(arrayProp);
+    const searchParams = new URLSearchParams(window.location.search);
 
     function clearResults(){
 
-        switch (nut) {
-
-            case "c":
-                navigate(`?q=${q_QueryParam}&c=${null}&u=${u_QueryParam}&rating=${rating_QueryParam}`);
-                func("c");
-
-                break;
-
-            case "u":
-                navigate(`?q=${q_QueryParam}&c=${c_QueryParam}&u=${null}&rating=${rating_QueryParam}`);
-                func("u");
-
-                break;
-
+        if(nut === "c"){
+            searchParams.delete('c');
+            func("c")
         }
+
+        else if(nut === "u"){
+            searchParams.delete('u');
+            func("u")
+        }
+
+        else if(nut === "rating"){
+            searchParams.delete('rating');
+            func("rating")
+        }
+
+        const modifiedQueryString = searchParams.toString();
+        const baseUrl = window.location.href.split('?')[0];
+        const updatedUrl = baseUrl + '?' + modifiedQueryString;
+
+        window.location.href = updatedUrl;
 
     }
 
     return(
         <div onClick = {() => { clearResults(); }} className = "d-flex align-items-center ms-n2 cursor-pointer">
-            <img src = {arrow}/><span className = "cursor-pointer">{text}</span>
+            <img src = {arrow} alt = "arrow" /><span className = "cursor-pointer">{text}</span>
         </div>
     );
 

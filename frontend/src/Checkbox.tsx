@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QueryParamsContext from "./QueryParamsContext";
 
+
 interface PriceRange {
     item: {
         desc: string,
@@ -9,12 +10,10 @@ interface PriceRange {
     }
 }
 
-
 interface uQuery {
     start: number;
     end: number;
 }
-
 
 interface CheckboxProps {
     nut: string;
@@ -30,20 +29,17 @@ interface CheckboxProps {
 
 
 
-const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rating, u, c, q, nut }) => {
+const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rating, u, c, q, nut }) => {    
+
+    const searchParams = new URLSearchParams(window.location.search);
+
+    // Set the new value for the query parameter
 
     let {c_QueryParam, q_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
     const navigate = useNavigate();
 
-    const [items, setItems] = useState<boolean[]>(array);
     const [allUniqueContentArray, setAllUniqueContentArray] = useState<PriceRange[] | string[]>(arrayProp); //defined w interfejsie
-    
-    useEffect(() => {
-        setItems(array)
-        setAllUniqueContentArray(arrayProp)
-     
-    }, [array, arrayProp])
-
+    const [items, setItems] = useState<boolean[]>(array);
 
     const [filteredBrands2, setFilteredBrands2] = useState<string[] | []>([]);
     const [filteredPrices2, setFilteredPrices2] = useState<string[] | []>([]);
@@ -57,60 +53,66 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
 
     let [oldArray, oldArray3, oldArray4, testArray, testArray2] = [[], [], [], [], []]
 
-
-    useEffect(() => {
-        items.map((item : boolean, index : number) => {
-            let temp = JSON.parse(localStorage.getItem(nut + index) || "");
-            let temp2: boolean = temp ? temp.value : "";
-            items[index] = temp2;     
-        });
-    },[items]);
-    
-
     const prevDependencyFilteredBrands2 = useRef<string[] | []>([]);
     const prevDependencyFilteredPrices2 = useRef<string[] | []>([]);
-
     let uniqueFilteredBrands2 = [...new Set(filteredBrands2)];
     let uniqueFilteredPrices2 = [...new Set(filteredPrices2)];
- 
 
+
+    useEffect(() => {
+        setItems(array)
+        setAllUniqueContentArray(arrayProp)
+    }, [array, arrayProp])
+
+
+    useEffect(() => {
+        items.map((item: boolean, index: number) => {
+            let savedData = localStorage.getItem(nut + index);
+            if (savedData) {
+                let temp = JSON.parse(savedData);
+                let temp2: boolean = temp ? temp.value : "";
+                items[index] = temp2;
+            }
+        });
+    }, [items]);
+    
+ 
     function isPriceRange(value: string | PriceRange): value is PriceRange {
         return (value as PriceRange).item !== undefined;
     }
       
-
-
     useEffect(() => {
 
-            prevDependencyFilteredBrands2.current = filteredBrands2;
-            prevDependencyFilteredPrices2.current = filteredPrices2;
+        prevDependencyFilteredBrands2.current = filteredBrands2;
+        prevDependencyFilteredPrices2.current = filteredPrices2;
 
-            setFilteredBrands2([])
-            setFilteredPrices2([])
+        setFilteredBrands2([])
+        setFilteredPrices2([])
  
+        items.map((item, index: number) => {
 
-                items.map((item, index: number) => {
+            let object = {value: item, nut: nut, id: nut === "c" ? (allUniqueContentArray[index]) : isPriceRange(allUniqueContentArray[index]) ? (allUniqueContentArray[index] as PriceRange).item.range : null}
 
-                    let object = {value: item, nut: nut, id: nut === "c" ? (allUniqueContentArray[index]) : isPriceRange(allUniqueContentArray[index]) ? (allUniqueContentArray[index] as PriceRange).item.range : null}
+            localStorage.setItem(nut + index, JSON.stringify(object))
 
-                    localStorage.setItem(nut + index, JSON.stringify(object))
+            let temp = JSON.parse(localStorage.getItem(nut + index) || "");
 
-                    let temp = JSON.parse(localStorage.getItem(nut + index) || "");
+            if(temp.value === true && temp.nut === "c"){
+                setFilteredBrands2(oldArray => [...oldArray, temp.id])
+            }
 
-                    if(temp.value === true && temp.nut === "c"){
-                        setFilteredBrands2(oldArray => [...oldArray, temp.id])
-                    }
+            else if(temp.value === true && temp.nut === "u"){
+                setFilteredPrices2(oldArray3 => [...oldArray3, temp.id["start"] + "-" + temp.id["end"]]);
+            }
 
-                    else if(temp.value === true && temp.nut === "u"){
-                        setFilteredPrices2(oldArray3 => [...oldArray3, temp.id["start"] + "-" + temp.id["end"]]);
-                    }
-
-                });
+        return null;
+        });
 
     }, [JSON.stringify(items)]);
 
 
-    
+
+
 
     useEffect(() => {
 
@@ -129,82 +131,51 @@ const Checkbox: React.FC<CheckboxProps> = ({ array, arrayProp, name, index, rati
                 let tempID = temp ? temp.id : "";
                 setULink(testArray2 => [...testArray2, tempID["start"] + "-" + tempID["end"]])
             }
-
+        
+            return null;
         });
-
-
-        if(!loading){
-
-            const cLinkCheck = [...new Set(cLink)].length > 0 ? [...new Set(cLink)].join() : null;
-            const uLinkCheck = [...new Set(uLink)].length > 0 ? [...new Set(uLink)].join() : null;
-
-            if(window.location.href === (`http://localhost:3000/s?q=${q_QueryParam}`) && ([...new Set(cLink)].length > 0 || [...new Set(uLink)].length > 0) ){
-                navigate(`?q=${q_QueryParam}&c=${cLinkCheck}&u=${uLinkCheck}&rating=${ratingLink}`);
-                window.location.reload()
-            }
-            
-        }
-
-        else if(loading){
+        
+        
+        if(loading){
          
             if([...new Set(prevDependencyFilteredBrands2.current)].length !== uniqueFilteredBrands2.length){
-                if(u_QueryParam === "") {u_QueryParam = "null";}
-
-                if(uniqueFilteredBrands2.length === 0){
-                    let nullQuery : string = "null"
-                    navigate(`?q=${q}&c=${nullQuery}&u=${u_QueryParam}&rating=${rating_QueryParam}`);
-                }
-
-                else{
-                    navigate(`?q=${q}&c=${uniqueFilteredBrands2.join()}&u=${u_QueryParam}&rating=${2}`);
-                }
-
+                uniqueFilteredBrands2.length === 0 ? searchParams.delete('c') : searchParams.set('c', uniqueFilteredBrands2.join());              
             }
+
 
             else if([...new Set(prevDependencyFilteredPrices2.current)].length !== uniqueFilteredPrices2.length){
-                if(c_QueryParam === "") {c_QueryParam = "null";}
-
-
-                if(uniqueFilteredPrices2.length == 0){
-                    let nullQuery : string = "null"
-                    navigate(`?q=${q}&c=${c_QueryParam}&u=${nullQuery}&rating=${rating_QueryParam}`);
-                }
-
-                else{
-                    navigate(`?q=${q}&c=${c_QueryParam}&u=${uniqueFilteredPrices2}`);
-                }
-
-                navigate(`?q=${q}&c=${c_QueryParam}&u=${uniqueFilteredPrices2.join()}&rating=${rating_QueryParam}`);
+                uniqueFilteredPrices2.length === 0 ? searchParams.delete('u') : searchParams.set('u', uniqueFilteredPrices2.join());
             }
 
+            const modifiedQueryString = searchParams.toString();
+            const baseUrl = window.location.href.split('?')[0];
+            const updatedUrl = baseUrl + '?' + modifiedQueryString;
+            window.location.href = updatedUrl;
 
-            window.location.reload()
         }
 
     },[filteredBrands2, filteredPrices2])
 
-
-        function handleResult(e: any, position: number){
+    
+    function handleResult(e: any, position: number){
         setLoading(true);
-     
         items.map((item : boolean, index : number) => {
             if(index === position) {
                 if(!items[index]) {
                     items[index] = true;
                 }
-
                 else if(items[index]) {
                     items[index] = false;
                 }
             }
+        return null;
         });
-    
     }
 
-    let ifChecked = JSON.parse(localStorage.getItem(nut + index) || "");
+ 
+    let savedData = localStorage.getItem(nut + index);
+    let ifChecked = savedData ? JSON.parse(savedData) : null;
     let ifChecked2 = ifChecked ? ifChecked.value : false;
-
-    
 
     return(
         <>

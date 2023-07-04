@@ -54,7 +54,6 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
         }
     }
 
-
     const returnHome = (): void => {
         navigate("");
     }
@@ -67,11 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
 
     const searchBarHandling = (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value)
-        //console.log(value)
     }
-
-
-    //<nav className = {unclick}>
 
     return(
 
@@ -104,7 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
                     </div>
 
                     <div className = "cart-box">
-                        <img onClick = {userCart} className = "cart" src = {cart} loading = "lazy" />
+                        <img onClick = {userCart} className = "cart" src = {cart} loading = "lazy" alt = "cart" />
                         <span>Koszyk</span>
                     </div>
 
