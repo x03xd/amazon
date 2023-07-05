@@ -1,3 +1,4 @@
+import AuthContext from "./AuthenticationContext";
 import React from 'react';
 
 interface Num {
@@ -5,8 +6,31 @@ interface Num {
     total: number;
 }
 
-
 const CardFinalizing : React.FC<Num> = ({ num, total }) => {
+
+    const {username} = React.useContext(AuthContext);
+
+    const finalizeOrder = async () => {
+
+        try{
+            const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/${username?.user_id}`, {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({"location": "cart"})
+            })
+
+            const data = await response.json()
+            console.log(data)
+        }
+
+        catch (error) {
+            console.error('Error updating token:', error);
+        }
+
+    
+    }
 
 
 
@@ -32,7 +56,7 @@ const CardFinalizing : React.FC<Num> = ({ num, total }) => {
                 </div>
 
                 <div className = "pb-5 pt-3">
-                    <input type = "button" id = "finalize-cart" className = "bg-warning" value = "Przejdź do finalizacji zamówienia" />
+                    <input onClick = {finalizeOrder} type = "button" id = "finalize-cart" className = "bg-warning" value = "Przejdź do finalizacji zamówienia" />
                 </div>
             </div>  
 

@@ -35,7 +35,7 @@ const Clear: React.FC<ClearProps> = ({ func, nut, text }) => {
         }
 
         else if(nut === "rating"){
-            searchParams.set('rating', "0");
+            searchParams.delete('rating');
             func("rating")
         }
 

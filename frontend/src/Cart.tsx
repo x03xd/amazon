@@ -1,14 +1,11 @@
 import card_picture from './images/cardz.svg';
-import { useOutletContext, useSearchParams, useNavigate } from "react-router-dom";
 import React, { useState, useEffect, useRef, useContext} from 'react';
 import CardObject from './CardObject';
 import AuthContext from "./AuthenticationContext";
 import CSRFToken from './CSRFToken';
-import jwt_decode from "jwt-decode";
 import CardFinalizing from './CardFinalizing';
 import CartSideBar from './CartSideBar'
-import { setUncaughtExceptionCaptureCallback } from 'process';
-
+import { useNavigate } from 'react-router-dom';
 
 interface Product {
     brand: string;
@@ -25,24 +22,20 @@ interface Product {
     title: string;
 }
 
-
-
-
 const Card: React.FC = () => {
 
     const [cardUserGetter, setCardUserGetter] = useState<number[]>([]);
     const [cardItemsGetter, setCardItemsGetter] = useState<Product[] | []>([]);
 
     const [total, setTotal] = useState<number>(0);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     let {username, authToken} = useContext(AuthContext);
 
-
+   
     useEffect(() => {
         if(authToken == null) navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
     }, [])
-
     
 
     useEffect(() => {
@@ -55,20 +48,19 @@ const Card: React.FC = () => {
                 body:JSON.stringify({"username": username?.username})
             })
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result)));
+            .then(result => (console.log(result), setCardUserGetter(result)));
         }
 
         catch(error){
             console.log("Error: ", error)
         }
-
+        
     }, [])
 
-    //console.log(cardItemsGetter)
 
+    
     useEffect(() => {
         try{
-            //const response
             fetch('http://127.0.0.1:8000/api/products/', {
                 method:'post',
                 headers:{
@@ -86,7 +78,6 @@ const Card: React.FC = () => {
 
     }, [cardUserGetter])
 
-    //let prev: number = 0;
 
     useEffect(() => {
         let prevValue : number = 0;
@@ -95,13 +86,9 @@ const Card: React.FC = () => {
 
     }, [cardItemsGetter])
     
-    /*
-    if (authToken === null) {
-        window.location.href = '/login';
-        return null; // You can return null or any other placeholder while the redirection happens
-    }
-    */
+
     
+    console.log(cardItemsGetter, username?.username)
 
 
     const removeProduct = (num : number) => {
@@ -192,7 +179,6 @@ const Card: React.FC = () => {
 
                 <div className = "card-content-right">
                     <CardFinalizing num = {cardUserGetter.length} total = {total} />
-
                     <CartSideBar />              
                 </div>
 

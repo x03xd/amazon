@@ -1,19 +1,12 @@
 import {Outlet, useNavigate} from 'react-router-dom';
 import logo from './images/xd2.webp';
-import Login from './Login';
-import Register from './Register';
-import React, {useState, useEffect, useContext} from 'react';
-import Alert from './Alert';
+import React, {useState, useEffect} from 'react';
 import { useSearchParams } from "react-router-dom";
-import AuthContext from "./AuthenticationContext";
 
 const AuthLayout: React.FC = () => {
 
     const navigate = useNavigate();
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [generatedText, setGeneratedText] = useState("");
     const [buttonStyle, setButtonStyle] = useState("");
-
 
     useEffect(() => {
         const adress = window.location.href;

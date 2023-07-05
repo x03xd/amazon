@@ -1,9 +1,7 @@
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
-import { useState, useEffect} from 'react';
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 import { ratingStars, ratingLevels } from './static_ts_files/ratingLevels';
 
 
@@ -16,7 +14,7 @@ const Rating: React.FC = () => {
         const rate = localStorage.getItem("rating");
         if (rate) {
             try {
-                const parsedRate = JSON.parse(rate);
+                const parsedRate = JSON.parse(rate)["num"];
                 setRate(parsedRate);
             } catch (error) {
                 console.error("Error parsing rate from localStorage: ", error);
@@ -26,15 +24,16 @@ const Rating: React.FC = () => {
     
 
     useEffect(() => {
-        localStorage.setItem("rating", JSON.stringify(rate))
+        const boolVal = rate == null || !(rate > 0) ? false : true;
+        const object = {value: boolVal, num: rate};
+        localStorage.setItem("rating", JSON.stringify(object))
     }, [rate]);
 
 
     function ratingFilter(rating: number){
         setRate(rating);
+        searchParams.set('rating', String(rating));
 
-        searchParams.set('rating', String(rate));
-        
         const modifiedQueryString = searchParams.toString();
         const baseUrl = window.location.href.split('?')[0];
         const updatedUrl = baseUrl + '?' + modifiedQueryString;

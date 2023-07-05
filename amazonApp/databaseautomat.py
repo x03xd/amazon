@@ -1,4 +1,4 @@
-import mysql.connector
+'''import mysql.connector
 import requests
 import json
 
@@ -40,4 +40,4 @@ connection.commit()
 #cursor.execute(query)
 #(title, category, desc, price, image, rating)
 
-connection.close()
+connection.close()'''

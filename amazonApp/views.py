@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from .models import Product, Category, SubCategory, UserRate, User, Cart
-from .serializers import ProductSerializer, CategorySerializer, SubCategorySerializer, UserSerializer, CartSerializer, UserRateSerializer, StandardUserRateSerializer
+from .models import Product, SubCategory, UserRate, User, Cart, Transaction
+from .serializers import ProductSerializer, SubCategorySerializer, UserSerializer, CartSerializer, UserRateSerializer, StandardUserRateSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http.response import JsonResponse
@@ -50,7 +50,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 class CartAPI(APIView):
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
 
         try:
             json_data = json.load(request)
@@ -84,10 +84,16 @@ class ProcessAPI(APIView):
             cart = Cart.objects.get(owner__username = json_data["username"])
             cart.products.add(product)
 
-            return JsonResponse({"done": True})
+            return JsonResponse({"status": True})
 
-        except:
-            return JsonResponse({"done": False})
+        except json.JSONDecodeError as e:
+            return JsonResponse({"error": "Error decoding JSON", "detail": str(e)}, status=400)
+
+        except Product.DoesNotExist:
+            return JsonResponse({"error": "Object does not exist"}, status=404)
+
+        except Exception as e:
+            return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
 class RemoveItemCart(APIView):
@@ -116,26 +122,16 @@ class RemoveItemCart(APIView):
 
 
 
-
-class CategoriesAPI(generics.ListAPIView):
-    serializer_class = CategorySerializer
-
-    def get_queryset(self):
-
-        queryset = Category.objects.all()
-        return queryset
-
-
-
 class SubCategoriesAPI(generics.ListAPIView):
     serializer_class = SubCategorySerializer
 
     def get_queryset(self):
+        try:
+            queryset = SubCategory.objects.all()
+            return queryset
 
-        queryset = SubCategory.objects.all()
-        return queryset
-
-
+        except SubCategory.DoesNotExist:
+            return JsonResponse({'authenticated': False, "error": "Object does not exist"}, status=404)
 
 
 
@@ -197,7 +193,12 @@ class CountAvgRate(generics.ListAPIView):
     serializer_class = UserRateSerializer
 
     def get_queryset(self):
-        return UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate"))
+        try:
+            return UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate"))
+
+        except UserRate.DoesNotExist:
+            return Response({"error": "Object does not exist"}, status=404)
+
 
 
 
@@ -217,19 +218,24 @@ class ProductsAPI(generics.ListAPIView):
         lst = []
 
         if r is not None:
-            rates = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=r)
-            serializer = UserRateSerializer(rates, many = True)
+            try:
+                rates = UserRate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=r)
+                serializer = UserRateSerializer(rates, many = True)
 
-            for rate in rates:
-                lst.append(rate["rated_products"])
-    
-        #rating_queryset = UserRate.objects.all()
+                for rate in rates:
+                    lst.append(rate["rated_products"])
+
+            except UserRate.DoesNotExist:
+                return Response({"error": "Object does not exist"}, status=404)
+
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
-       
+
         if c is not None:
             multiple_brands_filter = c.split(",")
-     
-        
+
+
         if u is not None:
             multiple_prices_filter = u.split(",")
 
@@ -239,10 +245,13 @@ class ProductsAPI(generics.ListAPIView):
                 first, second = s.split('-')
                 first_lst.append(float(first))
                 second_lst.append(float(second))
-      
 
-        queryset = Product.objects.all()
-      
+        try:
+            queryset = Product.objects.all()
+
+        except UserRate.DoesNotExist:
+            return Response({"error": "Object does not exist"}, status=404)
+
   
         if q is None:
 
@@ -299,60 +308,30 @@ class ProductsAPI(generics.ListAPIView):
  
 
     def post(self, request):
-
-        json_f = json.load(request)["list"]
         objects_list = []
 
-
-        for id in json_f:
-            objects_list.append(Product.objects.get(id = id))
-
-        serializer = ProductSerializer(objects_list, many=True)
-
-        return Response(serializer.data)
-
-
-
-
-'''
-class UserUpdateView(LoginRequiredMixin, UpdateView):
-    model = User
-    fields = ['username', 'email']
-    template_name = 'user_form.html'
-    success_url = reverse_lazy('home')
-
-    def get_object(self, queryset=None):
-        return self.request.user
-      
-'''
-
-
-
-'''
-class StoringUserToken(APIView):
-    
-    def post(self, request, *args, **kwargs):
-        json_data = json.load(request)
-
-        response = HttpResponse("cookie setting") 
-
-        response.set_cookie("username", json_data["username"], samesite='None', secure=True, httponly= False)
-        response.set_cookie("authToken", json_data["authToken"], samesite='None', secure=True, httponly= False)
-
-        return response
-
-
-    def get(self, request, *args, **kwargs):
-
         try:
-            username_cookie = request.COOKIES.get('username')
-            authToken_cookie = request.COOKIES.get('authToken')
+            json_f = json.load(request)["list"]
 
-            return JsonResponse({"cookie_to_update": True}) 
+            for id in json_f:
+                objects_list.append(Product.objects.get(id = id))
 
-        except:
-            return JsonResponse({"cookie_to_update": False})
-'''
+            serializer = ProductSerializer(objects_list, many=True)
+
+            return Response(serializer.data)
+        
+        
+        except json.JSONDecodeError:
+            return Response({"error": "Invalid JSON data"}, status=400)
+
+        except Product.DoesNotExist:
+            return Response({"error": "Object does not exist"}, status=404)
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+
+
+
 
 from .serializers import EditUsernameSerializer, EditEmailSerializer
 
@@ -382,13 +361,11 @@ class AccessToChangeStatus(APIView):
             elif user.email_change_allowed.date() < today_date:
                 status_email = True
                     
-
             return JsonResponse({"username": status_username, "email":status_email})
 
 
         except User.DoesNotExist:
             return JsonResponse({"error": "Object does not exist"}, status=404)
-
 
         except Exception as e:
             return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -421,23 +398,33 @@ class EditUsername(APIView):
 
             return JsonResponse({"status":True})
 
-        
+        except json.JSONDecodeError:
+            return Response({"error": "Invalid JSON data"}, status=400)
+
         except User.DoesNotExist:
-            return JsonResponse({"error": "Object does not exist"}, status=404)
+            return Response({"error": "One or more products do not exist"}, status=404)
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
 
     def post(self, request, *args, **kwargs):
 
-        user = User.objects.get(id = self.kwargs.get("id"))
-        date = datetime.now()
+        try:
+            user = User.objects.get(id = self.kwargs.get("id"))
+            date = datetime.now()
 
-        new_date = date.date() + timedelta(days=30) 
+            new_date = date.date() + timedelta(days=30) 
 
-        user.username_change_allowed = new_date
-        user.save()
+            user.username_change_allowed = new_date
+            user.save()
 
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Object does not exist"}, status=404)    
 
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
 
@@ -464,18 +451,75 @@ class EditEmail(APIView):
 
             return JsonResponse({"status":True})
 
-        
+        except json.JSONDecodeError:
+            return Response({"error": "Invalid JSON data"}, status=400)
+
         except User.DoesNotExist:
-            return JsonResponse({"error": "Object does not exist"}, status=404)
+            return Response({"error": "One or more products do not exist"}, status=404)
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
 
     def post(self, request, *args, **kwargs):
 
-        user = User.objects.get(id = self.kwargs.get("id"))
-        date = datetime.now()
+        try:
+            user = User.objects.get(id = self.kwargs.get("id"))
+            date = datetime.now()
 
-        new_date = date.date() + timedelta(days=30) 
+            new_date = date.date() + timedelta(days=30) 
 
-        user.email_change_allowed = new_date
-        user.save()
+            user.email_change_allowed = new_date
+            user.save()
+
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Object does not exist"}, status=404)    
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+        
+
+
+class FinalizeOrder(APIView):
+
+
+    def post(self, request, *args, **kwargs):
+
+        try:
+            json_data = json.load(request)
+
+            if json_data["location"] == "cart":
+                cart = Cart.objects.get(owner__id = self.kwargs.get("id"))
+                serializer = CartSerializer(cart)
+                bought = serializer.data["products"]
+                cart.products.clear()
+    
+
+            elif json_data["location"] == "lobby":
+                bought = json_data["product_id"]
+
+            try:
+                user = User.objects.get(id = self.kwargs.get("id"))
+
+            except User.DoesNotExist:
+                return Response({"error": "Object does not exist"}, status=404)    
+
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+
+            Transaction.objects.create(
+                bought_by = user,
+                bought_products = bought,
+                date = datetime.now()
+            )
+
+            return Response("The user's cart has been cleared and transaction has been saved")
+                
+        except Cart.DoesNotExist:
+            return Response({"error": "Object does not exist"}, status=404)    
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+        
+            

@@ -62,9 +62,6 @@ const Store: React.FC = () => {
         const [arrayBrands, setArrayBrands] = useState<string[]>([]);
         const [brandsFalseFilled, setBrandsFalseFilled] = useState<boolean[]>([]);
 
-        //{priceLimits.map((item, index) => <Checkbox query = {searchParams.get("q")} index = {index} key = {index} name = {item} array = {newArray} /> )}
-
-        const [categories, setCategories] = useState<Categories[]>([]);
         const [products, setProducts] = useState<Products[]>([]);
         const [subs, setSubs] = useState<Subcategories[]>([]);
         const [forData, setForData] = useState<Products[]>([]);
@@ -72,16 +69,12 @@ const Store: React.FC = () => {
 
         const aRef = useRef<HTMLInputElement>(null);
         const bRef = useRef<HTMLInputElement>(null);
-        //const cRef = useRef<HTMLInputElement>(null);
 
         let {q_QueryParam, c_QueryParam, u_QueryParam, rating_QueryParam} = useContext(QueryParamsContext);
-
         const url = window.location.href;
 
         const index = url.indexOf('http://localhost:3000/s');
         const queryLinkPart = url.substring(index + 'http://localhost:3000/s'.length);
-        
-        console.log(queryLinkPart)
 
         useEffect(() => {
             
@@ -89,10 +82,6 @@ const Store: React.FC = () => {
                 fetch(`http://127.0.0.1:8000/api/subcategories/`)
                 .then(response => response.json())
                 .then(result => setSubs(result));
-
-                fetch(`http://127.0.0.1:8000/api/categories/`)
-                .then(response2 => response2.json())
-                .then(result2 => setCategories(result2));
 
                 fetch(`http://127.0.0.1:8000/api/products/${queryLinkPart}`)
                 .then(response3 => response3.json())
@@ -104,20 +93,18 @@ const Store: React.FC = () => {
 
                 fetch(`http://127.0.0.1:8000/api/avg-rate`)
                 .then(response5 => response5.json())
-                .then(result5 => (console.log(result5), setAverageRate(result5)));;
-
-                for(let nums of priceLimits){
-                    setArrayPrices(ar1 => [...ar1, nums]);
-                }   
+                .then(result5 => (setAverageRate(result5)));;
             }
 
             catch (error){
                 console.error("Error fetching data:", error);
             }
+
+            for(let nums of priceLimits){
+                setArrayPrices(ar1 => [...ar1, nums]);
+            }   
             
         },[])
-
-        console.log(products)
 
 
         useEffect(() => {
@@ -141,6 +128,9 @@ const Store: React.FC = () => {
         },[arrayBrands])     
         
     
+
+
+
         function clearQueryString(arg: string){
 
             switch (arg) {
@@ -155,7 +145,8 @@ const Store: React.FC = () => {
                             let object = {value: false, nut: "c", id: ([...new Set(arrayBrands)] || [])[index] }
                             localStorage.setItem("c" + index, JSON.stringify(object));
                         }
-               
+                    
+                        return null;
                     })
                     break;
 
@@ -170,7 +161,7 @@ const Store: React.FC = () => {
                             localStorage.setItem("u" + index, JSON.stringify(object));
                         }
                         
-         
+                        return null;
                     })
                     break;
 
@@ -181,9 +172,11 @@ const Store: React.FC = () => {
                         const checkStorage = storage ? storage.value : "";
 
                         if(checkStorage){
-                            localStorage.setItem("rating", "0");
+                            const object = {value: false, num: 0};
+                            localStorage.setItem("rating", JSON.stringify(object));
                         }
                         
+                        return null;
                     })
                     break;
 
@@ -192,9 +185,10 @@ const Store: React.FC = () => {
         }
 
 
-        function customPrice(){
+
+
+        function customPrice(): void{
             searchParams.set('u', `${aRef.current?.value}-${bRef.current?.value}`);
-
             const modifiedQueryString = searchParams.toString();
             const baseUrl = window.location.href.split('?')[0];
             const updatedUrl = baseUrl + '?' + modifiedQueryString;
@@ -202,30 +196,30 @@ const Store: React.FC = () => {
         }
 
 
-        function changeQ(qValue : string){
+        function changeQ(qValue : string): void{
             searchParams.set('q', qValue.toLowerCase());
-            
             const modifiedQueryString = searchParams.toString();
             const baseUrl = window.location.href.split('?')[0];
             const updatedUrl = baseUrl + '?' + modifiedQueryString;
             window.location.href = updatedUrl;
         }
 
-        let helper : any = [];
-    
+
         useEffect(() => {
             aLoop:
-            for(let item of products){
-                for(let rate of averageRate){
-                    
-                    if(Number(rate["rated_products"]) === item["id"]){
-                        setProductsWithRatings(helper => [...helper, <ProductCard key = {item["id"]} item = {item} rate = {rate["average_rate"]} />])
+            for (let item of products) {
+                for (let rate of averageRate) {
+                    if (Number(rate["rated_products"]) === item["id"]) {
+                        setProductsWithRatings(prevProducts => [
+                            ...prevProducts,
+                            <ProductCard key={item["id"]} item={item} rate={rate["average_rate"]} />
+                        ]);
                         continue aLoop;
                     }
                 }
             }
-        },[products, averageRate])   
-        
+        }, [products, averageRate]);
+                
 
         return(
             <div className = "store-content mt-5">

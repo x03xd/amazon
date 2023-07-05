@@ -14,7 +14,6 @@ const Lobby: React.FC = () => {
     let status = location.state.status
     let statusColor;
 
-
     if(status <= 0){
         status = "Niedostępny"
         statusColor = "text-danger";
@@ -23,6 +22,27 @@ const Lobby: React.FC = () => {
     else {
         status = "Dostępny"
         statusColor = "text-success";
+    }
+
+    const finalizeOrderLobby = async (product_id: number) => {
+
+        try{
+            const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/${username?.user_id}`, {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({"location": "lobby", "product_id": [location.state.id_product]})
+            })
+
+            const data = await response.json()
+            console.log(data)
+        }
+
+        catch (error) {
+            console.error('Error updating token:', error);
+        }
+
     }
 
 
@@ -80,7 +100,7 @@ const Lobby: React.FC = () => {
                     </div>
 
                     <div className = "d-flex align-items-center">
-                        <img src = {adress}/> <a className = "" href = "">Wybierz adres dostawy</a>
+                        <img src = {adress} alt = "address" /> <a className = "" href = "">Wybierz adres dostawy</a>
                     </div>
 
                     <div>
@@ -105,7 +125,7 @@ const Lobby: React.FC = () => {
 
                         <form method = "POST">
                             <CSRFToken />
-                            <input className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
+                            <input onClick = {() => finalizeOrderLobby(location.state.id)} className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
                         </form>
                     </div>
 

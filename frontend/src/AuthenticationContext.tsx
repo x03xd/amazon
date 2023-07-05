@@ -1,7 +1,6 @@
-import {useNavigate, useParams, useLocation} from 'react-router-dom';
-import React, {createContext, useEffect, useState, useRef, FormEvent, ChangeEvent} from 'react';
+import {useNavigate} from 'react-router-dom';
+import React, {createContext, useEffect, useState, ChangeEvent} from 'react';
 import jwt_decode from "jwt-decode";
-import CSRFToken from './CSRFToken';
 import {parsedCookies} from './static_ts_files/parsingCookie'
 
 
@@ -60,18 +59,13 @@ export default AuthContext;
 export const AuthProvider = ({children}: ContextProvider) => {
 
     const navigate = useNavigate();
-    const location = useLocation();
-
-
 
     const [authToken, setAuthToken] = useState<AuthToken | null>(parsedCookies.authToken ? parsedCookies.authToken : null);
     const [username, setUsername] = useState<UserData | null>(parsedCookies.username ? jwt_decode(parsedCookies.username) : null);
-    const [loading, setLoading] = useState<boolean>(true);
 
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
     const [email, setEmail] = useState<string>("");
-
 
     const navigateBack = (): void => {
         navigate("/login/", {state: {link: 'http://127.0.0.1:8000/api/login/', type: 'text', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});

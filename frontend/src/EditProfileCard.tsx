@@ -1,5 +1,4 @@
-import React, {useEffect, useRef, useContext, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, {useRef, useContext} from 'react';
 import AuthContext from "./AuthenticationContext";
 import CSRFToken from './CSRFToken';
 import blocked_padlock from './images/password.png'
@@ -79,10 +78,6 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
     }
 
     
-
-
-
-
 
     return(
         <div className = "edit-profile-card">
