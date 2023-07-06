@@ -7,13 +7,6 @@ import Checkbox from './Checkbox';
 import QueryParamsContext from "./QueryParamsContext";
 import {priceLimits} from './static_ts_files/priceLimits'
 
-
-interface Categories {
-    id: number;
-    category: string;
-}
-
-
 interface Products {
     brand: string;
     description: string;

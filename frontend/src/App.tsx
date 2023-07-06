@@ -32,8 +32,6 @@ import MiniNavbar from './MiniNavbar';
 
 const App: React.FC = () => {
 
-    let {authToken, username, loginUser} = useContext(AuthContext)
-
     const location = useLocation();
 
     const path = location.pathname.slice(-1) === "/" ? location.pathname.slice(0, -1) : location.pathname;
@@ -64,35 +62,34 @@ const App: React.FC = () => {
         setUnclick(style);
     }
 
-
     return (
-            <div className = "main-container">
-                    <div className = {`navbar ${unclick} `}>
-                        <Navbar unclick = {unclick} overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} leftModalStyle = {leftModalStyler} unclickableNavbarChild = {unclickableNavbar} />
-                        { paths.map((link, index) => link === path ? <MiniNavbar key = {index} /> : null) }
+        <div className = "main-container">
+                <div className = {`navbar ${unclick} `}>
+                    <Navbar unclick = {unclick} overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} leftModalStyle = {leftModalStyler} unclickableNavbarChild = {unclickableNavbar} />
+                    { paths.map((link, index) => link === path ? <MiniNavbar key = {index} /> : null) }
 
-                        <Modal className = {loginModalStyle} modalOFF = {loginModalStyler} overlayOFF = {overlayStyler} navbarStatus = {unclickableNavbar} />
+                    <Modal className = {loginModalStyle} modalOFF = {loginModalStyler} overlayOFF = {overlayStyler} navbarStatus = {unclickableNavbar} />
 
-                        <LeftModal className = {`left-modal ${leftModalStyle}`}/>
+                    <LeftModal className = {`left-modal ${leftModalStyle}`}/>
+                </div>
+
+                <div className = {`side-main ${contentStyle}`}></div>
+
+                <div className = "main">
+
+                    <div className = {`content mt-4 ${contentStyle}`}>
+                        <div className = {`overlay ${overlayStyle}`} onClick = {() => {setOverlay(""); loginModalStyler(""); setLeftModal(""); unclickableNavbar("")}}></div>
+                        <Outlet />
                     </div>
 
-                    <div className = {`side-main ${contentStyle}`}></div>
+                </div>
 
-                    <div className = "main">
+                <div className = {`side-main-2 ${contentStyle}`}></div>
 
-                        <div className = {`content mt-4 ${contentStyle}`}>
-                            <div className = {`overlay ${overlayStyle}`} onClick = {() => {setOverlay(""); loginModalStyler(""); setLeftModal(""); unclickableNavbar("")}}></div>
-                            <Outlet />
-                        </div>
-
-                    </div>
-
-                    <div className = {`side-main-2 ${contentStyle}`}></div>
-
-                    <div className = "footer">
-                        <Footer />
-                    </div>
-            </div>
+                <div className = "footer">
+                    <Footer />
+                </div>
+        </div>
     );
 }
 

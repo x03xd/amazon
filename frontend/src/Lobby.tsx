@@ -8,8 +8,13 @@ import React from 'react';
 
 const Lobby: React.FC = () => {
 
+    const [selectedValue, setSelectedValue] = useState<string>('1');
     let {username} = useContext(AuthContext)
 
+    const handleSelectChange = (e: any) => {
+        setSelectedValue(e.target.value);
+    };
+    
     const location = useLocation();
     let status = location.state.status
     let statusColor;
@@ -27,16 +32,13 @@ const Lobby: React.FC = () => {
     const finalizeOrderLobby = async (product_id: number) => {
 
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/${username?.user_id}`, {
+            await fetch(`http://127.0.0.1:8000/api/finalize-order/${username?.user_id}`, {
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({"location": "lobby", "product_id": [location.state.id_product]})
+                body:JSON.stringify({"location": "lobby", "product_id": [location.state.id_product], "quantity": selectedValue})
             })
-
-            const data = await response.json()
-            console.log(data)
         }
 
         catch (error) {
@@ -50,16 +52,14 @@ const Lobby: React.FC = () => {
         e.preventDefault();
 
         try{
-
-            const response2 = await fetch(`http://127.0.0.1:8000/api/process/`, {
+            await fetch(`http://127.0.0.1:8000/api/process/`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({'id': location.state.id_product, 'username': username?.username})
+                body: JSON.stringify({'id': location.state.id_product, 'username': username?.username, "quantity": selectedValue})
             })
-            let jsonResponse2 = await response2.json();
         }
 
         catch(error){
@@ -110,7 +110,7 @@ const Lobby: React.FC = () => {
                     <div className = "d-flex align-items-center">
                         <label className = "" htmlFor = "quantity">Ilość: </label>
 
-                        <select className = "ms-2 p-2" name="quantity" id="quantity">
+                        <select className = "ms-2 p-2" name="quantity" id="quantity" value={selectedValue} onChange={handleSelectChange}>
                             <option value= "1" >1</option>
                             <option value= "2" >2</option>
                             <option value= "3" >3</option>

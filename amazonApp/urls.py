@@ -15,7 +15,9 @@ urlpatterns = [
 
     path("login/", views.LoginAPI.as_view()),
     path("cart/", views.CartAPI.as_view()),
+
     path("products-by-subs/", views.ProductsBySubsAPI.as_view()),
+
     path("registration/", views.RegisterSystem.as_view()),
     path('logout/', views.LogoutView.as_view()),
     path('avg-rate/', views.CountAvgRate.as_view()),
@@ -28,6 +30,7 @@ urlpatterns = [
     path("edit-username/<id>", views.EditUsername.as_view()),
     path("edit-email/<id>", views.EditEmail.as_view()),
     path("finalize-order/<id>", views.FinalizeOrder.as_view()),
+    path("transactions/<id>", views.TransactionsAPI.as_view()),
 
 
     path("access-to-change-status/<id>", views.AccessToChangeStatus.as_view())

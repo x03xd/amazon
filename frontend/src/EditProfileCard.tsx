@@ -1,4 +1,4 @@
-import React, {useRef, useContext} from 'react';
+import React, {useEffect, useRef, useContext, useState} from 'react';
 import AuthContext from "./AuthenticationContext";
 import CSRFToken from './CSRFToken';
 import blocked_padlock from './images/password.png'
@@ -24,9 +24,6 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
 
     const inputValue = useRef<HTMLInputElement>(null)
     const {username} = useContext(AuthContext);
-
-    console.log(link)
-    console.log(access)
 
     const submitChange = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

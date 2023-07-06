@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from .models import Product, SubCategory, UserRate, User, Cart, Transaction
-from .serializers import ProductSerializer, SubCategorySerializer, UserSerializer, CartSerializer, UserRateSerializer, StandardUserRateSerializer
+from .serializers import ProductSerializer, SubCategorySerializer, UserSerializer, CartSerializer, UserRateSerializer, StandardUserRateSerializer, TransactionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http.response import JsonResponse
@@ -27,7 +27,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.http import HttpResponse
 from django.conf import settings
 from django.views.generic.detail import SingleObjectMixin
-
+from django.contrib.postgres.fields import HStoreField
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -82,7 +82,10 @@ class ProcessAPI(APIView):
             product = Product.objects.get(id = json_data["id"])
 
             cart = Cart.objects.get(owner__username = json_data["username"])
-            cart.products.add(product)
+            quantity = int(json_data["quantity"])
+
+            for i in range(quantity):
+                cart.products.add(product)
 
             return JsonResponse({"status": True})
 
@@ -122,7 +125,7 @@ class RemoveItemCart(APIView):
 
 
 
-class SubCategoriesAPI(generics.ListAPIView):
+class SubCategoriesAPI(ListAPIView):
     serializer_class = SubCategorySerializer
 
     def get_queryset(self):
@@ -204,11 +207,9 @@ class CountAvgRate(generics.ListAPIView):
 
 
 
-class ProductsAPI(generics.ListAPIView):
-    serializer_class = ProductSerializer
+class ProductsAPI(APIView):
 
-   
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
       
         r = self.request.query_params.get('rating')
         q = self.request.query_params.get('q')
@@ -246,11 +247,15 @@ class ProductsAPI(generics.ListAPIView):
                 first_lst.append(float(first))
                 second_lst.append(float(second))
 
+
         try:
             queryset = Product.objects.all()
 
         except UserRate.DoesNotExist:
             return Response({"error": "Object does not exist"}, status=404)
+        
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
   
         if q is None:
@@ -303,19 +308,19 @@ class ProductsAPI(generics.ListAPIView):
             if (c is None) and (u is None) and (r is None):
                 queryset = queryset.filter(subcategory_name__sub_category=q)
    
+        serializer = ProductSerializer(queryset, many=True)
 
-        return queryset
+        return Response(serializer.data)
  
 
-    def post(self, request):
-        objects_list = []
 
+    def post(self, request, *args, **kwargs):
+                
         try:
-            json_f = json.load(request)["list"]
+            json_data = json.load(request)
+            product_ids = json_data["list"]
 
-            for id in json_f:
-                objects_list.append(Product.objects.get(id = id))
-
+            objects_list = Product.objects.filter(id__in=product_ids)
             serializer = ProductSerializer(objects_list, many=True)
 
             return Response(serializer.data)
@@ -329,6 +334,7 @@ class ProductsAPI(generics.ListAPIView):
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+   
 
 
 
@@ -495,12 +501,12 @@ class FinalizeOrder(APIView):
                 bought = serializer.data["products"]
                 cart.products.clear()
     
-
             elif json_data["location"] == "lobby":
-                bought = json_data["product_id"]
+                bought = json_data["product_id"] * int(json_data["quantity"])
 
             try:
                 user = User.objects.get(id = self.kwargs.get("id"))
+
 
             except User.DoesNotExist:
                 return Response({"error": "Object does not exist"}, status=404)    
@@ -523,3 +529,43 @@ class FinalizeOrder(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
             
+
+class TransactionsAPI(generics.ListAPIView):
+    serializer_class = TransactionSerializer
+
+   
+    def get_queryset(self):
+      
+        try:
+            queryset = Transaction.objects.filter(bought_by__id = self.kwargs.get("id"))
+            return queryset
+
+        except Transaction.DoesNotExist:
+            return JsonResponse({'authenticated': False, "error": "Object does not exist"}, status=404)
+        
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+        
+
+class ProductsByTrnAPI(View):
+
+    def post(self, request, *args, **kwargs):
+
+        try:
+            '''json_data = json.load(request)
+            product_ids = json_data["list"]
+
+            objects_list = Product.objects.filter(id__in=product_ids)
+            serializer = ProductSerializer(objects_list, many=True)'''
+
+            return 2
+       
+        
+        except json.JSONDecodeError:
+            return Response({"error": "Invalid JSON data"}, status=400)
+
+        except Product.DoesNotExist:
+            return Response({"error": "Object does not exist"}, status=404)
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)

@@ -1,12 +1,13 @@
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.db.models import Avg, Sum
-from datetime import datetime, timedelta
+from datetime import datetime
 from rest_framework.response import Response
-from django.http.response import JsonResponse
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+
 date = datetime.now()
 
 '''class Category(models.Model):
@@ -60,7 +61,12 @@ class Product(models.Model):
 
 
 class UserRate(models.Model):
-    rate = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=4)
+    rate = models.IntegerField(null=True, blank=True,
+        validators=[
+            MinValueValidator(1, message="Value must be greater than or equal to 0."),
+            MaxValueValidator(5, message="Value must be less than or equal to 5.")
+        ])
+    
     rated_products = models.ForeignKey(Product, null=True, blank=True, on_delete = models.CASCADE)
 
 
@@ -72,8 +78,6 @@ class User(AbstractUser):
     groups = models.ManyToManyField(Group, related_name='amazon_users', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='amazon_users', blank=True)
 
-
-   
 
     def __str__(self):
         return self.username

@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import AuthContext from "./AuthenticationContext";
 import EditProfileCard from "./EditProfileCard"
-import EditProfileModal from "./EditProfileModal";
 import { useNavigate } from 'react-router-dom';
 
 interface AccessToChangeUsernameState {
@@ -12,7 +11,6 @@ interface AccessToChangeUsernameState {
 const EditProfile : React.FC = () => {
 
     let {username} = useContext(AuthContext);
-    const navigate = useNavigate()
 
     const data = [
         {id: 1, accessLink: "username_change_allowed", link: "edit-username", header: "Nazwa użytkownika:", text: username?.username || "", buttonValue: "Edytuj"},
@@ -28,8 +26,6 @@ const EditProfile : React.FC = () => {
     const [accessToChange, setAccessToChangeUsername] = useState<AccessToChangeUsernameState | null>(null);
 
 
-
-    
     useEffect(() => {
         try{
             fetch(`http://127.0.0.1:8000/api/access-to-change-status/${username?.user_id}`)
@@ -50,7 +46,6 @@ const EditProfile : React.FC = () => {
 
     return(
         <div className = "my-account-content">
-            <EditProfileModal className = {style} />
 
             <div></div>
 
