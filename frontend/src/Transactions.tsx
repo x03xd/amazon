@@ -46,7 +46,7 @@ const Transactions: React.FC = () => {
         try{
             fetch(`http://127.0.0.1:8000/api/transactions/${username?.user_id}`)
             .then(response => response.json())
-            .then(result => setTransactions(result));
+            .then(result => (console.log(result), setTransactions(result)));
         }
 
         catch (error) {
