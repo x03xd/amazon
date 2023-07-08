@@ -1,0 +1,57 @@
+
+
+.home-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 20px;
+    justify-content: center;
+}
+
+
+.home-content > div {
+    background: white;
+}
+
+
+
+.card-nbt {
+    margin-top: -360px;
+    position: relative;
+}
+
+
+
+
+.home-header-card {
+    padding: 16px;
+}
+
+
+
+
+.home-body-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 11px;
+    text-align: center;
+}
+
+
+.home-body-card img {
+    width: 100%;
+    height: auto;
+}
+
+
+.home-body-card span {
+    color: black !important;
+    float: left;
+    padding: 5px;
+}
+
+
+
+.home-footer-card {
+    padding: 16px;
+}
