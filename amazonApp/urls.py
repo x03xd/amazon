@@ -31,7 +31,7 @@ urlpatterns = [
 
     path("edit-username/<id>", views.EditUsername.as_view()),
     path("edit-email/<id>", views.EditEmail.as_view()),
-    path("finalize-order/<id>", views.FinalizeOrder.as_view()),
+    path("finalize-order/", views.FinalizeOrder.as_view()),
     path("transactions/<id>", views.TransactionsAPI.as_view()),
 
 

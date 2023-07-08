@@ -102,18 +102,22 @@ class ProcessAPI(APIView):
             if total_quantity >= 10:
                 return JsonResponse({"status": False, "info": "size of the cart is too big"})
 
-            user = User.objects.get(username="admin")  # Retrieve the user based on the username
-            cart = Cart.objects.get(owner=user)  # Retrieve the cart associated with the user
-            product = Product.objects.get(id=1)  # Retrieve the product based on the ID
+            cart = Cart.objects.get(owner__id = json_data["user_id"])  # Retrieve the cart associated with the user
 
             try:
-                obj = CartItem.objects.get(cart=cart)
+                product = Product.objects.get(id = json_data["product_id"])  # Retrieve the product based on the ID
+            
+            except Product.DoesNotExist:
+                return JsonResponse({"error": "Object does not exist"}, status=404)
 
+
+            try:
+                obj = CartItem.objects.get(cart__owner__id = 1)
                 obj.quantity += quantity
-                obj.save()  
+                obj.save()
 
-            except CartItem.DoesNotExist:
 
+            except:
                 obj = CartItem.objects.create(
                     cart=cart,
                     product=product,
@@ -121,13 +125,15 @@ class ProcessAPI(APIView):
                 )
 
             
-            return JsonResponse({"status": total_quantity})
+            return JsonResponse({"status": 1})
 
         except (json.JSONDecodeError, Product.DoesNotExist) as e:
             return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)
         
         except Exception as e:
             return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
+        
+        
 
 
 
@@ -518,23 +524,22 @@ class FinalizeOrder(APIView):
             json_data = json.load(request)
 
             if json_data["location"] == "cart":
-                cart = Cart.objects.get(owner__id = self.kwargs.get("id"))
-                serializer = CartSerializer(cart)
-                bought = serializer.data["products"]
-                cart.products.clear()
+                cart_items = CartItem.objects.filter(cart__owner__id = json_data["user"])
+                cart_items.delete()
+                bought = []
+
+                for record in cart_items:
+                    bought += record["product"] * record["quantity"]
+
     
             elif json_data["location"] == "lobby":
                 bought = json_data["product_id"] * int(json_data["quantity"])
 
             try:
-                user = User.objects.get(id = self.kwargs.get("id"))
-
+                user = User.objects.get(id = json_data["user"])
 
             except User.DoesNotExist:
                 return Response({"error": "Object does not exist"}, status=404)    
-
-            except Exception as e:
-                return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
             Transaction.objects.create(
                 bought_by = user,
@@ -544,6 +549,7 @@ class FinalizeOrder(APIView):
 
             return Response("The user's cart has been cleared and transaction has been saved")
                 
+
         except Cart.DoesNotExist:
             return Response({"error": "Object does not exist"}, status=404)    
 

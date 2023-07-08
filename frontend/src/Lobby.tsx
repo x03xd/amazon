@@ -32,12 +32,12 @@ const Lobby: React.FC = () => {
     const finalizeOrderLobby = async (product_id: number) => {
 
         try{
-            await fetch(`http://127.0.0.1:8000/api/finalize-order/${username?.user_id}`, {
+            await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({"location": "lobby", "product_id": [location.state.id_product], "quantity": selectedValue})
+                body:JSON.stringify({"location": "lobby", "product_id": [location.state.id_product], "quantity": selectedValue, "user": username?.user_id})
             })
         }
 
@@ -58,7 +58,7 @@ const Lobby: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({'id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
+                body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
             });
             let responseData = await response.json();
             console.log(responseData);
