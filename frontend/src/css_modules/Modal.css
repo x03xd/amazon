@@ -1,0 +1,157 @@
+.login-modal {
+    background: white;
+    position: absolute;
+    display: none;
+    grid-template-rows: 1fr 6fr;
+    right: 110px;
+    border-radius: 4px;
+    z-index: 10;
+    top: 55px;
+    height: 310px;
+    pointer-events: all !important;
+}
+
+
+form  {
+    display: grid;
+    place-items: center;
+}
+
+
+.login-modal > div {
+
+    display: grid;
+    justify-content: center;
+}
+
+.login-modal > div:first-child {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.login-modal > div:first-child span {
+    margin-top: 10px;
+}
+
+
+.login-modal > div:first-child a,
+.login-modal > div:first-child span{
+    font-size: 12px;
+    line-height: 5px;
+}
+
+
+
+.login-modal > div + div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+
+
+
+.login-modal > div + div ul li:first-child {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+
+
+.login-modal li:hover {
+    cursor:pointer !important;
+    color: var(--dark-orange) !important;
+}
+
+
+.login-modal > div:first-child span:last-child {
+    font-size: 0.95rem !important;
+    margin-top: -0.2rem;
+}
+
+
+
+/* LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL --- LEFT SIDE MODAL */
+
+
+.left-modal {
+    position: fixed;
+    width: 20%;
+    background: white;
+    left: 0;
+    top: 0;
+    height: 100%;
+    display: none;
+    z-index: 10;
+    overflow-y : auto;
+    pointer-events: all !important;
+}
+
+.left-modal-header {
+    background: #232f3e;
+    padding: 24px 41px 15px 41px;
+
+}
+
+.left-modal-body {
+    overflow-y : auto;
+}
+
+
+
+
+.left-modal > div a {
+    color: black !important;
+    display: inline-block !important;
+    width: 100%;
+    padding: 15px 41px 15px 41px;
+    font-size: 13px !important;
+}
+
+
+
+.left-modal > div a:first-child ~ a:hover {
+    background: lightgrey;
+}
+
+.left-modal > div a:first-child {
+    font-size: 18px !important;
+    font-weight: 550;
+    margin-top: 5px;
+}
+
+
+.left-modal > div a:first-child ~ a{
+
+}
+
+
+/* OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY */
+
+.overlay {
+    display: none;
+    background: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+}
+
+
+.overlay-high {
+    display: none;
+    background: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 12;
+}
+
+
+
+.pointer-event-handler {
+    pointer-events: none;
+}
