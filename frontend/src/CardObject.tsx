@@ -32,8 +32,6 @@ interface Data {
 
 
 const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, counterQuantities, quantity }) => {
-    
-    console.log(quantity)
 
     let {username} = useContext(AuthContext);
     const [data, setData] = useState<Data | null>(null);

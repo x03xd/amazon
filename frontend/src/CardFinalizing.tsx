@@ -13,12 +13,12 @@ const CardFinalizing : React.FC<Num> = ({ num, total }) => {
     const finalizeOrder = async () => {
 
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/${username?.user_id}`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({"location": "cart", "quantity":1})
+                body:JSON.stringify({"location": "cart", "quantity":1, "user": username?.user_id})
             })
 
             const data = await response.json()
