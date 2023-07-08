@@ -1,12 +1,12 @@
 import AuthContext from "./AuthenticationContext";
 import React from 'react';
 
-interface Num {
+interface Nums {
     num: number;
     total: number;
 }
 
-const CardFinalizing : React.FC<Num> = ({ num, total }) => {
+const CardFinalizing : React.FC<Nums> = ({ num, total }) => {
 
     const {username} = React.useContext(AuthContext);
 
@@ -18,7 +18,7 @@ const CardFinalizing : React.FC<Num> = ({ num, total }) => {
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({"location": "cart", "quantity":1, "user": username?.user_id})
+                body:JSON.stringify({"location": "cart", "user": username?.user_id})
             })
 
             const data = await response.json()
@@ -41,7 +41,7 @@ const CardFinalizing : React.FC<Num> = ({ num, total }) => {
 
             <div className = "cart-finalizing-container-main">
                 <div className = "p-3 pt-4">
-                    <span className = "text-success">Niektóre przedmioty w zamówieniu kwalifikują się do DARMOWEJ dostawy. Wybierz tę opcję przy kasie. Obowiązują ograniczenia</span>
+                    <span className = "green-text text-success">Niektóre przedmioty w zamówieniu kwalifikują się do DARMOWEJ dostawy. Wybierz tę opcję przy kasie. Obowiązują ograniczenia</span>
                 </div>
 
 
@@ -50,9 +50,7 @@ const CardFinalizing : React.FC<Num> = ({ num, total }) => {
                 </div>
 
                 <div className = "pe-3">
-                    <input type = "checkbox" />
-                    
-                    <span>Zamów jako prezent / wyślij z dedykacją</span>
+
                 </div>
 
                 <div className = "pb-5 pt-3">

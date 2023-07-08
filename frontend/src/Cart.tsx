@@ -99,7 +99,7 @@ const Card: React.FC = () => {
     }
     
     const func = (value: number) => {
-        setQuantitySum(curr => curr + value);
+        setQuantitySum(prev => prev + value);
     }
 
     const navigateToLogin = () => {

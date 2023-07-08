@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { ratingStars, ratingLevels } from './static_ts_files/ratingLevels';
+import { ratingStars } from './static_ts_files/ratingLevels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { faStar } from '@fortawesome/free-solid-svg-icons'

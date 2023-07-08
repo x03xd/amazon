@@ -97,25 +97,24 @@ class ProcessAPI(APIView):
             json_data = json.load(request)
             quantity = int(json_data["quantity"])
 
-            total_quantity = CartItem.objects.filter(cart__owner__username='admin').aggregate(total_quantity=Sum('quantity'))['total_quantity']
+            total_quantity = CartItem.objects.filter(cart__owner__username=json_data["user_id"]).aggregate(total_quantity=Sum('quantity'))['total_quantity']
 
-            if total_quantity >= 10:
+            if isinstance(total_quantity, int) and total_quantity >= 10:
                 return JsonResponse({"status": False, "info": "size of the cart is too big"})
 
-            cart = Cart.objects.get(owner__id = json_data["user_id"])  # Retrieve the cart associated with the user
+            cart = Cart.objects.get(owner__id=json_data["user_id"])  # Retrieve the cart associated with the user
 
             try:
-                product = Product.objects.get(id = json_data["product_id"])  # Retrieve the product based on the ID
+                product = Product.objects.get(id=json_data["product_id"])  # Retrieve the product based on the ID
             
             except Product.DoesNotExist:
                 return JsonResponse({"error": "Object does not exist"}, status=404)
 
 
             try:
-                obj = CartItem.objects.get(cart__owner__id = 1)
+                obj = CartItem.objects.get(cart__owner__id = json_data["user_id"], product__id = json_data["product_id"])
                 obj.quantity += quantity
                 obj.save()
-
 
             except:
                 obj = CartItem.objects.create(
@@ -124,8 +123,7 @@ class ProcessAPI(APIView):
                     quantity=quantity
                 )
 
-            
-            return JsonResponse({"status": 1})
+            return Response("The item has been added to the user's cart")
 
         except (json.JSONDecodeError, Product.DoesNotExist) as e:
             return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)

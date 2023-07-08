@@ -4,7 +4,7 @@ footer {
 }
 
 
-footer span, :global footer li, :global footer a {
+footer span, footer li, footer a {
     color: white !important;
 }
 

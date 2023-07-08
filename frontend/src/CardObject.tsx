@@ -100,25 +100,27 @@ const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, counterQuantiti
         counterQuantities(selectedValue)
     }, [selectedValue])
 
-    
-    const handleSelectChange = (e: any) => {
-        setSelectedValue(e.target.value);
-        changeQuantity(e.target.value);
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedValue(parseInt(e.target.value, 10));
+        changeQuantity(parseInt(e.target.value, 10));
     };
 
-
-    let statusColor : string;
+    let statusColor: string;
     let status: string;
 
-    if(item.quantity >= 1){
+    if(item.quantity >= selectedValue){
         status = "Dostępny"
         statusColor = "text-success";
+        console.log("green")
     }
     
     else {
         status = "Niedostępny"
         statusColor = "text-danger";
+        console.log("dang")
     }
+
+   
 
     return(
         <>

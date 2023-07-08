@@ -4,12 +4,12 @@ nav {
 }
  
  
-  nav div.navbar-upper-part {
-     background: var(--top-nav);
-     height: 60px;
-     display: flex;
-     align-items: center;
-     justify-content: space-around;
+nav div.navbar-upper-part {
+    background: var(--top-nav);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
  }
  
  
@@ -33,13 +33,13 @@ nav {
  
  
  
- nav div.navbar-lower-part {
-     background: var(--bot-nav);
-     height: 38px;
-     display: flex;
-     align-items: center;
-     gap: 25px;
- }
+nav div.navbar-lower-part {
+    background: var(--bot-nav);
+    height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
  
  
  .navbar-lower-part > div span {

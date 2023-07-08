@@ -70,6 +70,7 @@ const Lobby: React.FC = () => {
 
     }
 
+    console.log(location.state.id_product, username?.user_id)
 
     return(
         <div className = "lobby-content">
