@@ -35,7 +35,7 @@ const Transactions: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const [pages, setPages] = useState<number>(0);
-
+    console.log(123)
 
     const {username, authToken} = useContext(AuthContext);
     const navigate = useNavigate();
