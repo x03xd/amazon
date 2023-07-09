@@ -33,7 +33,7 @@ interface ProductCard {
         price: number;
         quantity: number;
         status?: boolean | null;
-        subcategory_name: number;
+        category_name: number;
         title: string;
     };
 

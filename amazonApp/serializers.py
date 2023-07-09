@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Product, Category, User, Cart, Rate, Transaction, CartItem
+from .models import Product, Category, User, Cart, Rate, Transaction, CartItem, Brand
 from rest_framework import serializers
 
 
@@ -50,7 +50,7 @@ class ProductSerializer(ModelSerializer):
 
 
 
-class SubCategorySerializer(ModelSerializer):
+class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = "__all__"
@@ -95,4 +95,9 @@ class EditEmailSerializer(ModelSerializer):
         model = User
         fields = ("email")
 
-    
+
+class BrandsByCategoriesSerializer(ModelSerializer):
+
+    class Meta:
+        model = Brand
+        fields = "__all__"

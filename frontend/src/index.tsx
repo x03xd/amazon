@@ -16,6 +16,7 @@ import MyAccount from './MyAccount';
 import NarrowGrid from './NarrowGrid';
 import EditProfile from './EditProfile';
 import Transactions from './Transactions';
+import ProtectedRoute from './ProtectedRoute';
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
@@ -30,12 +31,12 @@ root.render(
                         <Route path = "/" element = {<Main />} />
                         <Route path = "/s" element = {<Store />} />
                         <Route path = "/l/:slug" element = {<Lobby />} />
-                        <Route path = "/cart" element = {<Cart />} />
+                        <Route path="/cart" element={<ProtectedRoute path="/cart" element={<Cart />} />} />
                        
                         <Route element = {<NarrowGrid />}>
-                            <Route path = "/account" element = {<MyAccount />} />
-                            <Route path = "/account/edit-profile" element = {<EditProfile />} />
-                            <Route path = "/account/transactions" element = {<Transactions />} />
+                            <Route path="/account" element={<ProtectedRoute path="/account" element={<MyAccount />} />} />
+                            <Route path="/account/edit-profile" element={<ProtectedRoute path="/account/edit-profile" element={<EditProfile />} />} />
+                            <Route path="/account/transactions" element={<ProtectedRoute path="/account/transactions" element={<Transactions />} />} />
                         </Route>
                     </Route>
 

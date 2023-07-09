@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from .models import Product, Category, Rate, User, Cart, Transaction, CartItem
-from .serializers import ProductSerializer, SubCategorySerializer, UserSerializer, CartSerializer, RateSerializer, TransactionSerializer, CartItemSerializer, GetterRateSerializer
+from .models import Product, Category, Rate, User, Cart, Transaction, CartItem, Brand
+from .serializers import ProductSerializer, CategorySerializer, UserSerializer, CartSerializer, RateSerializer, TransactionSerializer, CartItemSerializer, GetterRateSerializer, BrandsByCategoriesSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http.response import JsonResponse
@@ -160,8 +160,8 @@ class RemoveItemCart(APIView):
 
 
 
-class SubCategoriesAPI(ListAPIView):
-    serializer_class = SubCategorySerializer
+class CategoriesAPI(ListAPIView):
+    serializer_class = CategorySerializer
 
     def get_queryset(self):
         try:
@@ -220,7 +220,7 @@ class ProductsBySubsAPI(generics.ListAPIView):
         q = self.request.query_params.get('q')
 
         if q is not None:
-            queryset = Product.objects.filter(subcategory_name__sub_category=q)
+            queryset = Product.objects.filter(category_name__name=q)
 
         return queryset
 
@@ -271,10 +271,8 @@ class ProductsAPI(APIView):
         if c is not None:
             multiple_brands_filter = c.split(",")
 
-
         if u is not None:
             multiple_prices_filter = u.split(",")
-
             first_lst, second_lst = [], []
 
             for index, s in enumerate(multiple_prices_filter):
@@ -296,13 +294,13 @@ class ProductsAPI(APIView):
         if q is None:
 
             if (c is not None) and (u is not None) and (r is not None):
-                queryset = queryset.filter(id__in = lst, brand__in__icontains = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
+                queryset = queryset.filter(id__in = lst, brand__brand_name__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
 
             if (c is not None) and (u is not None) and (r is None):
-                queryset = queryset.filter(brand__in__icontains = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
+                queryset = queryset.filter(brand__brand_name__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
 
             if (c is not None) and (u is None) and (r is not None):
-                queryset = queryset.filter(id__in = lst, brand__in__icontains = multiple_brands_filter)
+                queryset = queryset.filter(id__in = lst, brand__brand_name__in = multiple_brands_filter)
 
             if (c is None) and (u is not None) and (r is not None):
                 queryset = queryset.filter(id__in = lst, price__range=(first_lst[0], second_lst[-1]))
@@ -311,7 +309,7 @@ class ProductsAPI(APIView):
                 queryset = queryset.filter(id__in = lst)
 
             if (c is not None) and (u is None) and (r is None):
-                queryset = queryset.filter(brand__in__icontains = multiple_brands_filter)
+                queryset = queryset.filter(brand__brand_name__in = multiple_brands_filter)
 
             if (c is None) and (u is not None) and (r is None):
                 queryset = queryset.filter(price__range=(first_lst[0], second_lst[-1]))
@@ -320,28 +318,28 @@ class ProductsAPI(APIView):
         else:
 
             if (c is not None) and (u is not None) and (r is not None):
-                queryset = queryset.filter(subcategory_name__sub_category__icontains=q, id__in = lst, brand__in__icontains = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
+                queryset = queryset.filter(category_name__name__icontains=q, id__in = lst, brand__brand_name__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
 
             if (c is not None) and (u is not None) and (r is None):
-                queryset = queryset.filter(subcategory_name__sub_category__icontains=q, brand__in__icontains = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
+                queryset = queryset.filter(category_name__name__icontains=q, brand__brand_name__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
 
             if (c is not None) and (u is None) and (r is not None):
-                queryset = queryset.filter(subcategory_name__sub_category__icontains=q, id__in = lst, brand__in__icontains = multiple_brands_filter)
+                queryset = queryset.filter(category_name__name__icontains=q, id__in = lst, brand__brand_name__in = multiple_brands_filter)
 
             if (c is None) and (u is not None) and (r is not None):
-                queryset = queryset.filter(subcategory_name__sub_category__icontains=q, id__in = lst, price__range=(first_lst[0], second_lst[-1]))
+                queryset = queryset.filter(category_name__name__icontains=q, id__in = lst, price__range=(first_lst[0], second_lst[-1]))
             
             if (c is None) and (u is None) and (r is not None):
-                queryset = queryset.filter(subcategory_name__sub_category__icontains=q, id__in = lst)
+                queryset = queryset.filter(category_name__name__icontains=q, id__in = lst)
 
             if (c is not None) and (u is None) and (r is None):
-                queryset = queryset.filter(subcategory_name__sub_category__icontains=q, brand__in__icontains = multiple_brands_filter)
+                queryset = queryset.filter(category_name__name__icontains=q, brand__brand_name__in = multiple_brands_filter)
 
             if (c is None) and (u is not None) and (r is None):
-                queryset = queryset.filter(subcategory_name__sub_category__icontains=q, price__range=(first_lst[0], second_lst[-1]))
+                queryset = queryset.filter(category_name__name__icontains=q, price__range=(first_lst[0], second_lst[-1]))
 
             if (c is None) and (u is None) and (r is None):
-                queryset = queryset.filter(subcategory_name__sub_category__icontains=q)
+                queryset = queryset.filter(category_name__name__icontains=q)
    
    
         serializer = ProductSerializer(queryset, many=True)
@@ -590,11 +588,8 @@ class ProductsFromTransactions(APIView):
                 serializer = ProductSerializer(product)
                 lst.append((product_id, serializer.data))
 
-
-                
             return Response(lst)
 
-        
         except Product.DoesNotExist:
             return JsonResponse({"error": "Object does not exist"}, status=404)
         
@@ -684,3 +679,24 @@ class DeleteRate(APIView):
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
+
+
+class BrandsByCategoriesAPI(APIView):
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            brands = Brand.objects.filter(belong_to_category__name__icontains = self.kwargs.get("category"))
+            serializer = BrandsByCategoriesSerializer(brands, many=True)
+
+            return Response(serializer.data)
+
+        
+        except Brand.DoesNotExist:
+            return JsonResponse({"error": "Object does not exist"}, status=404)
+
+        except json.JSONDecodeError:
+            return Response({"error": "Invalid JSON data"}, status=400)
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)

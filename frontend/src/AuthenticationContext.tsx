@@ -80,7 +80,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
     }
 
 
-
     async function usernameFilter(e: ChangeEvent<HTMLFormElement>){
         e.preventDefault();
 
@@ -118,9 +117,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
         }
 
     }
-
-    
-
 
 
     async function loginUser(e: ChangeEvent<HTMLFormElement>){

@@ -2,19 +2,19 @@ from django.urls import path
 from . import views
 from .views import MyTokenObtainPairView
 from rest_framework_simplejwt.views import (
-
     TokenRefreshView,
 )
 
+
 urlpatterns = [
     path("products/", views.ProductsAPI.as_view()),
-    path("subcategories/", views.SubCategoriesAPI.as_view()),
+    path("categories/", views.CategoriesAPI.as_view()),
 
     path("process/", views.ProcessAPI.as_view()),
     path("remove-item/", views.RemoveItemCart.as_view()),
     path("cart/", views.CartAPI.as_view()),
 
-    path("products-by-subs/", views.ProductsBySubsAPI.as_view()),
+    path("brands/<category>", views.BrandsByCategoriesAPI.as_view()),
 
     
     path('token/',MyTokenObtainPairView.as_view(), name='token_obtain_pair'),

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Routes, Route, useNavigate} from 'react-router-dom';
+import {Routes, Route, useNavigate, useLocation} from 'react-router-dom';
 import AuthContext from "./AuthenticationContext";
 
 
@@ -14,7 +14,7 @@ export interface ModalProps{
 const Modal: React.FC<ModalProps> = ({ className, modalOFF, overlayOFF, navbarStatus}) => {
 
     const navigate = useNavigate();
-
+    const location = useLocation();
 
     const navigateTo = (): void => {
         navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
@@ -68,9 +68,9 @@ const Modal: React.FC<ModalProps> = ({ className, modalOFF, overlayOFF, navbarSt
 
                 <div>
                     <ul className = "p-5">
-                        <li>Moje konto</li>
+                        <li >Moje konto</li>
                         <li onClick = {() => {navigateToMyAccount("hidden")}}>Moje konto</li>
-                        <li>Moje zamówienia</li>
+                        <li onClick = {() => {navigate("/account/transactions")}}>Moje zamówienia</li>
                         <li>Kup ponownie</li>
                         <li>Moje rekomendacje</li>
                         <li>Mój Prime</li>

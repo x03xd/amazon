@@ -9,7 +9,6 @@ import AuthContext from "./AuthenticationContext";
 
 const Login: React.FC = () => {
 
-    const navigate = useNavigate();
     const location = useLocation();
 
     let {loginUser, usernameFilter, email, alertStyle, alertText} = useContext(AuthContext);

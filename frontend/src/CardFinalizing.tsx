@@ -4,9 +4,10 @@ import React from 'react';
 interface Nums {
     num: number;
     total: number;
+    isNotBlocked: boolean
 }
 
-const CardFinalizing : React.FC<Nums> = ({ num, total }) => {
+const CardFinalizing : React.FC<Nums> = ({ num, total, isNotBlocked }) => {
 
     const {username} = React.useContext(AuthContext);
 
@@ -54,6 +55,7 @@ const CardFinalizing : React.FC<Nums> = ({ num, total }) => {
                 </div>
 
                 <div className = "pb-5 pt-3">
+                    {isNotBlocked === true ? <></> : <span>cannot buy</span>}
                     <input onClick = {finalizeOrder} type = "button" id = "finalize-cart" className = "bg-warning" value = "Przejdź do finalizacji zamówienia" />
                 </div>
             </div>  

@@ -34,15 +34,12 @@ const Card: React.FC = () => {
 
     const [cardUserGetter, setCardUserGetter] = useState<CartItem[]>([]);
     const [cardItemsGetter, setCardItemsGetter] = useState<Product[] | []>([]);
-    const [quantitySum, setQuantitySum] = useState<number>(0);
+    const [isPossibleToFinalize, setIsPossibleToFinalize] = useState<boolean>(true);
     const [total, setTotal] = useState<number>(0);
 
     const {username, authToken} = useContext(AuthContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if(authToken == null) navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
-    }, [])
 
     useEffect(() => {
         try{
@@ -93,13 +90,18 @@ const Card: React.FC = () => {
 
     }, [cardItemsGetter])
 
+    //useEffect(() => {
+
+    //}, [isPossibleToFinalize])
+    console.log(isPossibleToFinalize)
+
 
     const removeProduct = (num: number) => {
         setCardUserGetter(prevItems => prevItems.filter(item => item.product !== num));
     }
     
-    const func = (value: number) => {
-        setQuantitySum(prev => prev + value);
+    const func = (value: boolean) => {
+        setIsPossibleToFinalize(value);
     }
 
     const navigateToLogin = () => {
@@ -169,7 +171,7 @@ const Card: React.FC = () => {
                         <div className = "card-content-objects-inner mt-5 bg-light">
                             {cardItemsGetter.map((item, index: number) => {
                                 return(
-                                    <CardObject item = {item} key = {index} index ={ cardUserGetter[index]?.product} ajaxFunction = {removeProduct} counterQuantities = {func} quantity = {cardUserGetter[index]?.quantity} />
+                                    <CardObject item = {item} key = {index} index ={ cardUserGetter[index]?.product} ajaxFunction = {removeProduct} checkIfPossible = {func} quantity = {cardUserGetter[index]?.quantity} />
                                 )    
                             })}
                         </div>
@@ -187,7 +189,7 @@ const Card: React.FC = () => {
                 </div>
 
                 <div className = "card-content-right">
-                    <CardFinalizing num = {cardUserGetter.length} total = {total} />
+                    <CardFinalizing num = {cardUserGetter.length} total = {total} isNotBlocked = {isPossibleToFinalize} />
                     <CartSideBar />              
                 </div>
 

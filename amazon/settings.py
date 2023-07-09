@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'amazon.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'amazon',
+        'NAME': 'new_amazon',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',  # Usually 'localhost' for local development

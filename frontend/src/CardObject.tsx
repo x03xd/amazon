@@ -20,7 +20,7 @@ interface Item {
     }    
     index: number;
     ajaxFunction: (num: number) => void;
-    counterQuantities: (value: number) => void;
+    checkIfPossible: (value: boolean) => void;
     quantity: number;
 }
 
@@ -31,7 +31,7 @@ interface Data {
 }
 
 
-const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, counterQuantities, quantity }) => {
+const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, checkIfPossible, quantity }) => {
 
     let {username} = useContext(AuthContext);
     const [data, setData] = useState<Data | null>(null);
@@ -97,7 +97,6 @@ const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, counterQuantiti
 
 
     useEffect(() => {
-        counterQuantities(selectedValue)
     }, [selectedValue])
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -111,17 +110,15 @@ const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, counterQuantiti
     if(item.quantity >= selectedValue){
         status = "Dostępny"
         statusColor = "text-success";
-        console.log("green")
     }
     
     else {
         status = "Niedostępny"
         statusColor = "text-danger";
-        console.log("dang")
+        checkIfPossible(false);
     }
 
    
-
     return(
         <>
             <div className = "card-content-objects-inner-col-1">
