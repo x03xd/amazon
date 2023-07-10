@@ -1,5 +1,5 @@
-import {useNavigate, useParams, useLocation} from 'react-router-dom';
-import React, {useEffect, useState, useRef, useContext} from 'react';
+import {useLocation} from 'react-router-dom';
+import React, {useEffect, useState,  useContext} from 'react';
 import CSRFToken from './CSRFToken';
 import logo from './images/xd.png';
 import Alert from './Alert';

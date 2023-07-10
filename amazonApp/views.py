@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from .models import Product, Category, Rate, User, Cart, Transaction, CartItem, Brand
+from .models import Product, Category, Rate, User, Transaction, CartItem, Brand, Cart
 from .serializers import ProductSerializer, CategorySerializer, UserSerializer, CartSerializer, RateSerializer, TransactionSerializer, CartItemSerializer, GetterRateSerializer, BrandsByCategoriesSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -54,20 +54,26 @@ class CartAPI(APIView):
         try:
             json_data = json.load(request)
 
-            cart = CartItem.objects.filter(cart__owner__username = json_data["username"])
-       
+            cart = CartItem.objects.filter(cart__owner__username = json_data["username"]).order_by('product__title')
             serializer = CartItemSerializer(cart, many=True)
+            
+
+            for cartItem in serializer.data:
+                prod = Product.objects.get(id=cartItem["product"])
+                p_serializer = ProductSerializer(prod)
+
+                cartItem["product_data"] = p_serializer.data
         
             return Response(serializer.data)
         
         except json.JSONDecodeError as e:
-            return JsonResponse({'authenticated': False, "error": "Error decoding JSON", "detail": str(e)}, status=400)
+            return JsonResponse({"error": "Error decoding JSON", "detail": str(e)}, status=400)
 
-        except Cart.DoesNotExist:
-            return JsonResponse({'authenticated': False, "error": "Object does not exist"}, status=404)
+        except CartItem.DoesNotExist:
+            return JsonResponse({"error": "Object does not exist"}, status=404)
 
         except Exception as e:
-            return JsonResponse({'authenticated': False, "error": "Internal Server Error", "detail": str(e)}, status=500)
+            return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
 
     def patch(self, request):
@@ -75,11 +81,15 @@ class CartAPI(APIView):
         try:
             json_data = json.load(request)
        
-            cart = CartItem.objects.get(cart__owner__id = json_data["username"], product__id = json_data["id"])
+            cart = CartItem.objects.get(cart__owner__id = json_data["user_id"], product__id = json_data["product_id"])
+            new_total_price = (cart.total_price * json_data["quantity"]) / cart.quantity
+
             cart.quantity = json_data["quantity"]
+            cart.total_price = new_total_price
+
             cart.save()
    
-            return Response("The CartItem has been updated")
+            return Response(json_data["product_id"])
         
         except (json.JSONDecodeError, CartItem.DoesNotExist) as e:
             return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)
@@ -102,10 +112,11 @@ class ProcessAPI(APIView):
             if isinstance(total_quantity, int) and total_quantity >= 10:
                 return JsonResponse({"status": False, "info": "size of the cart is too big"})
 
-            cart = Cart.objects.get(owner__id=json_data["user_id"])  # Retrieve the cart associated with the user
+            cart = Cart.objects.get(owner__id=json_data["user_id"])  
 
-            try:
-                product = Product.objects.get(id=json_data["product_id"])  # Retrieve the product based on the ID
+            try: 
+                product = Product.objects.get(id=json_data["product_id"]) 
+
             
             except Product.DoesNotExist:
                 return JsonResponse({"error": "Object does not exist"}, status=404)
@@ -114,13 +125,15 @@ class ProcessAPI(APIView):
             try:
                 obj = CartItem.objects.get(cart__owner__id = json_data["user_id"], product__id = json_data["product_id"])
                 obj.quantity += quantity
+                obj.total_price += product.price * quantity
                 obj.save()
 
             except:
                 obj = CartItem.objects.create(
-                    cart=cart,
-                    product=product,
-                    quantity=quantity
+                    cart = cart,
+                    product = product,
+                    quantity = quantity,
+                    total_price = product.price * quantity
                 )
 
             return Response("The item has been added to the user's cart")
@@ -352,12 +365,15 @@ class ProductsAPI(APIView):
                 
         try:
             json_data = json.load(request)
-            product_ids = json_data["list"]
+            products = []
 
-            objects_list = Product.objects.filter(id__in=product_ids)
-            serializer = ProductSerializer(objects_list, many=True)
+            for product, quantity in json_data["lst"]:
+                instance = Product.objects.get(id=product)
+                products.append(instance)
 
-            return Response(serializer.data)
+            serializer = ProductSerializer(products, many=True)
+
+            return JsonResponse({"products": serializer.data})
         
         
         except json.JSONDecodeError:

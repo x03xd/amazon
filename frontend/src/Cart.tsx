@@ -11,99 +11,59 @@ interface Product {
     brand: string;
     description: string;
     gallery1: boolean | null;
-    gallery2: boolean | null;
-    gallery3: boolean | null;
     id: number;
     image: string;
     price: number;
     quantity: number;
     status?: boolean | null;
-    subcategory_name: number;
+    category_name: number;
     title: string;
 }
 
 interface CartItem {
-    id: number,
-    quantity: number,
-    cart: number,
-    product: number,
+    id: number;
+    quantity: number;
+    cart: number;
+    product: number;
+    total_price: number;
+    product_data: Product
 }
 
+interface HashMap {
+    [key: string]: any;
+}
 
 const Card: React.FC = () => {
 
     const [cardUserGetter, setCardUserGetter] = useState<CartItem[]>([]);
-    const [cardItemsGetter, setCardItemsGetter] = useState<Product[] | []>([]);
-    const [isPossibleToFinalize, setIsPossibleToFinalize] = useState<boolean>(true);
-    const [total, setTotal] = useState<number>(0);
 
-    const {username, authToken} = useContext(AuthContext);
+    const [reload, setReload] = useState<[number, number]>();
+    const [isPossible, setIsPossible] = useState<HashMap>([]);
+
+    const {username} = useContext(AuthContext);
     const navigate = useNavigate();
-
 
     useEffect(() => {
         try{
             fetch('http://127.0.0.1:8000/api/cart/', {
-                method: 'post',
+                method: 'POST',
                 headers:{
                     'Content-Type':'application/json'
                 },
                 body:JSON.stringify({"username": username?.username})
             })
             .then(response => response.json())
-            .then(result => setCardUserGetter(result));
+            .then(result => (setCardUserGetter(result), console.log("card")));
         }
+        catch(error) {console.log("Error: ", error)}
 
-        catch(error){
-            console.log("Error: ", error)
-        }
-        
-    }, [])
+    }, [reload])
 
     
-    useEffect(() => {
-        const substractingProducts = (cardUserGetter).map(item => item.product);
-
-        try{
-            fetch('http://127.0.0.1:8000/api/products/', {
-                method:'post',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({"list": substractingProducts})
-            })
-            .then(response => response.json())
-            .then(result => (setCardItemsGetter(result)));
-        }
-
-        catch(error){
-            console.log("Error: ", error)
-        }
-
-    }, [cardUserGetter])
-
-
-    useEffect(() => {
-        let prevValue : number = 0;
-        cardItemsGetter.map(item => prevValue += item.price)
-        setTotal(prevValue)
-
-    }, [cardItemsGetter])
-
-    //useEffect(() => {
-
-    //}, [isPossibleToFinalize])
-    console.log(isPossibleToFinalize)
-
-
     const removeProduct = (num: number) => {
         setCardUserGetter(prevItems => prevItems.filter(item => item.product !== num));
     }
     
-    const func = (value: boolean) => {
-        setIsPossibleToFinalize(value);
-    }
-
     const navigateToLogin = () => {
         navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
     }
@@ -112,8 +72,20 @@ const Card: React.FC = () => {
         navigate("/registration/")
     }
 
+    const prev = (val: number, num: number) => {
+        setReload([val, num])
+    }
 
-    if(cardItemsGetter.length === 0){
+    const isPossibleCheck = (val: number) => {
+        setIsPossible(prevHashmap => ({ ...prevHashmap, [val]: false }))
+    }
+
+    const removeIsPossibleCheck = (val: number) => {
+        delete isPossible[val]
+    }
+
+
+    if(cardUserGetter && cardUserGetter.length === 0){
         return(
             <div className = "card-content mt-5">
             <CSRFToken />
@@ -167,29 +139,34 @@ const Card: React.FC = () => {
                                 <div className = "line-separator bg-secondary"></div>
                             </div>
                         </div>
-
+             
                         <div className = "card-content-objects-inner mt-5 bg-light">
-                            {cardItemsGetter.map((item, index: number) => {
+                            {(cardUserGetter).map((item: any, index: number) => {
                                 return(
-                                    <CardObject item = {item} key = {index} index ={ cardUserGetter[index]?.product} ajaxFunction = {removeProduct} checkIfPossible = {func} quantity = {cardUserGetter[index]?.quantity} />
+                                    <CardObject
+                                        item = {item} key = {index}
+                                        ajaxFunction = {removeProduct}
+                                        prev = {prev}
+                                        isPossibleCheck = {isPossibleCheck}
+                                        removeIsPossibleCheck = {removeIsPossibleCheck}
+                                    />
                                 )    
                             })}
+    
                         </div>
 
 
                         <div className = "card-content-objects-footer">
-
                         </div>
                     </div>
 
 
                     <div className = "card-content-left-second bg-light">
-
                     </div>
                 </div>
 
                 <div className = "card-content-right">
-                    <CardFinalizing num = {cardUserGetter.length} total = {total} isNotBlocked = {isPossibleToFinalize} />
+                    <CardFinalizing num = {cardUserGetter.length} total = {1} buyButton = {isPossible} />
                     <CartSideBar />              
                 </div>
 

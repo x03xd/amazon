@@ -1,29 +1,34 @@
-
 import React, {useEffect, useContext, useState} from 'react';
 import AuthContext from "./AuthenticationContext";
 
-
 interface Item {
     item: {
-        brand: string;
-        description: string;
-        gallery1: boolean | null;
-        gallery2: boolean | null;
-        gallery3: boolean | null;
         id: number;
-        image: string;
-        price: number;
         quantity: number;
-        status?: boolean | null;
-        subcategory_name: number;
-        title: string;
-    }    
-    index: number;
-    ajaxFunction: (num: number) => void;
-    checkIfPossible: (value: boolean) => void;
-    quantity: number;
-}
+        total_price: number;
+        cart: number;
+        product: number;
 
+        product_data: 
+        {
+            brand: string;
+            description: string;
+            gallery1: boolean | null;
+            id: number;
+            image: string;
+            price: number;
+            quantity: number;
+            status?: boolean | null;
+            category_name: number;
+            title: string;
+        }
+    }    
+
+    ajaxFunction: (num: number) => void;
+    prev: (val: number, number: number) => void;
+    isPossibleCheck: (val: any) => void
+    removeIsPossibleCheck: (val: any) => void
+}
 
 interface Data {
     done: boolean;
@@ -31,18 +36,26 @@ interface Data {
 }
 
 
-const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, checkIfPossible, quantity }) => {
 
+const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, removeIsPossibleCheck}) => {
+  
     let {username} = useContext(AuthContext);
     const [data, setData] = useState<Data | null>(null);
-    const [selectedValue, setSelectedValue] = useState<number>(quantity);
+    const [selectedValue, setSelectedValue] = useState<number>(item.quantity);
 
-    const handleAjaxRequest = (num: number): void => {
-        ajaxFunction(num);
-    }
+    
+    useEffect(() => {
+        if(item.product_data.quantity < selectedValue){
+            isPossibleCheck(item.product);
+        }
 
-    const removeProduct = (index: number) => {
-        
+        else{
+            removeIsPossibleCheck(item.product);
+        }
+    }, [selectedValue])
+
+
+    const removeProduct = (index_of_item: number) => {
         try{
             fetch("http://127.0.0.1:8000/api/remove-item/", {
                 method: 'POST',
@@ -50,19 +63,16 @@ const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, checkIfPossible
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({"id": index, "username": username?.user_id})
+                body: JSON.stringify({"id": index_of_item, "username": username?.user_id})
             })
             .then(response => response.json())
             .then(result => (setData(result)))  
         }
-
-        catch(error){
-            console.log("Error: ", error)
-        }
+        catch(error){console.log("Error: ", error);}
     }
 
 
-    const changeQuantity = (quantity: number) => {
+    useEffect(() => {
         try{
             fetch("http://127.0.0.1:8000/api/cart/", {
                 method: 'PATCH',
@@ -70,44 +80,42 @@ const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, checkIfPossible
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({"id": index, "username": username?.user_id, "quantity": quantity})
+                body: JSON.stringify({"product_id": item.product, "user_id": username?.user_id, "quantity": selectedValue})
             })
+            .then(response => response.json())
+            .then(result => (prev(selectedValue, item.product), console.log("change_total")))  
         }
+        catch(error){console.log("Error: ", error);}
 
-        catch(error){
-            console.log("Error: ", error)
-        }
-    }
+        
+    }, [selectedValue])
+
 
 
     useEffect(() => {
-
         try{
             if(data?.done){
                 const param = data.product_id;
                 handleAjaxRequest(param);
             }
         }    
-
-        catch{
-            console.log("Not done")
-        }
-
+        catch(error){console.log("Error: ", error);}
     }, [data])
 
 
-    useEffect(() => {
-    }, [selectedValue])
+    const handleAjaxRequest = (num: number): void => {
+        ajaxFunction(num);
+    }
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedValue(parseInt(e.target.value, 10));
-        changeQuantity(parseInt(e.target.value, 10));
+        setSelectedValue(parseInt(e.target.value, 10))
     };
 
+    
     let statusColor: string;
     let status: string;
 
-    if(item.quantity >= selectedValue){
+    if(item.product_data.quantity >= selectedValue){
         status = "Dostępny"
         statusColor = "text-success";
     }
@@ -115,20 +123,17 @@ const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, checkIfPossible
     else {
         status = "Niedostępny"
         statusColor = "text-danger";
-        checkIfPossible(false);
     }
 
-   
     return(
         <>
             <div className = "card-content-objects-inner-col-1">
-                <img width = "100" height = "100" loading = "lazy" alt = "" src= {item.image} />
+                <img width = "100" height = "100" loading = "lazy" alt = "" src= {item.product_data.image} />
             </div>
-
 
             <div className = "card-content-objects-inner-col-2">
                 <div>
-                    <span>{item.title}</span><br/>
+                    <span>{item.product_data.title}</span><br/>
                     <span className = {statusColor}>{status}</span>
                 </div>
 
@@ -147,13 +152,12 @@ const CardObject: React.FC<Item> = ({ item, index, ajaxFunction, checkIfPossible
                         <option>10</option>
                     </select>
 
-                    <span onClick = {() => {removeProduct(index)}} className = "link">Usuń</span>
+                    <span onClick = {() => {removeProduct(item.product)}} className = "link">Usuń</span>
                 </div>
             </div>
 
-
             <div className = "card-content-objects-inner-col-3">
-                <span>{item.price}</span>
+                <span>{item.total_price}</span>
             </div>
         </>
     );
