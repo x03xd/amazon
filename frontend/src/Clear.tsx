@@ -2,15 +2,6 @@ import arrow from './images/left.png';
 import React from 'react';
 
 
-interface Item {
-    desc: string;
-    range: {
-        start: number;
-        end: number;
-    };
-}
-
-
 export interface ClearProps{
     nut: string;
     func: (arg: string) => void;

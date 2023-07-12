@@ -17,9 +17,10 @@ import NarrowGrid from './NarrowGrid';
 import EditProfile from './EditProfile';
 import Transactions from './Transactions';
 import ProtectedRoute from './ProtectedRoute';
+import PasswordChange from './PasswordChange';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
-
 
 root.render(
     <Router>
@@ -44,9 +45,8 @@ root.render(
                         <Route path = "/login" element = {<Login />} />
                         <Route path = "/login2" element = {<Login />} />
                         <Route path = "/registration" element = {<Register />} />
+                        <Route path="/account/edit-profile/password" element={<ProtectedRoute path="/account/edit-profile/password" element={<PasswordChange />} />} />
                     </Route>
-
-
 
                 </Routes>
             </QueryParamsProvider>

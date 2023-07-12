@@ -1,11 +1,16 @@
 
-
 .card-content {
    display: grid;
    grid-template-columns: 4fr 1fr;
    min-height: 1600px;
    gap: 20px;
 }
+
+
+.card-content-objects p {
+    font-size: 3rem !important;
+}
+
 
 
 .card-content-left {

@@ -24,13 +24,15 @@ urlpatterns = [
     path("login/", views.LoginAPI.as_view()),
 
     path('avg-rate/', views.CountAvgRate.as_view()),
-    path('rate-product/', views.RateProduct.as_view()),
+    path('rate-product/<id>/<pid>/<rate>', views.RateProduct.as_view()),
     path("delete-rate/", views.DeleteRate.as_view()),
 
     #path("token-cookie/", views.StoringUserToken.as_view()),
 
     path("edit-username/<id>", views.EditUsername.as_view()),
     path("edit-email/<id>", views.EditEmail.as_view()),
+    path("edit-password/<id>", views.EditPassword.as_view()),
+
     path("finalize-order/", views.FinalizeOrder.as_view()),
     path("transactions/<id>", views.TransactionsAPI.as_view()),
 

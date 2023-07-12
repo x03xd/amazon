@@ -2,10 +2,14 @@ import {useNavigate} from 'react-router-dom';
 import AuthContext from "./AuthenticationContext";
 import React from 'react';
 
+interface HashMap {
+    [key: string]: any;
+}
+
 interface Nums {
     num: number;
     total: number;
-    buyButton: any
+    buyButton: HashMap
 }
 
 const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
@@ -23,9 +27,7 @@ const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
                 },
                 body:JSON.stringify({"location": "cart", "user": username?.user_id})
             })
-
-            navigate("")
-            window.location.reload();
+            navigate("/")
         }
 
         catch(error){console.error('Error updating token:', error);}
@@ -68,11 +70,6 @@ const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
     )
 
 }
-
-
-
-
-
 
 
 

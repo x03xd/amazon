@@ -1,27 +1,26 @@
-import {useNavigate, useParams, useLocation} from 'react-router-dom';
-import React, {useEffect, useState, useRef} from 'react';
+import {useNavigate} from 'react-router-dom';
+import React, {useState, useRef} from 'react';
 import CSRFToken from './CSRFToken';
-import logo from './images/xd.png';
 import Alert from './Alert';
-
 
 
 const Register: React.FC = () => {
 
-    let usernameRef = useRef<HTMLInputElement>(null);
-    let emailRef = useRef<HTMLInputElement>(null);
-    let password1Ref = useRef<HTMLInputElement>(null);
-    let password2Ref = useRef<HTMLInputElement>(null);
+    const usernameRef = useRef<HTMLInputElement>(null);
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+    const password2Ref = useRef<HTMLInputElement>(null);
 
     const [dangerBorder, setDangerBorder] = useState("");
+    const [alertText, setAlertText] = useState<string>("");
+    const [alertStyle, setAlertStyle] = useState<string>("hidden");
 
     const navigate = useNavigate();
 
     async function submitForm(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault();
             
-        if(password1Ref.current?.value !== password2Ref.current?.value){
-            console.log(dangerBorder);
+        if(passwordRef.current?.value !== password2Ref.current?.value){
             setDangerBorder("border border-danger")
         }
 
@@ -34,13 +33,20 @@ const Register: React.FC = () => {
                     headers: {
                         'Content-Type':'application/json',
                     },
-                    body: JSON.stringify({"email":emailRef.current?.value, "username":usernameRef.current?.value, "password":password1Ref.current?.value, "password2":password2Ref.current?.value})
+                    body: JSON.stringify({"email":emailRef.current?.value, "username":usernameRef.current?.value, "password":passwordRef.current?.value, "password2":password2Ref.current?.value})
                 })
             
                 const jsonResponse = await response.json()
+                console.log(jsonResponse)
 
                 if(jsonResponse){
-                    navigate("/");
+                    setAlertStyle("hidden");
+                    navigate("/")
+                }
+    
+                else {
+                    setAlertStyle("active");
+                    setAlertText(jsonResponse?.detail);
                 }
 
             }
@@ -55,6 +61,10 @@ const Register: React.FC = () => {
     return(
          <div className = "modal-container-wrapper">
 
+            <div>
+                <Alert style = {alertStyle} text = {alertText} />
+            </div>
+
             <div className = "modal-container classic-border">
 
                 <p className = "">Utwórz konto</p>
@@ -68,7 +78,7 @@ const Register: React.FC = () => {
                     <input ref = {emailRef} name = "email" defaultValue = "" className = "text-input login" type = "text"  /><br/>
 
                     <span className = "">Hasło</span>
-                    <input ref = {password1Ref} name = "password1" defaultValue = "" className = {`text-input login ${dangerBorder}`} type = "password"  placeholder = "Co najmniej 6 znaków" /><br/>
+                    <input ref = {passwordRef} name = "password1" defaultValue = "" className = {`text-input login ${dangerBorder}`} type = "password"  placeholder = "Co najmniej 6 znaków" /><br/>
 
                     <span className = "">Ponownie podaj hasło</span>
                     <input ref = {password2Ref} name = "password2" defaultValue = "" className = {`text-input login ${dangerBorder}`} type = "password"  /><br/>

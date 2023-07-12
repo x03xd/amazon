@@ -16,8 +16,6 @@ interface Products {
     brand: string;
     description: string;
     gallery1: boolean | null;
-    gallery2: boolean | null;
-    gallery3: boolean | null;
     id: number;
     image: string;
     price: number;
@@ -28,7 +26,7 @@ interface Products {
 }
 
 interface SingleTransactionProps {
-    transaction: [TransactionsAPI, Products];
+    transaction: [number, Products, string];
     product_id: number;
     key: number;
 }
@@ -36,19 +34,14 @@ interface SingleTransactionProps {
 const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, product_id }) => {
 
     const {username} = useContext(AuthContext);
-    const [rate, setRate] = useState<number>(0)
+    const [rate, setRate] = useState<number | undefined>()
 
+    console.log(transaction[0])
 
     useEffect(() => {
 
         try{
-            fetch('http://127.0.0.1:8000/api/rate-product/', {
-                method: 'POST',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({"user_id": username?.user_id, "product_id": product_id})
-            })
+            fetch(`http://127.0.0.1:8000/api/rate-product/${username?.user_id}/${product_id}/${null}`)
             .then(response => response.json())
             .then(result => setRate(result));
         }
@@ -62,8 +55,9 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
 
     const productRate = (rate: number) => {
 
+
         try{
-            fetch('http://127.0.0.1:8000/api/rate-product/', {
+            fetch(`http://127.0.0.1:8000/api/rate-product/${username?.user_id}/${product_id}/${rate}`, {
                 method: 'PATCH',
                 headers:{
                     'Content-Type':'application/json'
@@ -108,7 +102,6 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
             <div className = "single-transaction-card-content">
                 <div>
                     <img alt = "product" src = {transaction[1]["image"]} loading = "lazy" />
-
                 </div>
                 
                 <div>
@@ -133,7 +126,7 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
                     </div>
 
                     <div className = "mt-4">
-                        <span>Data: {transaction[0]["date"]}</span>
+                        <span>{transaction[0]} kupionych dnia: {transaction[2]}</span>
                     </div>
                 </div>
 

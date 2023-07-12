@@ -1,4 +1,4 @@
-import {Outlet, useNavigate} from 'react-router-dom';
+import {Outlet, useNavigate, useLocation} from 'react-router-dom';
 import logo from './images/xd2.webp';
 import React, {useState, useEffect} from 'react';
 import { useSearchParams } from "react-router-dom";
@@ -7,10 +7,10 @@ const AuthLayout: React.FC = () => {
 
     const navigate = useNavigate();
     const [buttonStyle, setButtonStyle] = useState("");
+    const location = useLocation();
 
     useEffect(() => {
-        const adress = window.location.href;
-        if(adress === 'http://localhost:3000/login2' || adress === 'http://localhost:3000/login2/' || adress === "http://localhost:3000/registration" || adress === "http://localhost:3000/registration/"){
+        if(['/login2', '/login2/', 'registration', 'registration/'].includes(location.pathname)){
             setButtonStyle("hidden");
         }
     })
@@ -18,7 +18,6 @@ const AuthLayout: React.FC = () => {
     const navigateTo = () => {
         navigate("/registration")
     }
-
 
     return(
         <>
@@ -34,7 +33,12 @@ const AuthLayout: React.FC = () => {
                     <Outlet />
 
                     <div className = "main-container-auth-layout-create-button">
-                        <button className = {`login-button ${buttonStyle}`} onClick = {navigateTo} >Utwórz nowe konto</button><br/>
+                        {(['/login', '/login/'].includes(location.pathname))
+                        ? 
+                        <button className = {`login-button ${buttonStyle}`} onClick = {navigateTo} >Utwórz nowe konto</button>     
+                        :
+                        <></>     
+                        }       
                     </div>
 
 

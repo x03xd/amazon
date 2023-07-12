@@ -15,7 +15,7 @@ const LeftModal: React.FC<LeftModalProps> = ({ className }) => {
 
                 </div>
 
-                <div className = "">
+                <div className = "left-modal-header-d">
                     <p className = "fw-600">Witamy, zaloguj się</p>
                 </div>
             </div>

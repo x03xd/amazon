@@ -39,6 +39,7 @@ const Card: React.FC = () => {
 
     const [reload, setReload] = useState<[number, number]>();
     const [isPossible, setIsPossible] = useState<HashMap>([]);
+    const [total, setTotal] = useState<number>(0);
 
     const {username} = useContext(AuthContext);
     const navigate = useNavigate();
@@ -53,7 +54,7 @@ const Card: React.FC = () => {
                 body:JSON.stringify({"username": username?.username})
             })
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result), console.log("card")));
+            .then(result => (setCardUserGetter(result?.cart_items), setTotal(result?.sum), console.log("card")));
         }
         catch(error) {console.log("Error: ", error)}
 
@@ -131,7 +132,7 @@ const Card: React.FC = () => {
 
                     <div className = "card-content-objects bg-light">
                         <div>
-                            <div className = "p-4">
+                            <div className = "p-4 ms-3">
                                 <p className = "">Koszyk</p>
                             </div>
 
@@ -141,7 +142,9 @@ const Card: React.FC = () => {
                         </div>
              
                         <div className = "card-content-objects-inner mt-5 bg-light">
-                            {(cardUserGetter).map((item: any, index: number) => {
+                            {
+                            
+                            (cardUserGetter as CartItem[] || []).map((item: any, index: number) => {
                                 return(
                                     <CardObject
                                         item = {item} key = {index}
@@ -152,7 +155,6 @@ const Card: React.FC = () => {
                                     />
                                 )    
                             })}
-    
                         </div>
 
 
@@ -166,7 +168,7 @@ const Card: React.FC = () => {
                 </div>
 
                 <div className = "card-content-right">
-                    <CardFinalizing num = {cardUserGetter.length} total = {1} buyButton = {isPossible} />
+                    <CardFinalizing num = {cardUserGetter.length} total = {total} buyButton = {isPossible} />
                     <CartSideBar />              
                 </div>
 

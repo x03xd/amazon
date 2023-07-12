@@ -50,10 +50,13 @@ class Product(models.Model):
 class User(AbstractUser):
     email = models.EmailField(max_length=30, null=True)
     coins = models.IntegerField(null=True, blank = True)
-    username_change_allowed = models.DateTimeField(null=True, blank = True)
-    email_change_allowed = models.DateTimeField(null=True, blank = True)
+    
+    username_change_allowed = models.DateField(null=True, blank = True)
+    email_change_allowed = models.DateField(null=True, blank = True)
+
     groups = models.ManyToManyField(Group, related_name='amazon_users', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='amazon_users', blank=True)
+
 
 
     def __str__(self):
@@ -111,12 +114,12 @@ def create_one_to_one(sender, instance, created, **kwargs):
         instance.save()
 
 
-@receiver(post_save, sender=User)
+'''@receiver(post_save, sender=User)
 def create_one_to_one(sender, instance, created, **kwargs):
     if created:
         instance.username_change_allowed = date.date()
         instance.email_change_allowed = date.date()
-        instance.save()
+        instance.save()'''
 
 
 

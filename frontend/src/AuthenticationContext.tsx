@@ -8,7 +8,6 @@ interface ContextProvider {
     children: React.ReactNode;
 }
 
-//Context is designed to share data that can be considered “global” for a tree of React components, such as the current authenticated user, theme, or preferred language
 
     
 const initialValues = {
@@ -57,7 +56,6 @@ const AuthContext = createContext<InitialValuesTypes>(initialValues);
 export default AuthContext;
 
 export const AuthProvider = ({children}: ContextProvider) => {
-
     const navigate = useNavigate();
 
     const [authToken, setAuthToken] = useState<AuthToken | null>(parsedCookies.authToken ? parsedCookies.authToken : null);
@@ -68,11 +66,11 @@ export const AuthProvider = ({children}: ContextProvider) => {
     const [email, setEmail] = useState<string>("");
 
     const navigateBack = (): void => {
-        navigate("/login/", {state: {link: 'http://127.0.0.1:8000/api/login/', type: 'text', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
+        navigate("/login/", {state: {type: 'text', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
     }
 
     const navigateToPasswordInput = (): void => {
-        navigate("/login2/", {state: {link: 'http://127.0.0.1:8000/api/login2/', type: 'password', inputValue: 'Zaloguj się', style: 'hidden', style2: 'active', content: 'Hasło'}});
+        navigate("/login2/", {state: {type: 'password', inputValue: 'Zaloguj się', style: 'hidden', style2: 'active', content: 'Hasło'}});
     }
 
     const navigateToHome = (): void => {
@@ -84,7 +82,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
         e.preventDefault();
 
         try{
-
             const response = await fetch("http://127.0.0.1:8000/api/login/", {
                 method: 'POST',
                 credentials: 'include',
@@ -102,14 +99,13 @@ export const AuthProvider = ({children}: ContextProvider) => {
                 setAlertStyle("hidden");
             }
 
-
             else {
                 navigateBack();
                 setAlertStyle("active");
                 setAlertText("Użytkownik nie istnieje");
             }
-                e.target.usernameorpassword.value = "";
 
+            e.target.usernameorpassword.value = "";
         }
 
         catch(error){
@@ -123,7 +119,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
         e.preventDefault();
 
         try {
-
             const response = await fetch("http://127.0.0.1:8000/api/token/", {
                 method: 'POST',
                 credentials: 'include',
@@ -136,7 +131,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
             const data = await response.json()
 
             if(response.status === 200){
-                
                 document.cookie = `username=${JSON.stringify(data.access)}`
                 document.cookie = `authToken=${JSON.stringify(data)}`;
 
@@ -184,7 +178,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
             })
 
             let data = await response.json()
-                console.log(data)
 
             if (response.status === 200){
                 setAuthToken(data)

@@ -1,7 +1,6 @@
 import {useLocation} from 'react-router-dom';
-import React, {useEffect, useState,  useContext} from 'react';
+import React, {useContext} from 'react';
 import CSRFToken from './CSRFToken';
-import logo from './images/xd.png';
 import Alert from './Alert';
 import jwt_decode from "jwt-decode";
 import AuthContext from "./AuthenticationContext";
@@ -12,11 +11,6 @@ const Login: React.FC = () => {
     const location = useLocation();
 
     let {loginUser, usernameFilter, email, alertStyle, alertText} = useContext(AuthContext);
-    const [adress, setAdress] = useState<string>(window.location.href);
-
-    useEffect(() => {
-        setAdress(window.location.href);
-    })  
 
     return(
         <div className = "modal-container-wrapper">
@@ -32,7 +26,7 @@ const Login: React.FC = () => {
 
                     <p>{email}</p>
 
-                    <form onSubmit = {(adress === 'http://localhost:3000/login' || adress === 'http://localhost:3000/login/') ? usernameFilter : loginUser} method = "POST">
+                    <form onSubmit = {(['/login', '/login/'].includes(location.pathname)) ? usernameFilter : loginUser} method = "POST">
                         <CSRFToken />
                         <span>{location.state.content}</span>
 

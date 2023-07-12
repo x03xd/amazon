@@ -31,7 +31,7 @@ interface Products {
 const Transactions: React.FC = () => {
 
     const [transactions, setTransactions] = useState<TransactionsAPI[]>();
-    const [products, setProducts] = useState<[TransactionsAPI, Products][]>();
+    const [products, setProducts] = useState<[number, Products, string][]>();
     const [loading, setLoading] = useState<boolean>(true);
 
     const [pages, setPages] = useState<number>(0);
@@ -60,7 +60,7 @@ const Transactions: React.FC = () => {
 
         if(!loading){
             try{
-                fetch('http://127.0.0.1:8000/api/products-from-transactions/', {
+                fetch(`http://127.0.0.1:8000/api/products-from-transactions/`, {
                     method: 'POST',
                     headers:{
                         'Content-Type':'application/json'
@@ -80,13 +80,12 @@ const Transactions: React.FC = () => {
 
 
 
-    console.log(products);
-
     const selectPage = (num: number) => {
         if(products?.length !== 5 && num > 0) return null;
-        
         if(pages + num >= 0) {setPages(current_page => current_page + num)}
     }
+
+    console.log(products)
     
 
     return(
@@ -129,3 +128,19 @@ const Transactions: React.FC = () => {
 
 
 export default Transactions;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

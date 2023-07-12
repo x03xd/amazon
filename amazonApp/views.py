@@ -27,7 +27,9 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.views.generic.detail import SingleObjectMixin
 from .serializers import EditUsernameSerializer, EditEmailSerializer
-
+from django.contrib.auth.password_validation import validate_password
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 
 
@@ -57,14 +59,14 @@ class CartAPI(APIView):
             cart = CartItem.objects.filter(cart__owner__username = json_data["username"]).order_by('product__title')
             serializer = CartItemSerializer(cart, many=True)
             
-
-            for cartItem in serializer.data:
-                prod = Product.objects.get(id=cartItem["product"])
+            for cart_item in serializer.data:
+                prod = Product.objects.get(id=cart_item["product"])
                 p_serializer = ProductSerializer(prod)
+                cart_item["product_data"] = p_serializer.data
 
-                cartItem["product_data"] = p_serializer.data
+            sum_ = cart.aggregate(total_price_sum=Sum('total_price'))
         
-            return Response(serializer.data)
+            return JsonResponse({"cart_items": serializer.data, "sum": sum_['total_price_sum']})
         
         except json.JSONDecodeError as e:
             return JsonResponse({"error": "Error decoding JSON", "detail": str(e)}, status=400)
@@ -209,16 +211,31 @@ class LogoutView(APIView):
     def get(self, request, format = None):
         pass
 
-
 class RegisterSystem(CreateAPIView):
     model = User
     serializer_class = UserSerializer
     form_class = RegisterForm
 
     def create(self, request, *args, **kwargs):
+
         try:
+            if User.objects.filter(username = request.data.get('username')).exists():
+                return JsonResponse({"status":False, "detail": "Użytkownik o takiej nazwie figuruje już w bazie danych"})
+            
+            if User.objects.filter(email = request.data.get('email')).exists():
+                return JsonResponse({"status":False, "detail": "Użytkownik o takim emailu figuruje już w bazie danych"})
+
+            password = request.data.get('password')  # Get the password from the request data
+            validate_password(password)  # Validate the password strength
+
+            email = request.data.get('email')  # Get the password from the request data
+            validate_email(email)  # Validate the password strength
+
             response = super().create(request, *args, **kwargs)
             return Response(True, status=status.HTTP_201_CREATED)
+        
+        except ValidationError as e:
+            return Response({"error": "Password is too weak", "detail": e.messages}, status=status.HTTP_400_BAD_REQUEST)
         
         except Exception as e:
             return Response({"error": "An error occurred during user registration", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -388,10 +405,8 @@ class ProductsAPI(APIView):
 
 class AccessToChangeStatus(APIView):
         
-    def get(self):
-        
-        date = datetime.now()
-        today_date = date.date()
+    def get(self, request, *args, **kwargs):
+        today_date = date.today()
 
         try:
             user = User.objects.get(id = self.kwargs.get("id"))
@@ -408,8 +423,16 @@ class AccessToChangeStatus(APIView):
 
             elif user.email_change_allowed.date() < today_date:
                 status_email = True
+
+
+            if user.password_change_allowed.date() >= today_date:
+                status_password = False
+
+            elif user.password_change_allowed.date() < today_date:
+                status_password = True
+
                     
-            return JsonResponse({"username": status_username, "email":status_email})
+            return JsonResponse({"username": status_username, "email": status_email, "password": status_password})
 
 
         except User.DoesNotExist:
@@ -424,11 +447,8 @@ class AccessToChangeStatus(APIView):
 
 class EditUsername(APIView):
     
-
-    def patch(self, request):
+    def patch(self, request, **kwargs):
         
-        date = datetime.now()
-
         try:
             json_data = json.load(request)
 
@@ -456,13 +476,11 @@ class EditUsername(APIView):
 
 
 
-    def post(self):
+    def post(self, requst, **kwargs):
 
         try:
             user = User.objects.get(id = self.kwargs.get("id"))
-            date = datetime.now()
-
-            new_date = date.date() + timedelta(days=30) 
+            new_date = date.today() + timedelta(days=30) 
 
             user.username_change_allowed = new_date
             user.save()
@@ -477,10 +495,7 @@ class EditUsername(APIView):
 
 class EditEmail(APIView):
 
-    def patch(self, request):
-
-        date = datetime.now()
-        today_date = date.date()
+    def patch(self, request, **kwargs):
 
         try:
             json_data = json.load(request)
@@ -509,7 +524,7 @@ class EditEmail(APIView):
 
 
 
-    def post(self):
+    def post(self, request, **kwargs):
 
         try:
             user = User.objects.get(id = self.kwargs.get("id"))
@@ -537,12 +552,14 @@ class FinalizeOrder(APIView):
 
             if json_data["location"] == "cart":
                 cart_items = CartItem.objects.filter(cart__owner__id = json_data["user"])
-                cart_items.delete()
+                serializer = CartItemSerializer(cart_items, many=True)
                 bought = []
 
-                for record in cart_items:
-                    bought += record["product"] * record["quantity"]
+                for record in serializer.data:
+                    bought += [record["product"]] * record["quantity"]
 
+                cart_items.delete()
+ 
     
             elif json_data["location"] == "lobby":
                 bought = json_data["product_id"] * int(json_data["quantity"])
@@ -590,19 +607,27 @@ class TransactionsAPI(ListAPIView):
 class ProductsFromTransactions(APIView):
 
     def post(self, request):
-        lst = []
+        table, lst = {}, []
 
         try:
-
             json_data = json.load(request)
             start, end = json_data["pages"], json_data["pages"] + 5
 
-            flattened_lst = [item for sublist in json_data["lst"] for item in sublist["bought_products"]]
+            flattened_lst = [[item, sublist["date"]] for sublist in json_data["lst"] for item in sublist["bought_products"]]
 
-            for product_id in flattened_lst[start:end]:
-                product = Product.objects.get(id=product_id)
+            for index, date in flattened_lst:
+                table[(index, date)] = table.get((index, date), 0) + 1
+
+            counter = 0
+            for (index, date), count in table.items():
+                product = Product.objects.get(id=index)
                 serializer = ProductSerializer(product)
-                lst.append((product_id, serializer.data))
+                lst.append((count, serializer.data, date))
+                counter += 1
+
+                if counter == end:
+                    break
+
 
             return Response(lst)
 
@@ -615,19 +640,14 @@ class ProductsFromTransactions(APIView):
 
 class RateProduct(APIView):
 
-    def post(self, request):
+    def get(self, request, **kwargs):
 
         try:
-            json_data = json.load(request)
-
-            rate_of_product = Rate.objects.get(rated_by__id = json_data["user_id"], rated_products__id = json_data["product_id"])
+            rate_of_product = Rate.objects.get(rated_by__id = self.kwargs.get("id"), rated_products__id = self.kwargs.get("pid"))
             serializer = GetterRateSerializer(rate_of_product)
 
             return Response(serializer.data["rate"])
 
-
-        except json.JSONDecodeError:
-            return Response({"error": "Invalid JSON data"}, status=400)
 
         except Rate.DoesNotExist:
             return JsonResponse({"error": "Object does not exist"}, status=404)
@@ -637,21 +657,18 @@ class RateProduct(APIView):
 
 
     
-    def patch(self, request):
+    def patch(self, request, **kwargs):
         created = False
 
         try:
-            json_data = json.load(request)
-
             try:
-                user = User.objects.get(id = json_data["user_id"])
+                user = User.objects.get(id = self.kwargs.get("id"))
 
             except User.DoesNotExist:
                 return JsonResponse({"error": "Object does not exist"}, status=404)
             
-
             try:
-                product = Product.objects.get(id = json_data["product_id"])
+                product = Product.objects.get(id = self.kwargs.get("pid"))
             
             except Product.DoesNotExist:
                 return JsonResponse({"error": "Object does not exist"}, status=404)
@@ -660,19 +677,16 @@ class RateProduct(APIView):
             rate_of_user, created = Rate.objects.get_or_create(
                 rated_by = user,
                 rated_products = product,
-                defaults={'rate': json_data["rate"]}
+                defaults={'rate': self.kwargs.get("rate")}
             )
 
             if not created:
-                rate_of_user.rate = json_data["rate"]
+                rate_of_user.rate = self.kwargs.get("rate")
                 rate_of_user.save()
 
             return Response("The rate for the specific item has been changed/created")
         
         
-        except json.JSONDecodeError:
-            return Response({"error": "Invalid JSON data"}, status=400)
-
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
@@ -716,3 +730,38 @@ class BrandsByCategoriesAPI(APIView):
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+        
+
+
+class EditPassword(APIView):
+    
+    def patch(self, request, *args, **kwargs):
+
+        
+        try:
+            json_data = json.load(request)
+
+            user = User.objects.get(id = self.kwargs.get("id"))
+
+            if json_data["password"] != json_data["password2"]:
+                return JsonResponse({"status": False, "detail": "Hasła są różne"})
+
+            validate_password(json_data["password"])
+
+            user.password = json_data["password"]
+
+            return JsonResponse({"status": True})
+
+                
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Object does not exist"}, status=404)
+
+        except ValidationError as e:
+            return Response({"error": "Password is too weak", "detail": e.messages}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            return Response({"error": "An error occurred during user registration", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+        
+
