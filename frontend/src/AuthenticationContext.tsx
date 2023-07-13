@@ -155,7 +155,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
             const data = await response.json()
 
             if(response.status === 200){
-
                 document.cookie = `username=${JSON.stringify(data.access)}`
                 document.cookie = `authToken=${JSON.stringify(data)}`;
                 document.cookie = `tokenSaved=${remember}`;
