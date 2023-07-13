@@ -1,7 +1,6 @@
 import { faStar, faStarHalfStroke } from '@fortawesome/free-solid-svg-icons'
 
 
-
 interface StarStyling {
     icon: unknown;
     style: string;

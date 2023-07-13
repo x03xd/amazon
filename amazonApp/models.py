@@ -16,7 +16,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
 class Brand(models.Model):
     brand_name = models.CharField(max_length=100, null=True)
     belong_to_category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
@@ -24,7 +23,6 @@ class Brand(models.Model):
     def __str__(self):
         return self.brand_name
     
-
 
 class Product(models.Model):
     title = models.CharField(max_length = 140, null = True)
@@ -61,7 +59,6 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
     
-
 
 class Rate(models.Model):
     rate = models.IntegerField(null=True, blank=True,

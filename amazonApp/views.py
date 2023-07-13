@@ -49,7 +49,6 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 
-
 class CartAPI(APIView):
 
     def post(self, request):

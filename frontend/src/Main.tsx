@@ -13,7 +13,6 @@ import Banner from './Banner';
 
 const Main: React.FC = () => {
 
-
     const dlaTwojegoDomu = [
         [photo1, 'Oczyszczacze powietrza'],
         [photo2, 'Nawilżacze powietrza'],

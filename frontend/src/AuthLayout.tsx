@@ -2,7 +2,6 @@ import {Outlet, useNavigate, useLocation} from 'react-router-dom';
 import logo from './images/xd2.webp';
 import React, {useState, useEffect} from 'react';
 
-
 const AuthLayout: React.FC = () => {
 
     const navigate = useNavigate();
