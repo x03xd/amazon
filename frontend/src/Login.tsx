@@ -1,16 +1,19 @@
-import {useLocation} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import React, {useContext} from 'react';
 import CSRFToken from './CSRFToken';
 import Alert from './Alert';
-import jwt_decode from "jwt-decode";
 import AuthContext from "./AuthenticationContext";
 
 
 const Login: React.FC = () => {
 
     const location = useLocation();
+    const navigate = useNavigate();
+    const {changeJWT, loginUser, usernameFilter, email, alertStyle, alertText,} = useContext(AuthContext);
 
-    let {loginUser, usernameFilter, email, alertStyle, alertText} = useContext(AuthContext);
+    window.addEventListener('popstate', function(e) {
+        navigate("");
+    });
 
     return(
         <div className = "modal-container-wrapper">
@@ -42,8 +45,8 @@ const Login: React.FC = () => {
                     </div>
 
                     <div className = {`${location.state.style2} p-3 mt-3`} id = "reminder-login">
-                        <input type = "checkbox"/>
-                        <span>Nie wylogowuj mnie</span><a href = "#">Szczegóły</a>
+                        <input onChange = {changeJWT} type = "checkbox"/>
+                        <span>Nie wylogowuj mnie</span>
                     </div>
 
                 </div>
