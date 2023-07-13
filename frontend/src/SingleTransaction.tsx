@@ -71,19 +71,9 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
                 body:JSON.stringify({"user_id": username?.user_id, "product_id": product_id})
             })
             window.location.reload()
-<<<<<<< HEAD
         }
 
         catch(error){console.log("Error: ", error)}
-=======
-
-        }
-
-        catch(error){
-            console.log("Error: ", error)
-        }
-
->>>>>>> poprawki
     }
 
 
@@ -120,18 +110,9 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
                         <span>{transaction[0]} kupionych dnia: {transaction[2]}</span>
                     </div>
                 </div>
-<<<<<<< HEAD
             </div>
 
             <div className = "single-transaction-card-button">
-=======
-
-            </div>
-
-            <div className = "single-transaction-card-button">
-                
-
->>>>>>> poprawki
             </div>
     
         </div>

@@ -25,5 +25,3 @@ const UList: React.FC<UListProps> = ({ index, item, UListFunction }) => {
 
 
 export default UList;
-
-git merge --allow-unrelated-histories poprawki
