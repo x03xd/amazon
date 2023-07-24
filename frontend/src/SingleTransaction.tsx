@@ -1,16 +1,9 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { ratingStars } from './static_ts_files/ratingLevels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import AuthContext from "./AuthenticationContext";
 
-interface TransactionsAPI {
-    id: number,
-    bought_products: number[],
-    date: string,
-    bought_by: number,
-}
 
 interface Products {
     brand: string;
@@ -36,8 +29,6 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
     const {username} = useContext(AuthContext);
     const [rate, setRate] = useState<number | undefined>()
 
-    console.log(transaction[0])
-
     useEffect(() => {
 
         try{
@@ -45,17 +36,12 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
             .then(response => response.json())
             .then(result => setRate(result));
         }
-
-        catch(error){
-            console.log("Error: ", error)
-        }
+        catch(error){console.log("Error: ", error)}
 
     }, [])
 
 
     const productRate = (rate: number) => {
-
-
         try{
             fetch(`http://127.0.0.1:8000/api/rate-product/${username?.user_id}/${product_id}/${rate}`, {
                 method: 'PATCH',
@@ -68,10 +54,7 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
             .then(result => (setRate(result), window.location.reload()))
         }
 
-        catch(error){
-            console.log("Error: ", error)
-        }
-
+        catch(error){console.log("Error: ", error)}
     }
 
 
@@ -86,13 +69,9 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
                 body:JSON.stringify({"user_id": username?.user_id, "product_id": product_id})
             })
             window.location.reload()
-
         }
 
-        catch(error){
-            console.log("Error: ", error)
-        }
-
+        catch(error){console.log("Error: ", error)}
     }
 
 
@@ -129,12 +108,9 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
                         <span>{transaction[0]} kupionych dnia: {transaction[2]}</span>
                     </div>
                 </div>
-
             </div>
 
             <div className = "single-transaction-card-button">
-                
-
             </div>
     
         </div>

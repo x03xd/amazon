@@ -4,10 +4,7 @@ import CSRFToken from './CSRFToken';
 import Alert from './Alert';
 import AuthContext from "./AuthenticationContext";
 
-
 const PasswordChange: React.FC = () => {
-
-    let {} = useContext(AuthContext);
     
     const passwordRef = useRef<HTMLInputElement>(null);
     const password2Ref = useRef<HTMLInputElement>(null);
@@ -16,10 +13,10 @@ const PasswordChange: React.FC = () => {
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
 
-    const {username} = useContext(AuthContext);
+    const {username, logout} = useContext(AuthContext);
     const navigate = useNavigate(); 
 
-    async function changePassword(e: React.FormEvent){
+    async function changePassword(e: any){
         e.preventDefault();
 
         if(passwordRef.current?.value !== password2Ref.current?.value){
@@ -38,10 +35,10 @@ const PasswordChange: React.FC = () => {
                     body: JSON.stringify({"password":passwordRef.current?.value, "password2":password2Ref.current?.value})
                 })
                 const jsonResponse = await response.json()
-                console.log(jsonResponse)
 
-                if(jsonResponse.status){
+                if(jsonResponse?.status){
                     setAlertStyle("hidden");
+                    logout()
                     navigate("/")
                 }
     

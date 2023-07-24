@@ -39,13 +39,9 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
     }
 
     const subCategoryNavigate = (e: FormEvent<HTMLFormElement>): void => {
-        if(value == null){
-            navigate("")
-        }
+        if(value == null) navigate("") ;
 
-        else {
-            navigate("s")
-        }
+        else navigate("s");
     }
 
     const returnHome = (): void => {
@@ -53,13 +49,13 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
     }
 
     const userCart = (): void => {
-        navigate("cart")
+        navigate("cart");
     }
 
     const [value, setValue] = useState<string>("");
 
     const searchBarHandling = (e: ChangeEvent<HTMLInputElement>) => {
-        setValue(e.target.value)
+        setValue(e.target.value);
     }
 
     return(
@@ -67,7 +63,7 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
             <nav>
                 <div className = 'navbar-upper-part'>
 
-                    <div onClick = {returnHome} className = "logo-box">
+                    <div onClick = {returnHome} className = "logo-box cursor-finger">
                         <img className = 'logo mt-2 ms-4' loading = "lazy" src = {logo} />
                     </div>
 
@@ -82,7 +78,7 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
                         </form>
                     </div>
 
-                    <div className = "position-static">
+                    <div className = "position-static cursor-finger">
                         <span>Witamy, zaloguj sie</span><br/>
                         <span onClick = {() => {activeOverlay('active'); activeLoginModal('active'); unclickableNavbar('pointer-event-handler')}}>Konto i listy</span>
                     </div>
@@ -92,7 +88,7 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
                         <span>i zamówienia</span>
                     </div>
 
-                    <div className = "cart-box">
+                    <div className = "cart-box cursor-finger">
                         <img onClick = {userCart} className = "cart" src = {cart} loading = "lazy" alt = "cart" />
                         <span>Koszyk</span>
                     </div>

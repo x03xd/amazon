@@ -23,15 +23,14 @@ const GridBox: React.FC<GridBoxProps> = ({ className, boxTitle, list }) => {
                 <div className = "home-body-card">
 
                     {list.map(
-                            ((element, index) =>
-                                <div key = {index}>
-                                    <img src = {element[0]} loading = "lazy" />
-                                    <span>{element[1]}</span>
-                                </div>
-                            )
+                        ((element, index) =>
+                            <div key = {index}>
+                                <img src = {element[0]} loading = "lazy" />
+                                <span>{element[1]}</span>
+                            </div>
                         )
-                    }
-
+                    )}
+                    
                 </div>
 
                 <div className = "home-footer-card">

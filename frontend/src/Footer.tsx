@@ -88,7 +88,7 @@ const Footer: React.FC = () => {
                     <div></div>
 
                     <div onClick = {returnHome} className = "logo-box text-center">
-                        <img src = {logo} height = '25'/>
+                        <img loading = "lazy" alt = "logo" src = {logo} height = '25'/>
                     </div>
 
                     <div>

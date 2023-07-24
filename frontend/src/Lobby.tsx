@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {useLocation} from 'react-router-dom';
 import adress from './images/loc1.png';
 import padlock2 from './images/padlock2.png';
@@ -8,14 +8,25 @@ import React from 'react';
 
 const Lobby: React.FC = () => {
 
-    const [selectedValue, setSelectedValue] = useState<string>('1');
+    const [selectedValue, setSelectedValue] = useState<number>(1);
     let {username} = useContext(AuthContext)
+    const [brand, setBrand] = useState<string>("");
+    const location = useLocation();
+
+
+    useEffect(() => {
+        fetch(`http://127.0.0.1:8000/api/brand/${location.state.brand}`)
+        .then(response => response.json())
+        .then(result => setBrand(result?.brand_name))
+    }, [])
+
+    useEffect(() => {
+    }, [selectedValue])
 
     const handleSelectChange = (e: any) => {
-        setSelectedValue(e.target.value);
+        setSelectedValue(parseInt(e.target.value, 10))
     };
-    
-    const location = useLocation();
+
     let status = location.state.status
     let statusColor;
 
@@ -29,8 +40,8 @@ const Lobby: React.FC = () => {
         statusColor = "text-success";
     }
 
-    const finalizeOrderLobby = async (product_id: number) => {
 
+    const finalizeOrderLobby = async (product_id: number) => {
         try{
             await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
                 method:'POST',
@@ -44,15 +55,14 @@ const Lobby: React.FC = () => {
         catch (error) {
             console.error('Error updating token:', error);
         }
-
     }
 
-
+    
     async function addToCard(e: React.MouseEvent<HTMLInputElement>){
         e.preventDefault();
 
         try {
-            let response = await fetch(`http://127.0.0.1:8000/api/process/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/process/`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -60,29 +70,22 @@ const Lobby: React.FC = () => {
                 },
                 body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
             });
-            let responseData = await response.json();
-            console.log(responseData);
+            const rj = await response.json()
         }
-
-        catch(error){
-            console.log("Error: ", error)
-        }
-
+        catch(error){console.log("Error: ", error)}
     }
-
-    console.log(location.state.id_product, username?.user_id)
 
     return(
         <div className = "lobby-content">
 
             <div className = "lobby-content-gallery mt-5">
                 <div>
-                    <img className = "p-5" height = "451" width = "597" src = {location.state.g1} />
+                    <img className = "p-5" height = "450" width = "600" src = {location.state.g1} />
                 </div>
 
                 <div>
                     <span className = "mt-p-5">{location.state.desc}</span> <br/>
-                    <a className = "" href = "">Marka: {location.state.brand}</a>
+                    <span>Marka: {brand}</span>
                 </div>
             </div>
 
@@ -91,7 +94,7 @@ const Lobby: React.FC = () => {
                 <div className = "lobby-content-sidebar border border-secondary">
 
                     <div className = "">
-                        <span>{location.state.price}</span><br/>
+                        <span>{location.state.price * selectedValue}</span><br/>
                     </div>
 
                     <div>
@@ -135,7 +138,15 @@ const Lobby: React.FC = () => {
 
                         <form method = "POST">
                             <CSRFToken />
+
+                            {selectedValue <= location.state.quantity
+                            ?
                             <input onClick = {() => finalizeOrderLobby(location.state.id)} className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
+                            :
+                            <input disabled type = "button" className = "bg-danger" id = "buy-now-button" value = "Nie mamy takiej ilości produktu" />
+                            }
+
+                            
                         </form>
                     </div>
 

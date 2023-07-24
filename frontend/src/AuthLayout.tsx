@@ -1,7 +1,6 @@
 import {Outlet, useNavigate, useLocation} from 'react-router-dom';
 import logo from './images/xd2.webp';
 import React, {useState, useEffect} from 'react';
-import { useSearchParams } from "react-router-dom";
 
 const AuthLayout: React.FC = () => {
 
@@ -13,11 +12,11 @@ const AuthLayout: React.FC = () => {
         if(['/login2', '/login2/', 'registration', 'registration/'].includes(location.pathname)){
             setButtonStyle("hidden");
         }
-    })
+    }, [])
 
     const navigateTo = () => {
-        navigate("/registration")
-    }
+        navigate("/registration");
+    } 
 
     return(
         <>
@@ -50,7 +49,6 @@ const AuthLayout: React.FC = () => {
                              <a href = "#">Nota prawna</a>
                              <a href = "#">Cookies</a>
                              <a href = "#">Reklamy dopasowane do zainteresowań</a><br/>
-
                             <span>© 1996-2022 DeliverService.com, Inc. lub podmioty powiązane</span>
                         </div>
                     </div>

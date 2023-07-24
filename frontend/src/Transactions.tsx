@@ -1,10 +1,8 @@
 import React, {useEffect, useState, useContext} from 'react';
 import AuthContext from "./AuthenticationContext";
-import { useNavigate } from 'react-router-dom';
 import SingleTransaction from './SingleTransaction'
 import leftArrow from './images/left-arrow.png';
 import rightArrow from './images/right-arrow.png';
-import MiniNavbar from './MiniNavbar';
 
 interface TransactionsAPI {
     id: number,
@@ -35,27 +33,18 @@ const Transactions: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const [pages, setPages] = useState<number>(0);
-
-
-    const {username, authToken} = useContext(AuthContext);
-    const navigate = useNavigate();
+    const {username} = useContext(AuthContext);
 
     useEffect(() => {
-        if(authToken == null) navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
-    }, [])
-
-    useEffect(() => {
-
         try{
             fetch(`http://127.0.0.1:8000/api/transactions/${username?.user_id}`)
             .then(response => response.json())
-            .then(result => setTransactions(result));
+            .then(result => setTransactions(result || []));
         }
-
         catch(error) {console.log("Error: ", error)}
-      
     }, [pages])
 
+    
     useEffect(() => {
 
         if(!loading){
@@ -72,21 +61,17 @@ const Transactions: React.FC = () => {
             }
 
             catch(error) {console.log("Error: ", error)}
-      
         }
 
         setLoading(false);
     }, [transactions])
-
-
 
     const selectPage = (num: number) => {
         if(products?.length !== 5 && num > 0) return null;
         if(pages + num >= 0) {setPages(current_page => current_page + num)}
     }
 
-    console.log(products)
-    
+    console.log(transactions)
 
     return(
         <div className = "my-account-content">
@@ -97,19 +82,30 @@ const Transactions: React.FC = () => {
 
                     <div></div>
 
-                    <div className = "edit-profile-container-main">
-                        <span className = "edit-profile-container-title">Transakcje</span>
+                        <div className = "edit-profile-container-main">
+                            <span className = "edit-profile-container-title">Transakcje</span>
 
-                            <img onClick = {() => selectPage(-5)} className = "mb-3 ms-3" width = "32" src = {leftArrow} alt = "left-arrow" />
-                            <img onClick = {() => selectPage(5)} className = "mb-3 ms-3" width = "32" src = {rightArrow} alt = "left-arrow" />
-                        
-                        <div className = "mt-3">
-                            {
-                                products?.map((item, index: number) => <SingleTransaction transaction = {item} key = {index} product_id = {item[1]["id"]} />)
-                            }   
-                        </div>
+                           {
+                            transactions && transactions.length > 0
+                            ?
+                                <>
+                                    <img onClick = {() => selectPage(-5)} className = "mb-3 ms-3" width = "32" src = {leftArrow} alt = "left-arrow" />
+                                    <img onClick = {() => selectPage(5)} className = "mb-3 ms-3" width = "32" src = {rightArrow} alt = "left-arrow" />
+                                        
+                                    <div className = "mt-3">
+                                        {
+                                            products?.map((item, index: number) => <SingleTransaction transaction = {item} key = {index} product_id = {item[1]["id"]} />)
+                                        }   
+                                    </div>
+                                </>  
+                            :
+                                <div className = "no-transactions-info-container">            
+                                    <span className = "no-transactions-info">Brak transakcji</span>
+                                </div>
+                            }
 
-                    </div>  
+                        </div>  
+                    
 
                     <div></div>
 
@@ -121,9 +117,7 @@ const Transactions: React.FC = () => {
         </div>
     )
 
-
 }
-
 
 
 

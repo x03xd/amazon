@@ -1,8 +1,8 @@
 
-
 .edit-profile-container {
     display: grid;
     grid-template-columns: 2fr 7fr 2fr;
+    min-height: 35rem;
 }
 
 
@@ -16,7 +16,7 @@
 
 }
 
-.edit-profile-container-main > div span:first-child {
+.single-transaction-card-content > div span:first-child {
     font-weight: 600;
     font-size: 1.15rem !important;
 }
@@ -34,6 +34,16 @@
 }
 
 
+div .no-transactions-info-container {
+    min-height: 30rem;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
 
+span.no-transactions-info {
+    color: gray !important;
+    font-size: 3rem !important;
+}
 
 /* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */

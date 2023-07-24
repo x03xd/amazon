@@ -8,7 +8,6 @@ interface ContextProvider {
     children: React.ReactNode;
 }
 
-
     
 const initialValues = {
     loginUser: () => {},
@@ -40,8 +39,8 @@ interface UserData {
 
 
 interface InitialValuesTypes {
-    loginUser: (e: any) => void;
-    usernameFilter: (e: any) => void;
+    loginUser: (e: ChangeEvent<HTMLFormElement>) => void;
+    usernameFilter: (e: ChangeEvent<HTMLFormElement>) => void;
     logout: () => void;
     email: null | string;
     alertStyle: string;
@@ -64,6 +63,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
     const [email, setEmail] = useState<string>("");
+    
 
     const navigateBack = (): void => {
         navigate("/login/", {state: {type: 'text', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
@@ -90,7 +90,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
                 },
                 body: JSON.stringify({'username': e.target.usernameorpassword.value})
             })
-
             const jsonResponse = await response.json();
             setUsername(jsonResponse.username)
 
@@ -108,10 +107,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
             e.target.usernameorpassword.value = "";
         }
 
-        catch(error){
-            console.log('Error:', error);
-        }
-
+        catch(error){console.log('Error:', error)}
     }
 
 
@@ -133,7 +129,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
             if(response.status === 200){
                 document.cookie = `username=${JSON.stringify(data.access)}`
                 document.cookie = `authToken=${JSON.stringify(data)}`;
-
+          
                 setAuthToken(data)
                 setUsername(data.access)
                 navigateToHome()
@@ -148,9 +144,8 @@ export const AuthProvider = ({children}: ContextProvider) => {
             e.target.usernameorpassword.value = "";
         }
         
-        catch(error){
-            console.log('Error:', error);
-        }
+        catch(error){console.log('Error:', error)}
+
     }
 
 
@@ -158,8 +153,8 @@ export const AuthProvider = ({children}: ContextProvider) => {
         setAuthToken(null);
         setUsername(null);
 
-        document.cookie = "username = null"
-        document.cookie = "authToken = null"
+        document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+        document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
 
         navigateToHome()
         window.location.reload();
@@ -169,7 +164,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
     const updateToken = async () => {
 
         try{
-            let response = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
+            const response = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
@@ -177,7 +172,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
                 body:JSON.stringify({'refresh':authToken?.refresh})
             })
 
-            let data = await response.json()
+            const data = await response.json()
 
             if (response.status === 200){
                 setAuthToken(data)
@@ -190,15 +185,11 @@ export const AuthProvider = ({children}: ContextProvider) => {
 
         }
 
-        catch (error) {
-            console.error('Error updating token:', error);
-        }
-
+        catch(error){console.error('Error updating token:', error)}
     }
 
     const fourMinutes = 1000 * 60 * 4;
     useEffect(()=>{
-
         let interval = setInterval(() => {
             if(authToken){
                 updateToken()
@@ -227,4 +218,3 @@ export const AuthProvider = ({children}: ContextProvider) => {
     )
 
 }
-

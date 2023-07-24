@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react';
+import React, { createContext } from 'react';
 import {useSearchParams} from 'react-router-dom';
 
 
@@ -29,7 +29,7 @@ export default QueryParamsContext;
 
 export const QueryParamsProvider = ({children} : ContextProvider) => {
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
             
     let contextData2 = {
         c_QueryParam: searchParams.get("c"),

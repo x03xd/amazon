@@ -1,12 +1,4 @@
 
-
-
-
-
-
-
-
-
 .edit-profile-modal {
     display: none;
     z-index: 12;
@@ -22,11 +14,6 @@
 .edit-profile-modal.active {
     position: fixed;
 }
-
-
-
-
-
 
 
 

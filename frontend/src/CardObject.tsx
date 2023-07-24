@@ -45,13 +45,10 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
 
     
     useEffect(() => {
-        if(item.product_data.quantity < selectedValue){
-            isPossibleCheck(item.product);
-        }
+        if(item.product_data.quantity < selectedValue) isPossibleCheck(item.product);
 
-        else{
-            removeIsPossibleCheck(item.product);
-        }
+        else removeIsPossibleCheck(item.product);
+  
     }, [selectedValue])
 
 
@@ -74,7 +71,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
 
     useEffect(() => {
         try{
-            fetch("http://127.0.0.1:8000/api/cart/", {
+            fetch(`http://127.0.0.1:8000/api/cart/`, {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: {
@@ -83,13 +80,11 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
                 body: JSON.stringify({"product_id": item.product, "user_id": username?.user_id, "quantity": selectedValue})
             })
             .then(response => response.json())
-            .then(result => prev(selectedValue, item.product))
+            .then(result => (prev(selectedValue, item.product), console.log(result)))
         }
         catch(error){console.log("Error: ", error);}
 
-        
     }, [selectedValue])
-
 
 
     useEffect(() => {
@@ -128,7 +123,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
     return(
         <>
             <div className = "card-content-objects-inner-col-1">
-                <img width = "100" height = "100" loading = "lazy" alt = "" src= {item.product_data.image} />
+                <img width = "100" height = "100" loading = "lazy" alt = "object" src= {item.product_data.image} />
             </div>
 
             <div className = "card-content-objects-inner-col-2">

@@ -54,7 +54,7 @@ const Card: React.FC = () => {
                 body:JSON.stringify({"username": username?.username})
             })
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result?.cart_items), setTotal(result?.sum), console.log("card")));
+            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0)));
         }
         catch(error) {console.log("Error: ", error)}
 
@@ -98,7 +98,7 @@ const Card: React.FC = () => {
 
                         <div className = "card-content-left-first-content">
                             <span className = "fs-25 fw-500">Twój koszyk jest pusty</span> <br/>
-                            <a href = "">Kup dzisiejsze oferty</a>
+                            <a href = "#">Kup dzisiejsze oferty</a>
 
                             <div className = "mt-3">
                                 <input onClick = {navigateToLogin} value = "Zaloguj się na swoje konto" className = "bg-warning border rounded p-1 fs-16" type = "button"/>
@@ -122,7 +122,7 @@ const Card: React.FC = () => {
         );
     }
 
-    else {
+    else{
 
         return(
 

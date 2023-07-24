@@ -1,14 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-
-
 
 const MiniNavbar = () => {
-
-    const navigate = useNavigate()
-
-    const navigateTo = () => {
-        navigate("");
-    }
 
     return(
         <div className = "mini-navbar">

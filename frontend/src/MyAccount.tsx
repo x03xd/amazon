@@ -1,15 +1,9 @@
-import React, { useEffect, useContext} from 'react';
+import React from 'react';
 import MyAccountCard from './MyAccountCard';
 import { cardsData, cardsData2 } from "./static_ts_files/myAccountCards";
-import AuthContext from "./AuthenticationContext";
-import { useNavigate } from 'react-router-dom';
-
 
 
 const MyAccount : React.FC = () => {
-
-    let {username, authToken} = useContext(AuthContext);
-    const navigate = useNavigate()
 
     return(
         <div className = "my-account-content">
@@ -39,11 +33,6 @@ const MyAccount : React.FC = () => {
     );
 
 }
-
-
-
-
-
 
 
 export default MyAccount;
