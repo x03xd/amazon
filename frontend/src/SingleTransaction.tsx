@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { ratingStars } from './static_ts_files/ratingLevels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import AuthContext from "./AuthenticationContext";
 
@@ -30,8 +29,8 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
     const {username} = useContext(AuthContext);
     const [rate, setRate] = useState<number | undefined>()
 
-
     useEffect(() => {
+
         try{
             fetch(`http://127.0.0.1:8000/api/rate-product/${username?.user_id}/${product_id}/${null}`)
             .then(response => response.json())
@@ -56,7 +55,6 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
         }
 
         catch(error){console.log("Error: ", error)}
-
     }
 
 

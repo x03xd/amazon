@@ -13,10 +13,10 @@ const PasswordChange: React.FC = () => {
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
 
-    const {username} = useContext(AuthContext);
+    const {username, logout} = useContext(AuthContext);
     const navigate = useNavigate(); 
 
-    async function changePassword(e: React.FormEvent){
+    async function changePassword(e: any){
         e.preventDefault();
 
         if(passwordRef.current?.value !== password2Ref.current?.value){
@@ -36,8 +36,9 @@ const PasswordChange: React.FC = () => {
                 })
                 const jsonResponse = await response.json()
 
-                if(jsonResponse.status){
+                if(jsonResponse?.status){
                     setAlertStyle("hidden");
+                    logout()
                     navigate("/")
                 }
     

@@ -71,7 +71,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
 
     useEffect(() => {
         try{
-            fetch("http://127.0.0.1:8000/api/cart/", {
+            fetch(`http://127.0.0.1:8000/api/cart/`, {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: {
@@ -80,7 +80,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
                 body: JSON.stringify({"product_id": item.product, "user_id": username?.user_id, "quantity": selectedValue})
             })
             .then(response => response.json())
-            .then(result => prev(selectedValue, item.product))
+            .then(result => (prev(selectedValue, item.product), console.log(result)))
         }
         catch(error){console.log("Error: ", error);}
 

@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import React, { useState, useEffect} from 'react';
 import { ratingStars, ratingLevels } from './static_ts_files/ratingLevels';

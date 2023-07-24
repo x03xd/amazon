@@ -86,12 +86,12 @@ const Store: React.FC = () => {
                 .then(result => setBrands(result));
 
                 fetch(`http://127.0.0.1:8000/api/avg-rate`)
-                .then(response5 => response5.json())
-                .then(result5 => setAverageRate(result5));
+                .then(response => response.json())
+                .then(result => setAverageRate(result));
 
                 fetch(`http://127.0.0.1:8000/api/products/${queryLinkPart}`)
-                .then(response3 => response3.json())
-                .then(result3 => setProducts(result3));
+                .then(response => response.json())
+                .then(result => setProducts(result));
             }
             catch (error){console.error("Error fetching data:", error);}
 
@@ -179,7 +179,7 @@ const Store: React.FC = () => {
             window.location.href = updatedUrl;
         }
 
-        function changeQ(qValue : string): void{
+        function changeQ(qValue: string): void{
             searchParams.set('q', qValue.toLowerCase());
             const modifiedQueryString = searchParams.toString();
             const baseUrl = window.location.href.split('?')[0];
@@ -216,7 +216,7 @@ const Store: React.FC = () => {
 
                      <div>
                         <span>Kategoria</span>
-
+                        <Clear text = "Wyczyść" nut = "q" func = {clearQueryString}  />
                         <ul>
                             {categories.map((item, index) => <UList index = {index} UListFunction = {changeQ} key = {index} item = {item["name"]} /> )}
                         </ul>
@@ -227,8 +227,6 @@ const Store: React.FC = () => {
                         <Clear text = "Wyczyść" nut = "rating" func = {clearQueryString}  />
                         <Rating />
                     </div>
-
-
 
                     <div>
                         <span>Marka</span><br/>

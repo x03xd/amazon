@@ -1,7 +1,7 @@
 import {Outlet, useLocation} from 'react-router-dom';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState} from 'react';
 import Modal from './Modal';
 import LeftModal from './LeftModal';
 import  './css_modules/TagsStyling.css';
@@ -9,7 +9,6 @@ import  './css_modules/AuthLayout.css';
 import  './css_modules/App.css';
 import  './css_modules/Modal.css';
 import './css_modules/CardFinalizing.css';
-import AuthLayout from './AuthLayout';
 import './css_modules/Main.css';
 import './css_modules/Store.css';
 import  './css_modules/Navbar.css';
@@ -19,9 +18,7 @@ import  './css_modules/Lobby.css';
 import  './css_modules/Card.css';
 import  './css_modules/CardObject.css'
 import  './css_modules/Alert.css';
-import AuthContext from "./AuthenticationContext";
 import './css_modules/Rating.css';
-import CardFinalizing from './CardFinalizing';
 import './css_modules/NarrowGrid.css'
 import './css_modules/MyAccount.css';
 import './css_modules/MyAccountCard.css';

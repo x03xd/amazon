@@ -54,7 +54,7 @@ const Card: React.FC = () => {
                 body:JSON.stringify({"username": username?.username})
             })
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result?.cart_items), setTotal(result?.sum), console.log("card")));
+            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0)));
         }
         catch(error) {console.log("Error: ", error)}
 
@@ -122,7 +122,7 @@ const Card: React.FC = () => {
         );
     }
 
-    else {
+    else{
 
         return(
 
@@ -168,7 +168,7 @@ const Card: React.FC = () => {
                 </div>
 
                 <div className = "card-content-right">
-                    <CardFinalizing num = {cardUserGetter.length || 0} total = {total} buyButton = {isPossible} />
+                    <CardFinalizing num = {cardUserGetter.length} total = {total} buyButton = {isPossible} />
                     <CartSideBar />              
                 </div>
 

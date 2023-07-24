@@ -58,13 +58,11 @@ const Lobby: React.FC = () => {
     }
 
     
-
-
     async function addToCard(e: React.MouseEvent<HTMLInputElement>){
         e.preventDefault();
 
         try {
-            await fetch(`http://127.0.0.1:8000/api/process/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/process/`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -72,6 +70,7 @@ const Lobby: React.FC = () => {
                 },
                 body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
             });
+            const rj = await response.json()
         }
         catch(error){console.log("Error: ", error)}
     }

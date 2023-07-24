@@ -12,7 +12,6 @@ interface ContextProvider {
 const initialValues = {
     loginUser: () => {},
     usernameFilter: () => {},
-    changeJWT: () => {},
     logout: () => {},
     email: null,
     alertStyle: "",
@@ -42,7 +41,6 @@ interface UserData {
 interface InitialValuesTypes {
     loginUser: (e: ChangeEvent<HTMLFormElement>) => void;
     usernameFilter: (e: ChangeEvent<HTMLFormElement>) => void;
-    changeJWT: (e: React.ChangeEvent<HTMLInputElement>) => void;
     logout: () => void;
     email: null | string;
     alertStyle: string;
@@ -65,7 +63,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
     const [email, setEmail] = useState<string>("");
-    const [remember, setRemember] = useState<boolean>(false);
+    
 
     const navigateBack = (): void => {
         navigate("/login/", {state: {type: 'text', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
@@ -79,31 +77,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
         navigate("/");
     }
 
-    const changeJWT = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setRemember(e.target.checked)
-    }
- 
-    useEffect(() => {
-        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-
-            const isTokenSaved = document.cookie.split(';').some((cookie) => {
-                const [name, value] = cookie.trim().split('=');
-                return name === 'tokenSaved' && value === 'true';
-            });
-
-            if (!isTokenSaved) {
-                document.cookie = `username=null`;
-                document.cookie = `authToken=null`;
-            }
-        };
-    
-        window.addEventListener('beforeunload', handleBeforeUnload);
-    
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
-      }, []);
-      
 
     async function usernameFilter(e: ChangeEvent<HTMLFormElement>){
         e.preventDefault();
@@ -135,7 +108,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
         }
 
         catch(error){console.log('Error:', error)}
-
     }
 
 
@@ -157,7 +129,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
             if(response.status === 200){
                 document.cookie = `username=${JSON.stringify(data.access)}`
                 document.cookie = `authToken=${JSON.stringify(data)}`;
-                document.cookie = `tokenSaved=${remember}`;
           
                 setAuthToken(data)
                 setUsername(data.access)
@@ -182,9 +153,8 @@ export const AuthProvider = ({children}: ContextProvider) => {
         setAuthToken(null);
         setUsername(null);
 
-        document.cookie = "username = null"
-        document.cookie = "authToken = null"
-        document.cookie = "tokenSaved = false"
+        document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+        document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
 
         navigateToHome()
         window.location.reload();
@@ -215,9 +185,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
 
         }
 
-        catch (error) {console.error('Error updating token:', error)}
-
-
+        catch(error){console.error('Error updating token:', error)}
     }
 
     const fourMinutes = 1000 * 60 * 4;
@@ -234,7 +202,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
     let contextData = {
         loginUser: loginUser,
         usernameFilter: usernameFilter,
-        changeJWT: changeJWT,
         email: email,
         alertStyle: alertStyle,
         alertText: alertText,
@@ -251,4 +218,3 @@ export const AuthProvider = ({children}: ContextProvider) => {
     )
 
 }
-
