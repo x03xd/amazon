@@ -35,25 +35,22 @@ const Register: React.FC = () => {
                     },
                     body: JSON.stringify({"email":emailRef.current?.value, "username":usernameRef.current?.value, "password":passwordRef.current?.value, "password2":password2Ref.current?.value})
                 })
-            
                 const jsonResponse = await response.json()
-                console.log(jsonResponse)
 
-                if(jsonResponse){
+                if(jsonResponse?.status){
                     setAlertStyle("hidden");
                     navigate("/")
                 }
     
                 else {
                     setAlertStyle("active");
-                    setAlertText(jsonResponse?.detail);
+                    setAlertText(jsonResponse?.email || jsonResponse?.non_field_errors);
                 }
 
             }
 
-            catch(error){
-                console.log("Error: ", error)
-            }
+            catch(error){console.log("Error: ", error)}
+
         }
     }
 
@@ -78,7 +75,7 @@ const Register: React.FC = () => {
                     <input ref = {emailRef} name = "email" defaultValue = "" className = "text-input login" type = "text"  /><br/>
 
                     <span className = "">Hasło</span>
-                    <input ref = {passwordRef} name = "password1" defaultValue = "" className = {`text-input login ${dangerBorder}`} type = "password"  placeholder = "Co najmniej 6 znaków" /><br/>
+                    <input ref = {passwordRef} name = "password" defaultValue = "" className = {`text-input login ${dangerBorder}`} type = "password"  placeholder = "Co najmniej 6 znaków" /><br/>
 
                     <span className = "">Ponownie podaj hasło</span>
                     <input ref = {password2Ref} name = "password2" defaultValue = "" className = {`text-input login ${dangerBorder}`} type = "password"  /><br/>

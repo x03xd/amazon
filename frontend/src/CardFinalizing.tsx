@@ -16,21 +16,25 @@ const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
 
     const {username} = React.useContext(AuthContext);
     const navigate = useNavigate();
+    
 
     const finalizeOrder = async () => {
 
-        try{
-            await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({"location": "cart", "user": username?.user_id})
-            })
-            navigate("/")
-        }
+        if(!Object.keys(buyButton)){
 
-        catch(error){console.error('Error updating token:', error);}
+            try{
+                await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({"location": "cart", "user": username?.user_id})
+                })
+                navigate("/")
+            }
+
+            catch(error){console.error('Error updating token:', error);}
+        }
     }
 
 

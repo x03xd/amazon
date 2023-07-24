@@ -1,6 +1,4 @@
 import { faStar, faStarHalfStroke } from '@fortawesome/free-solid-svg-icons'
-import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 interface StarStyling {

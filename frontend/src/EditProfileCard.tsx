@@ -16,15 +16,15 @@ interface EditProfileCardProps {
 
 
 interface AccessToChangeUsernameStateProp {
-    username: boolean;
-    email: boolean;
-    password: boolean
+    username: [boolean, string];
+    email: [boolean, string];
+    password: [boolean, string];
 }
 
 const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, buttonValue, id, accessLink, access }) => {
 
     const inputValue = useRef<HTMLInputElement>(null)
-    const {username} = useContext(AuthContext);
+    const {username, logout} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const redirectToPasswordChange = () => {
@@ -34,51 +34,22 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
     const submitChange = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         
-        const setNewDate = async () => { 
-
-            try{
-                const response = await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
-                    method: 'POST',
-                    credentials: 'include', 
-                    headers: {
-                        'Content-Type':'application/json',
-                    },
-                    body: JSON.stringify({"access": access})
-                })
-                let responseJSON = await response.json();
-                console.log("post", responseJSON)
-
-            }
-
-            catch(error){
-                console.log(`Error: ${error}`)
-            }
-        }
-
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
+            await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
                 method: 'PATCH',
                 credentials: 'include', 
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({"access": access, "change": inputValue.current?.value})
+                body: JSON.stringify({"change": inputValue.current?.value})
             })
-            const responseJSON = await response.json();
-            console.log("patch", responseJSON)
-
-            if (responseJSON.status) {
-                setNewDate();
-            }
+            logout()
 
         }
-
-        catch(error){
-            console.log(`Error: ${error}`)
-        }
-
+        catch(error){console.log(`Error: ${error}`)}
     }
 
+    console.log(access)
 
     return(
         <div className = "edit-profile-card">
@@ -100,9 +71,29 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
                         <button onClick = {redirectToPasswordChange} className = "button-standard-gradient">{buttonValue}</button>
                     }
                 
-                    {link === "edit-username" && !access?.username ? <img src = {blocked_padlock} alt = "blocked" loading = "lazy" /> : null}
-                    {link === "edit-email" && !access?.email ? <img src = {blocked_padlock} alt = "blocked" loading = "lazy" /> : null}
-                    {link === "edit-password" && !access?.password ? <img src = {blocked_padlock} alt = "blocked" loading = "lazy" /> : null}
+                    {link === "edit-username" && !access?.username[0] ? 
+                    <>
+                        <img src = {blocked_padlock} alt = "blocked" loading = "lazy" />
+                        <span>Do: {access?.username[1]}</span>
+                    </>
+                    : null}
+
+
+                    {link === "edit-email" && !access?.email[0] ? 
+                    <>
+                        <img src = {blocked_padlock} alt = "blocked" loading = "lazy" /> 
+                        <span>Do: {access?.email[1]}</span>
+                    </>
+                    : null}
+
+
+                    {link === "edit-password" && !access?.password[0] ? 
+                    <>
+                        <img src = {blocked_padlock} alt = "blocked" loading = "lazy" /> 
+                        <span>Do: {access?.password[1]}</span>
+                    </>
+                    : null}
+
                 </div>
             </form>
         </div>

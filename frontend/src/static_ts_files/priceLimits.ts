@@ -9,8 +9,7 @@ interface PriceLimits {
 
 
 
-
-let priceLimits = [
+const priceLimits: PriceLimits[] = [
     {item: {desc: "Do 20zł", range: {start: 1, end: 20}}},
     {item: {desc: "20 do 50zł", range: {start: 20.01, end: 50}}},
     {item: {desc: "50 do 100zł", range: {start: 50.01, end: 100}}},

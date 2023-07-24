@@ -23,23 +23,23 @@ const Banner: React.FC = () => {
             >
 
                 <div>
-                    <img loading = 'lazy' src = {carousel1}/>
+                    <img loading = 'lazy' src = {carousel1} alt = "carousel1" />
                 </div>
 
                 <div>
-                    <img loading = 'lazy' src = {carousel2}/>
+                    <img loading = 'lazy' src = {carousel2} alt = "carousel2" />
                 </div>
 
                 <div>
-                    <img loading = 'lazy' src = {carousel3}/>
+                    <img loading = 'lazy' src = {carousel3} alt = "carousel3" />
                 </div>
 
                 <div>
-                    <img loading = 'lazy' src = {carousel4}/>
+                    <img loading = 'lazy' src = {carousel4} alt = "carousel4" />
                 </div>
 
                 <div>
-                    <img loading = 'lazy' src = {carousel5}/>
+                    <img loading = 'lazy' src = {carousel5}alt = "carousel5" />
                 </div>
 
             </Carousel>

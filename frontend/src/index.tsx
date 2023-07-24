@@ -31,7 +31,7 @@ root.render(
                     <Route element = {<App />}>
                         <Route path = "/" element = {<Main />} />
                         <Route path = "/s" element = {<Store />} />
-                        <Route path = "/l/:slug" element = {<Lobby />} />
+                        <Route path="/l/:slug" element={<ProtectedRoute path="/l/:slug" element={<Lobby />} />} />
                         <Route path="/cart" element={<ProtectedRoute path="/cart" element={<Cart />} />} />
                        
                         <Route element = {<NarrowGrid />}>
@@ -42,9 +42,12 @@ root.render(
                     </Route>
 
                     <Route element = {<AuthLayout />} >
-                        <Route path = "/login" element = {<Login />} />
-                        <Route path = "/login2" element = {<Login />} />
-                        <Route path = "/registration" element = {<Register />} />
+
+                            <Route path = "/login" element={<ProtectedRoute path="/login" element={<Login />} />} />
+                            <Route path = "/login2" element={<ProtectedRoute path="/login2" element={<Login />} />} />
+                            <Route path = "/registration" element={<ProtectedRoute path="/registration" element={<Register />} />} />
+
+
                         <Route path="/account/edit-profile/password" element={<ProtectedRoute path="/account/edit-profile/password" element={<PasswordChange />} />} />
                     </Route>
 

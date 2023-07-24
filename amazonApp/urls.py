@@ -15,10 +15,11 @@ urlpatterns = [
     path("cart/", views.CartAPI.as_view()),
 
     path("brands/<category>", views.BrandsByCategoriesAPI.as_view()),
+    path("brand/<id>", views.BrandsByIdAPI.as_view()),
 
-    
     path('token/',MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
     path("registration/", views.RegisterSystem.as_view()),
     path('logout/', views.LogoutView.as_view()),
     path("login/", views.LoginAPI.as_view()),
@@ -26,9 +27,6 @@ urlpatterns = [
     path('avg-rate/', views.CountAvgRate.as_view()),
     path('rate-product/<id>/<pid>/<rate>', views.RateProduct.as_view()),
     path("delete-rate/", views.DeleteRate.as_view()),
-
-    #path("token-cookie/", views.StoringUserToken.as_view()),
-
     path("edit-username/<id>", views.EditUsername.as_view()),
     path("edit-email/<id>", views.EditEmail.as_view()),
     path("edit-password/<id>", views.EditPassword.as_view()),

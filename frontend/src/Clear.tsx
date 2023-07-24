@@ -15,6 +15,11 @@ const Clear: React.FC<ClearProps> = ({ func, nut, text }) => {
 
     function clearResults(){
 
+        if(nut === "q"){
+            searchParams.delete('q');
+            func("q")
+        }
+
         if(nut === "c"){
             searchParams.delete('c');
             func("c")

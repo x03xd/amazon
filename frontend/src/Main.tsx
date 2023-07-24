@@ -13,8 +13,6 @@ import Banner from './Banner';
 
 const Main: React.FC = () => {
 
-    //panel dodawania dodaj
-
     const dlaTwojegoDomu = [
         [photo1, 'Oczyszczacze powietrza'],
         [photo2, 'Nawilżacze powietrza'],
@@ -41,7 +39,6 @@ const Main: React.FC = () => {
 
             <GridBox boxTitle = 'Dla twojego domu' list = {dlaTwojegoDomu} className = '' />
             <GridBox boxTitle = 'Urządzenia Amazon' list = {nowyEchoDot} className = 'me-4' />
-
 
         </div>
 

@@ -16,6 +16,18 @@
 }
 
 
+.lobby-content-gallery > div span:first-child{
+    font-size: 3rem !important;
+}
+
+
+
+.lobby-content-gallery > div span:last-child{
+    font-size: 1.7rem !important;
+}
+
+
+
 
 
 .lobby-content-sidebar > div {

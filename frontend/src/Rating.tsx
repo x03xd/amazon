@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import React, { useState, useEffect} from 'react';
 import { ratingStars, ratingLevels } from './static_ts_files/ratingLevels';
@@ -16,9 +15,9 @@ const Rating: React.FC = () => {
             try {
                 const parsedRate = JSON.parse(rate)["num"];
                 setRate(parsedRate);
-            } catch (error) {
-                console.error("Error parsing rate from localStorage: ", error);
             }
+            
+            catch (error) {console.error("Error parsing rate from localStorage: ", error)}
         }
     },[]);
     
@@ -26,7 +25,7 @@ const Rating: React.FC = () => {
     useEffect(() => {
         const boolVal = rate == null || !(rate > 0) ? false : true;
         const object = {value: boolVal, num: rate};
-        localStorage.setItem("rating", JSON.stringify(object))
+        localStorage.setItem("rating", JSON.stringify(object));
     }, [rate]);
 
 
@@ -41,7 +40,6 @@ const Rating: React.FC = () => {
         window.location.href = updatedUrl;
     }
 
-    //<div onClick = {() => {ratingFilter(row[1]["key"])}} key = {key} className = {ratingStars[key][1]}>
 
     return(
         <>

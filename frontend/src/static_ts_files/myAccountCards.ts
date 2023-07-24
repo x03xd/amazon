@@ -39,16 +39,13 @@ interface CardDataArray2 {
 }
 
 
-
-
 const cardsData2 : CardDataArray2["array"] = [
     /*1*/   {title: "Treści cyfrowe i urządzenia", content: "Śledź przesyłki, zwróc lub ponownie zamów kupione przedmioty", link: ""},
     /*2*/   {title: "Powiadomienia e-mail, wiadomości, reklamy i pliki cookie" ,content: "Edytuj login, nazwę użytkownika i numer telefonu", link: ""},
     /*3*/   {title: "Preferencje zamawiania i zakupów", content: "Wyświetl korzyści i ustawienia płatności", link: ""},
     /*4*/   {title: "Inne konta",  content: "Edytuj adresy i preferencje dotyczące dostawy dla zamówień oraz prezentów", link: ""},
     /*5*/   {title: "Dane i prywatność",  content: "Zarządzaj metodami i ustawieniami płatności oraz przeglądaj salda", link: ""},
-
-    ]
+]
     
 
 

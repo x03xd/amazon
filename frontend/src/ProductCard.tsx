@@ -1,24 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro'
-import {Routes, Route, useNavigate} from 'react-router-dom';
-import {useState, useRef, useEffect} from 'react';
-import { faStar, faStarHalfStroke } from '@fortawesome/free-solid-svg-icons'
+import {useNavigate} from 'react-router-dom';
+import {useState, useEffect} from 'react';
 import {useLocation} from 'react-router-dom';
 import React from 'react';
 import { starStyling } from './static_ts_files/starStyling';
 
-//import { starStyling } from './static_ts_files/startStyling';
 
 interface StarStyling {
     icon: unknown;
     style: string;
 }
 
-
 interface StarStylingArray {
     [index: number]: StarStyling[];
 }
-
 
 
 interface ProductCard {
@@ -26,8 +21,6 @@ interface ProductCard {
         brand: string;
         description: string;
         gallery1: boolean | null;
-        gallery2: boolean | null;
-        gallery3: boolean | null;
         id: number;
         image: string;
         price: number;
@@ -42,13 +35,10 @@ interface ProductCard {
 
 
 
-
 const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
 
     const navigate = useNavigate();
-    const location = useLocation();
-
-    const [rateRange, setRateRange] = useState(2);
+    const [rateRange, setRateRange] = useState<number>(0);
 
     function handleClick(){
 
@@ -58,13 +48,13 @@ const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
         .replace(/^-+|-+$/g, '')
 
         navigate(`/l/${slug}`, {state: {id_product: item.id, image: item.image, desc: item.description, price: item.price
-        , g1: item.gallery1, status: item.quantity, brand: item.brand, slug: slug}})
+        , g1: item.gallery1, status: item.quantity, brand: item.brand, slug: slug, quantity: item.quantity}})
     }
 
 
     useEffect(() => {
         if(rate <= 5 && rate >= 4.76){
-               setRateRange(0);
+            setRateRange(0);
                // starStyling[0].map((item, index) => <FontAwesomeIcon key = {index} icon = {item.icon} className = "star-rating-icon-small" />)
         }
 
@@ -81,17 +71,13 @@ const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
         }
 
         else if(rate <= 3.75 && rate >= 3.26){
-
             setRateRange(3);
                // starStyling[3].map((item, index) => <FontAwesomeIcon key = {index} icon = {item.icon} className = "star-rating-icon-small" />)
-
         }
 
         else if(rate <= 3.25 && rate >= 2.76){
-
             setRateRange(4);
              //   starStyling[4].map((item, index) => <FontAwesomeIcon key = {index} icon = {item.icon} className = "star-rating-icon-small" />)
-
         }
 
         else if(rate <= 2.75 && rate >= 2.26){
@@ -137,9 +123,6 @@ const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
 
     }, [])
 
-
-    //console.log(starStyling[2].map((item, index) => <FontAwesomeIcon key = {index} icon = {item.icon} className = "star-rating-icon-small" />));
-//<FontAwesomeIcon icon={faStarHalfStroke} className = "star-rating-icon" />
 
     return(
         <div className = "product-card-content">

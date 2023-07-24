@@ -4,9 +4,9 @@ import EditProfileCard from "./EditProfileCard"
 
 
 interface AccessToChangeUsernameState {
-    username: boolean;
-    email: boolean;
-    password: boolean;
+    username: [boolean, string];
+    email: [boolean, string];
+    password: [boolean, string];
 }
 
 const EditProfile : React.FC = () => {
@@ -31,6 +31,8 @@ const EditProfile : React.FC = () => {
         }
         catch(error){console.log("Error: ", error)}
     }, [])
+
+    console.log(accessToChange)
 
     return(
         <div className = "my-account-content">
@@ -60,10 +62,6 @@ const EditProfile : React.FC = () => {
     )
 
 }
-
-
-
-
 
 
 export default EditProfile

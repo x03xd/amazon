@@ -21,7 +21,7 @@ const MyAccountCard: React.FC<MyAccountCardProps> = ({ title, image, content, al
     }
 
 
-    if(image != null)
+    if(image != null){
         return(
             <div onClick = {navigateTo} className = "my-account-card p-4">
                 
@@ -36,7 +36,7 @@ const MyAccountCard: React.FC<MyAccountCardProps> = ({ title, image, content, al
 
             </div>
         )
-
+    }
 
 
     else {
@@ -44,7 +44,6 @@ const MyAccountCard: React.FC<MyAccountCardProps> = ({ title, image, content, al
             <div className = "my-account-card p-4">
                 
                 <div>
-        
                 </div>
 
                 <div>

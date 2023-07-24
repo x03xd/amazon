@@ -3,7 +3,6 @@ nav {
     margin-top: -0.46rem;
 }
  
- 
 nav div.navbar-upper-part {
     background: var(--top-nav);
     height: 60px;
@@ -57,14 +56,18 @@ nav div.navbar-lower-part {
  
  
  
- .cart {
-     width: 35px;
-     height: 35px;
- }
+.cart {
+    width: 35px;
+    height: 35px;
+}
  
  
- .cart-box {
-     display: flex;
-     align-items: end;
-     gap: 5px;
- }
+.cart-box {
+    display: flex;
+    align-items: end;
+    gap: 5px;
+}
+
+.cursor-finger {
+    cursor: pointer;
+}

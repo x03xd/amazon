@@ -8,8 +8,6 @@ interface AlertProps{
 
 const Alert: React.FC<AlertProps> = ({ style, text }) => {
 
-    //console.log(style);
-
     return(
         <div className = {`alert-container-wrapper ${style}`}>
             <div className = "alert-container border border-danger rounded p-4 mt-2">
@@ -18,7 +16,7 @@ const Alert: React.FC<AlertProps> = ({ style, text }) => {
             </div>
         </div>
     );
-
+    
 }
 
 export default Alert
