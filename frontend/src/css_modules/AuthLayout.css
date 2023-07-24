@@ -1,0 +1,99 @@
+
+.main-container-auth-layout {
+    display: grid;
+    align-content: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto 1fr 6fr;
+    min-height: 1100px;
+}
+
+
+
+
+.main-container-auth-layout-title {
+    grid-column: 1 / 6;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+
+
+
+.main-container-auth-layout-create-button {
+    grid-column: 1 / 6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.auth-navbar {
+    grid-column: 1 / 6;
+    text-align: center;
+    background: #EFEFEF;
+}
+
+
+.auth-navbar > div {
+    margin-top: 20px;
+}
+
+
+
+.auth-navbar span {
+    line-height: 40px;
+}
+
+
+.auth-navbar a {
+    font-size: 11px;
+    padding: 10px;
+}
+
+
+
+.text-E01.active a, :global .text-E01.active span {
+    display: block;
+}
+
+.text-E01 span, :global .text-E01 a {
+    display: none;
+}
+
+
+.label  {
+    display: none;
+    text-align: start;
+}
+
+
+
+.label.active  {
+    display: block;
+}
+
+
+
+/*  LOGIN AND REGISTER HAVING IN COMMON CODE */
+
+
+.modal-container-wrapper {
+    grid-column: 3 / 4;
+}
+
+
+.modal-container  {
+    padding: 30px;
+}
+
+
+.modal-container form > span {
+    font-weight: 600 !important;
+}
+
+
+
+div.modal-container p:first-child {
+    font-size: 2rem !important;
+    font-weight: 600;
+}

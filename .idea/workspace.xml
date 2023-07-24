@@ -2,26 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a031a4af-263d-4a20-b0d7-fc1ff09c5dc4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/amazonApp/testing.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/QueryParamsContext.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/matrix.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/tsconfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazonApp/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazonApp/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazonApp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazonApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Checkbox.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Checkbox.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Clear.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Clear.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Navbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/ProductCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/ProductCard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Rating.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Rating.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Store.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Store.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Rating.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Rating.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css_modules/Store.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css_modules/Store.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Alert.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Alert.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/AuthLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/AuthLayout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Banner.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Banner.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/CSRFToken.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/CSRFToken.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Card.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Checkbox.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Checkbox.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Clear.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Clear.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Footer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Footer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/LeftModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/LeftModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Main.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Modal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Modal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Store.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Store.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,17 +39,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;C#&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "C#"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\ja\PycharmProjects\amazon123\frontend\src\images" />
