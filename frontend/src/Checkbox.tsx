@@ -20,7 +20,7 @@ interface CheckboxProps {
     index: number;
     name: string;
     booleanArray: boolean[],
-    arrayProp: any
+    arrayProp: any,
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arrayProp }) => {    
@@ -40,8 +40,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
     let uniqueFilteredBrands2 = [...new Set(filteredBrands2)];
     let uniqueFilteredPrices2 = [...new Set(filteredPrices2)];
 
-    const [allUniqueContentArray, setAllUniqueContentArray] = useState<PriceRange[] | BrandsAPI[]>(arrayProp); //defined w interfejsie
-
+    const [allUniqueContentArray, setAllUniqueContentArray] = useState<PriceRange[] | BrandsAPI[]>(arrayProp); 
 
     useEffect(() => {
         setItems(booleanArray)
@@ -114,6 +113,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
             const modifiedQueryString = searchParams.toString();
             const baseUrl = window.location.href.split('?')[0];
             const updatedUrl = baseUrl + '?' + modifiedQueryString;
+
             window.location.href = updatedUrl;
 
         }
@@ -121,7 +121,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
     },[filteredBrands2, filteredPrices2])
 
 
-    function handleResult(e: any, position: number){
+    function handleResult(position: number){
         setLoading(true);
         items.map((item : boolean, index : number) => {
             if(index === position) {
@@ -143,7 +143,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
     return(
         <>
             <li key = {index}>
-                <input checked = {ifChecked2} onChange = {(e) => { handleResult(e, index); }} type = "checkbox" />
+                <input checked = {ifChecked2} onChange = {() => { handleResult(index); }} type = "checkbox" />
                 {name}
             </li>
         </>

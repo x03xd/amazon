@@ -101,7 +101,7 @@ const Store: React.FC = () => {
    
         }, [])
 
-        console.log(products)
+        console.log(queryLinkPart)
 
 
         useEffect(() => {
