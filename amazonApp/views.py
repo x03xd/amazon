@@ -49,9 +49,9 @@ class CartAPI(APIView):
     def post(self, request):
 
         try:
-            json_data = json.load(request)
+            username = request.data.get("username")
 
-            cart = CartItem.objects.filter(cart__owner__username = json_data["username"]).order_by('product__title')
+            cart = CartItem.objects.filter(cart__owner__username = username).order_by('product__title')
             serializer = CartItemSerializer(cart, many=True)
             
             for cart_item in serializer.data:
@@ -62,9 +62,6 @@ class CartAPI(APIView):
             sum_ = cart.aggregate(total_price_sum=Sum('total_price'))
         
             return JsonResponse({"cart_items": serializer.data, "sum": sum_['total_price_sum']})
-        
-        except json.JSONDecodeError as e:
-            return JsonResponse({"error": "Error decoding JSON", "detail": str(e)}, status=400)
 
         except CartItem.DoesNotExist:
             return JsonResponse({"error": "Object does not exist"}, status=404)
@@ -76,25 +73,27 @@ class CartAPI(APIView):
     def patch(self, request, *args, **kwargs):
 
         try:
-            json_data = json.load(request)
+            product_id = request.data.get("product_id")
+            user_id = request.data.get("user_id")
+            quantity = request.data.get("quantity")
 
-            product = Product.objects.get(id=json_data["product_id"])
-            cart = CartItem.objects.get(cart__owner__id = json_data["user_id"], product = product)
+            product = Product.objects.get(id=product_id)
+            cart = CartItem.objects.get(cart__owner__id = user_id, product = product)
             
-            if product.quantity < json_data["quantity"]:
+            if product.quantity < quantity:
                 raise ValueError("Quantity exceeds available stock")
 
-            new_total_price = (cart.total_price * json_data["quantity"]) / cart.quantity
+            new_total_price = (cart.total_price * quantity) / cart.quantity
 
-            cart.quantity = json_data["quantity"]
+            cart.quantity = quantity
             cart.total_price = new_total_price
 
             cart.save()
    
-            return Response(json_data["product_id"])
+            return Response(product_id)
         
-        except (json.JSONDecodeError, CartItem.DoesNotExist) as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)
+        except CartItem.DoesNotExist as e:
+            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
         
         except Exception as e:
             return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -106,11 +105,12 @@ class ProcessAPI(APIView):
     def post(self, request):
 
         try:
-            json_data = json.load(request)
-            quantity = int(json_data.get("quantity", 0))
+            product_id = request.data.get("product_id")
+            user_id = request.data.get("user_id")
+            quantity = int(request.data.get("quantity"), 0)
 
             try: 
-                product = Product.objects.get(id=json_data["product_id"]) 
+                product = Product.objects.get(id=product_id) 
  
             except Product.DoesNotExist:
                 return JsonResponse({"error": "Object does not exist"}, status=404)
@@ -121,12 +121,12 @@ class ProcessAPI(APIView):
             if 10 > quantity < 1:
                 raise ValueError({"status": False, "info": "Quantity is not in range 1-10"})
 
-            total_quantity = CartItem.objects.filter(cart__owner__id=json_data["user_id"]).aggregate(Sum('quantity'))['quantity__sum']
+            total_quantity = CartItem.objects.filter(cart__owner__id=user_id).aggregate(Sum('quantity'))['quantity__sum']
 
             if isinstance(total_quantity, int) and total_quantity + quantity > 10:
                 raise ValueError({"status": False, "info": "Maximum quantity of single item exceeded"})
 
-            cart = Cart.objects.get(owner__id=json_data["user_id"])  
+            cart = Cart.objects.get(owner__id=user_id)  
 
             try:
                 obj = CartItem.objects.get(cart=cart, product=product)
@@ -144,8 +144,8 @@ class ProcessAPI(APIView):
 
             return Response({"status": True})
 
-        except (json.JSONDecodeError, Product.DoesNotExist) as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)
+        except Product.DoesNotExist as e:
+            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
         
         except Exception as e:
             return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -161,14 +161,17 @@ class RemoveItemCart(APIView):
         try:
             json_data = json.load(request)
 
-            cart = CartItem.objects.get(cart__owner__id = json_data["username"], product__id = json_data["id"])
+            username = request.data.get("username")
+            item_id = request.data.get("item_id")
+
+            cart = CartItem.objects.get(cart__owner__id = username, product__id = item_id)
             cart.delete()
 
-            return JsonResponse({"done": True, "product_id": json_data["id"]})
+            return JsonResponse({"done": True, "product_id": item_id})
 
 
-        except (json.JSONDecodeError, Product.DoesNotExist) as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)
+        except Product.DoesNotExistc as e:
+            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -195,12 +198,13 @@ class LoginAPI(APIView):
     def post(self, request):
         
         try:
-            json_data = json.load(request)
-            user_object = User.objects.get(username=json_data['username'])
-            return JsonResponse({'authenticated': True, 'email': user_object.email, 'username': json_data['username']})
+            username = request.data.get("username")
+
+            user_object = User.objects.get(username=username)
+            return JsonResponse({'authenticated': True, 'email': user_object.email, 'username': username})
         
-        except (json.JSONDecodeError, User.DoesNotExist) as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)
+        except User.DoesNotExist as e:
+            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
         
         except Exception as e:
             return JsonResponse({'authenticated': False, "error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -244,16 +248,12 @@ class UserRegistrationSerializer(serializers.Serializer):
 class RegisterSystem(APIView):
     def post(self, request, *args, **kwargs):
         try:
-            json_data = json.loads(request.body)
-
-            serializer = UserRegistrationSerializer(data=json_data)
+            serializer = UserRegistrationSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response({"status": True}, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        except json.JSONDecodeError:
-            return Response({"error": "Invalid JSON data"}, status=status.HTTP_400_BAD_REQUEST)
 
         except serializers.ValidationError as e:  
             return Response({"error": "Password is too weak", "detail": e.messages}, status=status.HTTP_400_BAD_REQUEST)
@@ -291,10 +291,6 @@ class CountAvgRate(generics.ListAPIView):
 
         except Rate.DoesNotExist:
             return Response({"error": "Object does not exist"}, status=404)
-
-
-
-
 
 
 class ProductsAPI(APIView):
@@ -406,20 +402,16 @@ class ProductsAPI(APIView):
     def post(self, request):
                 
         try:
-            json_data = json.load(request)
+            lst = request.data.get("lst")
             products = []
 
-            for product, quantity in json_data["lst"]:
+            for product, quantity in lst:
                 instance = Product.objects.get(id=product)
                 products.append(instance)
 
             serializer = ProductSerializer(products, many=True)
 
             return JsonResponse({"products": serializer.data})
-        
-        
-        except json.JSONDecodeError:
-            return Response({"error": "Invalid JSON data"}, status=400)
 
         except Product.DoesNotExist:
             return Response({"error": "Object does not exist"}, status=404)
@@ -432,7 +424,6 @@ class AccessToChangeStatus(APIView):
         
     def get(self, request, *args, **kwargs):
         today_date = date.today()
-
 
         try:
             user = User.objects.get(id = self.kwargs.get("id"))
@@ -479,17 +470,18 @@ class EditUsername(APIView):
     def patch(self, request, **kwargs):
 
         try:
-            json_data = json.load(request)
+            change = request.data.get("change")
+
             user = User.objects.get(id = self.kwargs.get("id"))
             today_date = date.today()
 
             if user.username_change_allowed >= today_date:
                 raise Exception("You cannot change username")
 
-            if User.objects.filter(email=json_data["change"]).exists():
+            if User.objects.filter(email=change).exists():
                 raise Exception("User with passed username already exists")
             
-            user.username = json_data["change"]
+            user.username = change
 
             new_date = date.today() + timedelta(days=30) 
             user.username_change_allowed = new_date
@@ -498,8 +490,8 @@ class EditUsername(APIView):
 
             return JsonResponse({"status": True})
 
-        except (json.JSONDecodeError, User.DoesNotExist) as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)
+        except User.DoesNotExist as e:
+            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -511,17 +503,18 @@ class EditEmail(APIView):
     def patch(self, request, **kwargs):
 
         try:
-            json_data = json.load(request)
+            change = request.data.get("change")
+
             user = User.objects.get(id = self.kwargs.get("id"))
             today_date = date.today()
 
             if user.email_change_allowed >= today_date:
                 raise Exception("You cannot change email")
 
-            if User.objects.filter(email=json_data["change"]).exists():
+            if User.objects.filter(email=change).exists():
                 raise Exception("User with passed email already exists")
             
-            user.email = json_data["change"]
+            user.email = change
 
             new_date = date.today() + timedelta(days=30) 
             user.email_change_allowed = new_date
@@ -530,8 +523,8 @@ class EditEmail(APIView):
 
             return JsonResponse({"status": True})
 
-        except (json.JSONDecodeError, User.DoesNotExist) as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)
+        except User.DoesNotExist as e:
+            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -544,10 +537,13 @@ class FinalizeOrder(APIView):
     def post(self, request):
 
         try:
-            json_data = json.load(request)
+            user = request.data.get("user")
+            quantity = request.data.get("quantity")
+            location = request.data.get("location")
+            product_id = request.data.get("product_id")
 
-            if json_data["location"] == "cart":
-                cart_items = CartItem.objects.filter(cart__owner__id = json_data["user"])
+            if location == "cart":
+                cart_items = CartItem.objects.filter(cart__owner__id = user)
                 serializer = CartItemSerializer(cart_items, many=True)
                 bought = []
 
@@ -561,10 +557,9 @@ class FinalizeOrder(APIView):
 
                 cart_items.delete()
  
-    
-            elif json_data["location"] == "lobby":
-                bought = json_data["product_id"] * int(json_data["quantity"])
-                product = Product.objects.get(id=json_data["product_id"][0])
+            elif location == "lobby":
+                bought = product_id * int(quantity)
+                product = Product.objects.get(id=product_id[0])
 
                 if product.quantity >= len(bought):
                     product.quantity -= len(bought)
@@ -573,7 +568,7 @@ class FinalizeOrder(APIView):
                     raise Exception("User's input greater than product's quantity")
 
             try:
-                user = User.objects.get(id = json_data["user"])
+                user = User.objects.get(id = user)
 
             except User.DoesNotExist:
                 return Response({"error": "Object does not exist"}, status=404)    
@@ -618,10 +613,12 @@ class ProductsFromTransactions(APIView):
         table, lst = {}, []
 
         try:
-            json_data = json.load(request)
-            start, end = json_data["pages"], json_data["pages"] + 5
+            pages = request.data.get("pages")
+            lst = request.data.get("lst")
 
-            flattened_lst = [[item, sublist["date"]] for sublist in json_data["lst"] for item in sublist["bought_products"]]
+            start, end = pages, pages + 5
+
+            flattened_lst = [[item, sublist["date"]] for sublist in lst for item in sublist["bought_products"]]
 
             for index, date in flattened_lst:
                 table[(index, date)] = table.get((index, date), 0) + 1
@@ -691,8 +688,8 @@ class RateProduct(APIView):
                 rate_of_user.save()
 
             return Response("The rate for the specific item has been changed/created")
-        
-        
+    
+
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
@@ -702,15 +699,14 @@ class DeleteRate(APIView):
     def post(self, request, **kwargs):
 
         try:
-            json_data = json.load(request)
-            rate = Rate.objects.get(rated_by__id = json_data["user_id"], rated_products__id = json_data["product_id"])
+            user_id = request.data.get("user_id")
+            product_id = request.data.get("product_id")
+
+            rate = Rate.objects.get(rated_by__id = user_id, rated_products__id = product_id)
             rate.delete()
 
         except Rate.DoesNotExist:
             return JsonResponse({"error": "Object does not exist"}, status=404)
-
-        except json.JSONDecodeError:
-            return Response({"error": "Invalid JSON data"}, status=400)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -727,12 +723,8 @@ class BrandsByCategoriesAPI(APIView):
 
             return Response(serializer.data)
 
-        
         except Brand.DoesNotExist:
             return JsonResponse({"error": "Object does not exist"}, status=404)
-
-        except json.JSONDecodeError:
-            return Response({"error": "Invalid JSON data"}, status=400)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -750,8 +742,8 @@ class BrandsByIdAPI(APIView):
             return Response(serializer.data)
 
 
-        except (json.JSONDecodeError, Brand.DoesNotExist) as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)
+        except Brand.DoesNotExist as e:
+            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -763,10 +755,10 @@ class EditPassword(APIView):
     def patch(self, request, *args, **kwargs):
 
         try:
-            json_data = json.load(request)
-            password = json_data["password"]
+            password = request.data.get("password")
+            password2 = request.data.get("password2")
 
-            if password != json_data["password2"]:
+            if password != password2:
                 raise ValidationError("Passwords do not match.")
 
             user = User.objects.get(id = self.kwargs.get("id"))
@@ -787,9 +779,8 @@ class EditPassword(APIView):
 
             return JsonResponse({"status": True})
 
-                
-        except (json.JSONDecodeError, User.DoesNotExist) as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=400 or 404)
+        except User.DoesNotExist as e:
+            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
 
         except ValidationError as e:
             return Response({"error": "Password is too weak", "detail": e.messages}, status=status.HTTP_400_BAD_REQUEST)

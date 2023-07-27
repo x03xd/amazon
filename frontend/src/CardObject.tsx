@@ -60,7 +60,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({"id": index_of_item, "username": username?.user_id})
+                body: JSON.stringify({"item_id": index_of_item, "username": username?.user_id})
             })
             .then(response => response.json())
             .then(result => (setData(result)))  
