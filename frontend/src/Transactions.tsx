@@ -15,8 +15,6 @@ interface Products {
     brand: string;
     description: string;
     gallery1: boolean | null;
-    gallery2: boolean | null;
-    gallery3: boolean | null;
     id: number;
     image: string;
     price: number;
@@ -34,6 +32,7 @@ const Transactions: React.FC = () => {
 
     const [pages, setPages] = useState<number>(0);
     const {username} = useContext(AuthContext);
+
 
     useEffect(() => {
         try{
@@ -66,12 +65,13 @@ const Transactions: React.FC = () => {
         setLoading(false);
     }, [transactions])
 
+
     const selectPage = (num: number) => {
         if(products?.length !== 5 && num > 0) return null;
         if(pages + num >= 0) {setPages(current_page => current_page + num)}
     }
 
-    console.log(transactions)
+    console.log(products)
 
     return(
         <div className = "my-account-content">
@@ -93,9 +93,17 @@ const Transactions: React.FC = () => {
                                     <img onClick = {() => selectPage(5)} className = "mb-3 ms-3" width = "32" src = {rightArrow} alt = "left-arrow" />
                                         
                                     <div className = "mt-3">
-                                        {
-                                            products?.map((item, index: number) => <SingleTransaction transaction = {item} key = {index} product_id = {item[1]["id"]} />)
-                                        }   
+                                        {Array.isArray(products) ? (
+                                            products.map((item, index: number) => (
+                                                <SingleTransaction
+                                                    transaction={item}
+                                                    key={index}
+                                                    product_id={item[1]?.id}
+                                                />
+                                            ))
+                                        ) : (
+                                            <p>No products available.</p>
+                                        )} 
                                     </div>
                                 </>  
                             :

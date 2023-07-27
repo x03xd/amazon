@@ -70,9 +70,13 @@ const Lobby: React.FC = () => {
                 },
                 body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
             });
-            const rj = await response.json()
+            const responseStatus = await response.json();
+            console.log(responseStatus);
+
+            if(responseStatus?.status) alert("Produkt pomyślnie dodano do koszyka");
+
         }
-        catch(error){console.log("Error: ", error)}
+        catch(error){alert("Produkt nie może zostać dodany do koszyka")}
     }
 
     return(

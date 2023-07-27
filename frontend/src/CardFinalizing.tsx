@@ -17,11 +17,11 @@ const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
     const {username} = React.useContext(AuthContext);
     const navigate = useNavigate();
     
+    console.log(buyButton, buyButton?.size)
 
     const finalizeOrder = async () => {
 
-        if(!Object.keys(buyButton)){
-
+        if(buyButton && buyButton?.size === undefined){
             try{
                 await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
                     method:'POST',
@@ -33,7 +33,7 @@ const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
                 navigate("/")
             }
 
-            catch(error){console.error('Error updating token:', error);}
+            catch(error){alert("Zamówienie nie może zostac sfinalizowane")}
         }
     }
 

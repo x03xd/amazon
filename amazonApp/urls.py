@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('avg-rate/', views.CountAvgRate.as_view()),
     path('rate-product/<id>/<pid>/<rate>', views.RateProduct.as_view()),
+    
     path("delete-rate/", views.DeleteRate.as_view()),
     path("edit-username/<id>", views.EditUsername.as_view()),
     path("edit-email/<id>", views.EditEmail.as_view()),

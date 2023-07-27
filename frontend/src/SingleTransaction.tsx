@@ -29,10 +29,12 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
     const {username} = useContext(AuthContext);
     const [rate, setRate] = useState<number | undefined>()
 
+    console.log(product_id)
+
     useEffect(() => {
 
         try{
-            fetch(`http://127.0.0.1:8000/api/rate-product/${username?.user_id}/${product_id}/${null}`)
+            fetch(`http://127.0.0.1:8000/api/rate-product/${username?.user_id}/${product_id}/${rate}`)
             .then(response => response.json())
             .then(result => setRate(result));
         }
@@ -53,6 +55,7 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
             .then(response => response.json())
             .then(result => (setRate(result), window.location.reload()))
         }
+        
 
         catch(error){console.log("Error: ", error)}
     }
@@ -80,11 +83,11 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
                 
             <div className = "single-transaction-card-content">
                 <div>
-                    <img alt = "product" src = {transaction[1]["image"]} loading = "lazy" />
+                    <img alt = "product" src = {transaction[1]?.image} loading = "lazy" />
                 </div>
                 
                 <div>
-                    <span>{transaction[1]["description"]}</span> <br/>
+                    <span>{transaction[1]?.description}</span> <br/>
                 </div>
 
                 <div>

@@ -106,7 +106,7 @@ class ProcessAPI(APIView):
         try:
             product_id = request.data.get("product_id")
             user_id = request.data.get("user_id")
-            quantity = int(request.data.get("quantity"), 0)
+            quantity = int(request.data.get("quantity", 0))
 
             try: 
                 product = Product.objects.get(id=product_id) 
@@ -527,7 +527,7 @@ class EditEmail(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
         
-
+import json
 
 class FinalizeOrder(APIView):
 
@@ -535,25 +535,33 @@ class FinalizeOrder(APIView):
 
         try:
             user = request.data.get("user")
-            quantity = request.data.get("quantity")
             location = request.data.get("location")
             product_id = request.data.get("product_id")
+            quantity = request.data.get("quantity")
+
+            try:
+                user = User.objects.get(id = user)
+                
+            except User.DoesNotExist:
+                return Response({"error": "Object does not exist"}, status=404) 
 
             if location == "cart":
-                cart_items = CartItem.objects.filter(cart__owner__id = user)
+
+                cart_items = CartItem.objects.filter(cart__owner = user)
                 serializer = CartItemSerializer(cart_items, many=True)
                 bought = []
 
                 for record in serializer.data:
-                    product = Product.objects.get(title=record["product"])
+                    product = Product.objects.get(id=record["product"])
 
                     if product.quantity >= record["quantity"]:
                         bought += [record["product"]] * record["quantity"]
                     else:
                         raise Exception("User's input greater than product's quantity")
-
+                    
                 cart_items.delete()
  
+    
             elif location == "lobby":
                 bought = product_id * int(quantity)
                 product = Product.objects.get(id=product_id[0])
@@ -563,12 +571,7 @@ class FinalizeOrder(APIView):
 
                 else:
                     raise Exception("User's input greater than product's quantity")
-
-            try:
-                user = User.objects.get(id = user)
-
-            except User.DoesNotExist:
-                return Response({"error": "Object does not exist"}, status=404)    
+   
 
             Transaction.objects.create(
                 bought_by = user,
@@ -585,7 +588,9 @@ class FinalizeOrder(APIView):
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
+        
             
+
 
 class TransactionsAPI(ListAPIView):
     serializer_class = TransactionSerializer
@@ -603,11 +608,10 @@ class TransactionsAPI(ListAPIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
     
-        
 class ProductsFromTransactions(APIView):
 
     def post(self, request):
-        table, lst = {}, []
+        table, lst_f = {}, []
 
         try:
             pages = request.data.get("pages")
@@ -624,13 +628,13 @@ class ProductsFromTransactions(APIView):
             for (index, date), count in table.items():
                 product = Product.objects.get(id=index)
                 serializer = ProductSerializer(product)
-                lst.append((count, serializer.data, date))
+                lst_f.append((count, serializer.data, date))
                 counter += 1
 
                 if counter == end:
                     break
 
-            return Response(lst)
+            return Response(lst_f)
 
         except Product.DoesNotExist:
             return JsonResponse({"error": "Object does not exist"}, status=404)
@@ -672,6 +676,8 @@ class RateProduct(APIView):
             
             except Product.DoesNotExist:
                 return JsonResponse({"error": "Object does not exist"}, status=404)
+            
+            
             
 
             rate_of_user, created = Rate.objects.get_or_create(
