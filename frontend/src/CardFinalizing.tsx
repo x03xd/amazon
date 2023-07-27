@@ -23,17 +23,26 @@ const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
 
         if(buyButton && buyButton?.size === undefined){
             try{
-                await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
+                const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
                     method:'POST',
                     headers:{
                         'Content-Type':'application/json'
                     },
                     body:JSON.stringify({"location": "cart", "user": username?.user_id})
                 })
-                navigate("/")
+                const responseJSON = await response.json()
+
+                if(responseJSON?.status){
+                    navigate("/")
+                }
+
+                else{
+                    alert(responseJSON)
+                }
+
             }
 
-            catch(error){alert("Zamówienie nie może zostac sfinalizowane")}
+            catch(error){alert('An error occurred. Please try again later.');}
         }
     }
 

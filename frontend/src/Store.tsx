@@ -101,9 +101,6 @@ const Store: React.FC = () => {
    
         }, [])
 
-        console.log(queryLinkPart)
-
-
         useEffect(() => {
             for(let i: number = 0; i <= [...new Set(prices)].length - 1; i++){
                 setPricesFalseFilled(ar2 => [...ar2, false])
@@ -186,7 +183,6 @@ const Store: React.FC = () => {
             const updatedUrl = baseUrl + '?' + modifiedQueryString;
             window.location.href = updatedUrl;
         }
-
 
         useEffect(() => {
             aLoop:

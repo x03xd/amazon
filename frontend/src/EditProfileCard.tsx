@@ -35,7 +35,7 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
         e.preventDefault();
         
         try{
-            await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
                 method: 'PATCH',
                 credentials: 'include', 
                 headers: {
@@ -43,10 +43,18 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
                 },
                 body: JSON.stringify({"change": inputValue.current?.value})
             })
-            logout()
+            const responseJSON = await response.json();
+            
+            if(responseJSON?.status){
+                logout()
+            }
+
+            else{
+                alert(responseJSON)
+            }
 
         }
-        catch(error){console.log(`Error: ${error}`)}
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
     console.log(access)

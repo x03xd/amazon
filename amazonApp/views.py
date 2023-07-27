@@ -63,10 +63,10 @@ class CartAPI(APIView):
             return JsonResponse({"cart_items": serializer.data, "sum": sum_['total_price_sum']})
 
         except CartItem.DoesNotExist:
-            return JsonResponse({"error": "Object does not exist"}, status=404)
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
-            return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
 
     def patch(self, request, *args, **kwargs):
@@ -92,10 +92,10 @@ class CartAPI(APIView):
             return Response(product_id)
         
         except CartItem.DoesNotExist as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
         
         except Exception as e:
-            return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
 
@@ -112,18 +112,18 @@ class ProcessAPI(APIView):
                 product = Product.objects.get(id=product_id) 
  
             except Product.DoesNotExist:
-                return JsonResponse({"error": "Object does not exist"}, status=404)
+                return Response("Object does not exist", status=404)
             
             if quantity > product.quantity:
-                raise ValueError({"status": False, "info": "Quantity exceeds available stock"})
+                return Response("Quantity exceeds available stock")
 
             if 10 > quantity < 1:
-                raise ValueError({"status": False, "info": "Quantity is not in range 1-10"})
+                return Response("Quantity is not in range 1-10")
 
             total_quantity = CartItem.objects.filter(cart__owner__id=user_id).aggregate(Sum('quantity'))['quantity__sum']
 
             if isinstance(total_quantity, int) and total_quantity + quantity > 10:
-                raise ValueError({"status": False, "info": "Maximum quantity of single item exceeded"})
+                return Response("Maximum quantity of single item exceeded")
 
             cart = Cart.objects.get(owner__id=user_id)  
 
@@ -144,10 +144,10 @@ class ProcessAPI(APIView):
             return Response({"status": True})
 
         except Product.DoesNotExist as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
         
         except Exception as e:
-            return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
         
 
@@ -168,10 +168,10 @@ class RemoveItemCart(APIView):
 
 
         except Product.DoesNotExistc as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
-            return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
 
@@ -185,10 +185,10 @@ class CategoriesAPI(ListAPIView):
             return queryset
 
         except Category.DoesNotExist:
-            return JsonResponse({'authenticated': False, "error": "Object does not exist"}, status=404)
+            return Response({'authenticated': False, "error": "Object does not exist"}, status=404)
 
         except Exception as e:
-            return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
 
 class LoginAPI(APIView):
@@ -201,10 +201,10 @@ class LoginAPI(APIView):
             return JsonResponse({'authenticated': True, 'email': user_object.email, 'username': username})
         
         except User.DoesNotExist as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
         
         except Exception as e:
-            return JsonResponse({'authenticated': False, "error": "Internal Server Error", "detail": str(e)}, status=500)
+            return Response({'authenticated': False, "error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
 
@@ -275,7 +275,6 @@ class ProductsBySubsAPI(generics.ListAPIView):
             
         except ValueError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 
@@ -445,7 +444,7 @@ class AccessToChangeStatus(APIView):
             elif user.password_change_allowed < today_date:
                 status_password = True
 
-            return JsonResponse({
+            return Response({
                                     "username": [status_username, user.username_change_allowed],
                                     "email": [status_email, user.email_change_allowed],
                                     "password": [status_password, user.password_change_allowed]
@@ -453,10 +452,10 @@ class AccessToChangeStatus(APIView):
 
 
         except User.DoesNotExist:
-            return JsonResponse({"error": "Object does not exist"}, status=404)
+            return Response({"error": "Object does not exist"}, status=404)
 
         except Exception as e:
-            return JsonResponse({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
 
@@ -473,10 +472,10 @@ class EditUsername(APIView):
             today_date = date.today()
 
             if user.username_change_allowed >= today_date:
-                raise Exception("You cannot change username")
+                return Response("You cannot change username")
 
             if User.objects.filter(email=change).exists():
-                raise Exception("User with passed username already exists")
+                return Response("User with passed username already exists")
             
             user.username = change
 
@@ -485,10 +484,10 @@ class EditUsername(APIView):
 
             user.save()
 
-            return JsonResponse({"status": True})
+            return Response({"status": True})
 
         except User.DoesNotExist as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -506,10 +505,10 @@ class EditEmail(APIView):
             today_date = date.today()
 
             if user.email_change_allowed >= today_date:
-                raise Exception("You cannot change email")
+                return Response("You cannot change email")
 
             if User.objects.filter(email=change).exists():
-                raise Exception("User with passed email already exists")
+                return Response("User with passed email already exists")
             
             user.email = change
 
@@ -518,16 +517,16 @@ class EditEmail(APIView):
 
             user.save()
 
-            return JsonResponse({"status": True})
+            return Response({"status": True})
 
         except User.DoesNotExist as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
         
-import json
+
 
 class FinalizeOrder(APIView):
 
@@ -543,7 +542,7 @@ class FinalizeOrder(APIView):
                 user = User.objects.get(id = user)
                 
             except User.DoesNotExist:
-                return Response({"error": "Object does not exist"}, status=404) 
+                return Response("Object does not exist", status=404) 
 
             if location == "cart":
 
@@ -556,30 +555,36 @@ class FinalizeOrder(APIView):
 
                     if product.quantity >= record["quantity"]:
                         bought += [record["product"]] * record["quantity"]
+                        product.quantity -= record["quantity"]
                     else:
-                        raise Exception("User's input greater than product's quantity")
+                        return Response("User's input greater than product's quantity")
+                    
+                    product.save()
                     
                 cart_items.delete()
  
     
             elif location == "lobby":
+            
                 bought = product_id * int(quantity)
                 product = Product.objects.get(id=product_id[0])
 
-                if product.quantity >= len(bought):
-                    product.quantity -= len(bought)
+
+                if product.quantity >= int(quantity):
+                    product.quantity -= int(quantity)
+                    product.save()
 
                 else:
-                    raise Exception("User's input greater than product's quantity")
-   
+                    return Response("User's input greater than product's quantity")
+
 
             Transaction.objects.create(
                 bought_by = user,
-                bought_products = bought,
+                bought_products = [],
                 date = datetime.now().date()
             )
 
-            return Response("The user's cart has been cleared and transaction has been saved")
+            return Response({"status": True})
                 
 
         except Cart.DoesNotExist:
@@ -602,7 +607,7 @@ class TransactionsAPI(ListAPIView):
             return queryset
 
         except Transaction.DoesNotExist:
-            return JsonResponse({'authenticated': False, "error": "Object does not exist"}, status=404)
+            return Response({'authenticated': False, "error": "Object does not exist"}, status=404)
         
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -614,6 +619,7 @@ class ProductsFromTransactions(APIView):
         table, lst_f = {}, []
 
         try:
+
             pages = request.data.get("pages")
             lst = request.data.get("lst")
 
@@ -637,7 +643,7 @@ class ProductsFromTransactions(APIView):
             return Response(lst_f)
 
         except Product.DoesNotExist:
-            return JsonResponse({"error": "Object does not exist"}, status=404)
+            return Response({"error": "Object does not exist"}, status=404)
         
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -669,17 +675,14 @@ class RateProduct(APIView):
                 user = User.objects.get(id = self.kwargs.get("id"))
 
             except User.DoesNotExist:
-                return JsonResponse({"error": "Object does not exist"}, status=404)
+                return Response({"error": "Object does not exist"}, status=404)
             
             try:
                 product = Product.objects.get(id = self.kwargs.get("pid"))
             
             except Product.DoesNotExist:
-                return JsonResponse({"error": "Object does not exist"}, status=404)
+                return Response({"error": "Object does not exist"}, status=404)
             
-            
-            
-
             rate_of_user, created = Rate.objects.get_or_create(
                 rated_by = user,
                 rated_products = product,
@@ -690,7 +693,7 @@ class RateProduct(APIView):
                 rate_of_user.rate = self.kwargs.get("rate")
                 rate_of_user.save()
 
-            return Response("The rate for the specific item has been changed/created")
+            return Response({"status": True})
     
 
         except Exception as e:
@@ -709,7 +712,7 @@ class DeleteRate(APIView):
             rate.delete()
 
         except Rate.DoesNotExist:
-            return JsonResponse({"error": "Object does not exist"}, status=404)
+            return Response({"error": "Object does not exist"}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -727,7 +730,7 @@ class BrandsByCategoriesAPI(APIView):
             return Response(serializer.data)
 
         except Brand.DoesNotExist:
-            return JsonResponse({"error": "Object does not exist"}, status=404)
+            return Response({"error": "Object does not exist"}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -746,7 +749,7 @@ class BrandsByIdAPI(APIView):
 
 
         except Brand.DoesNotExist as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -762,13 +765,13 @@ class EditPassword(APIView):
             password2 = request.data.get("password2")
 
             if password != password2:
-                raise ValidationError("Passwords do not match.")
+                return Response("Passwords do not match.")
 
             user = User.objects.get(id = self.kwargs.get("id"))
             today_date = date.today()
 
             if user.password_change_allowed >= today_date:
-                raise Exception("You cannot change password")
+                return Response("You cannot change password")
 
             validate_password(password)
 
@@ -780,7 +783,7 @@ class EditPassword(APIView):
 
             user.save()
 
-            return JsonResponse({"status": True})
+            return Response({"status": True})
 
         except User.DoesNotExist as e:
             return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import adress from './images/loc1.png';
 import padlock2 from './images/padlock2.png';
 import CSRFToken from './CSRFToken';
@@ -12,7 +12,6 @@ const Lobby: React.FC = () => {
     let {username} = useContext(AuthContext)
     const [brand, setBrand] = useState<string>("");
     const location = useLocation();
-
 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/api/brand/${location.state.brand}`)
@@ -40,21 +39,25 @@ const Lobby: React.FC = () => {
         statusColor = "text-success";
     }
 
+    console.log(location.state.id_product)
 
     const finalizeOrderLobby = async (product_id: number) => {
         try{
-            await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
                 },
                 body:JSON.stringify({"location": "lobby", "product_id": [location.state.id_product], "quantity": selectedValue, "user": username?.user_id})
             })
+            const responseJSON = await response.json()
+
+            if(responseJSON?.status) alert(`Pomyślnie kupiono ${location.state.title}`)
+
+            else alert(responseJSON)
         }
 
-        catch (error) {
-            console.error('Error updating token:', error);
-        }
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
     
@@ -70,13 +73,16 @@ const Lobby: React.FC = () => {
                 },
                 body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
             });
-            const responseStatus = await response.json();
-            console.log(responseStatus);
+            const responseJSON = await response.json();
 
-            if(responseStatus?.status) alert("Produkt pomyślnie dodano do koszyka");
+            console.log(responseJSON)
+
+            if(responseJSON?.status) alert("Produkt pomyślnie dodano do koszyka");
+
+            else alert(responseJSON)
 
         }
-        catch(error){alert("Produkt nie może zostać dodany do koszyka")}
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
     return(
