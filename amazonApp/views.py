@@ -4,7 +4,6 @@ from .serializers import ProductSerializer, CategorySerializer, RateSerializer, 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http.response import JsonResponse
-import json
 from rest_framework.generics import ListAPIView
 from django.db.models import Avg, Sum
 from datetime import datetime, timedelta, date
@@ -159,8 +158,6 @@ class RemoveItemCart(APIView):
     def post(self, request):
   
         try:
-            json_data = json.load(request)
-
             username = request.data.get("username")
             item_id = request.data.get("item_id")
 

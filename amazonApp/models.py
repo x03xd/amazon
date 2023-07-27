@@ -47,8 +47,7 @@ class Product(models.Model):
 
 class User(AbstractUser):
     email = models.EmailField(max_length=30, null=True)
-    coins = models.IntegerField(null=True, blank = True)
-    
+
     username_change_allowed = models.DateField(null=True, blank=True)
     email_change_allowed = models.DateField(null=True, blank=True)
     password_change_allowed = models.DateField(null=True, blank=True)
