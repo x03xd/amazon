@@ -6,6 +6,7 @@ import AuthContext from "./AuthenticationContext";
 
 const PasswordChange: React.FC = () => {
     
+    const currentRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const password2Ref = useRef<HTMLInputElement>(null);
     
@@ -16,7 +17,7 @@ const PasswordChange: React.FC = () => {
     const {username, logout} = useContext(AuthContext);
     const navigate = useNavigate(); 
 
-    async function changePassword(e: any){
+    async function changePassword(e: React.FormEvent){
         e.preventDefault();
 
         if(passwordRef.current?.value !== password2Ref.current?.value){
@@ -32,11 +33,11 @@ const PasswordChange: React.FC = () => {
                     headers: {
                         'Content-Type':'application/json',
                     },
-                    body: JSON.stringify({"password":passwordRef.current?.value, "password2":password2Ref.current?.value})
+                    body: JSON.stringify({"current": currentRef.current?.value, "password":passwordRef.current?.value, "password2":password2Ref.current?.value})
                 })
-                const jsonResponse = await response.json()
+                const responseJSON = await response.json()
 
-                if(jsonResponse?.status){
+                if(responseJSON?.status){
                     setAlertStyle("hidden");
                     logout()
                     navigate("/")
@@ -44,12 +45,12 @@ const PasswordChange: React.FC = () => {
     
                 else {
                     setAlertStyle("active");
-                    setAlertText(jsonResponse?.detail);
+                    setAlertText(responseJSON);
                 }
 
             }
         
-            catch(error){console.log('Error:', error)}
+            catch(error){alert('An error occurred. Please try again later.')}
         }
     }
 
@@ -68,6 +69,9 @@ const PasswordChange: React.FC = () => {
 
                     <form onSubmit = {changePassword} method = "PATCH">
                         <CSRFToken />
+                        <span>Obecne hasło</span>
+                        <input type = "password" ref = {currentRef} defaultValue = "" className = "text-input login" /> <br/>
+
                         <span>Podaj nowe hasło</span>
                         <input type = "password" ref = {passwordRef} defaultValue = "" className = {`text-input login ${dangerBorder}`} /> <br/>
 

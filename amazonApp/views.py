@@ -472,7 +472,7 @@ class EditUsername(APIView):
             today_date = date.today()
 
             if user.username_change_allowed >= today_date:
-                return Response("You cannot change username")
+                return Response(f"You cannot change username till {user.username_change_allowed}")
 
             if User.objects.filter(email=change).exists():
                 return Response("User with passed username already exists")
@@ -505,7 +505,7 @@ class EditEmail(APIView):
             today_date = date.today()
 
             if user.email_change_allowed >= today_date:
-                return Response("You cannot change email")
+                return Response(f"You cannot change email till {user.username_change_allowed}")
 
             if User.objects.filter(email=change).exists():
                 return Response("User with passed email already exists")
@@ -761,17 +761,22 @@ class EditPassword(APIView):
     def patch(self, request, *args, **kwargs):
 
         try:
+            current = request.data.get("current")
             password = request.data.get("password")
             password2 = request.data.get("password2")
 
+            user = User.objects.get(id = self.kwargs.get("id"))
+
+            if current != user.password:
+                return Response(f"Your current password is not correct")
+
             if password != password2:
                 return Response("Passwords do not match.")
-
-            user = User.objects.get(id = self.kwargs.get("id"))
+            
             today_date = date.today()
 
             if user.password_change_allowed >= today_date:
-                return Response("You cannot change password")
+                return Response(f"You cannot change password till {user.username_change_allowed}")
 
             validate_password(password)
 
