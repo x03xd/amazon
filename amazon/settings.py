@@ -198,3 +198,4 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+LOGIN_URL = 'token_obtain_pair'

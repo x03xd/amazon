@@ -1,6 +1,5 @@
 import React, { useRef, useContext } from 'react';
 import AuthContext from "./AuthenticationContext";
-import CSRFToken from './CSRFToken';
 import blocked_padlock from './images/password.png'
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +11,7 @@ interface EditProfileCardProps {
     link: string;
     accessLink: string | null;
     access: AccessToChangeUsernameStateProp | null
+    method: string
 }
 
 
@@ -21,15 +21,20 @@ interface AccessToChangeUsernameStateProp {
     password: [boolean, string];
 }
 
-const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, buttonValue, id, accessLink, access }) => {
+const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, buttonValue, id, accessLink, access, method }) => {
 
     const inputValue = useRef<HTMLInputElement>(null)
     const {username, logout} = useContext(AuthContext);
     const navigate = useNavigate();
 
+    console.log(access)
+
     const redirectToPasswordChange = () => {
-        navigate("password/")
+        if(!access?.password[0]) alert(`You cannot change password till ${!access?.password[1]}`)
+
+        else navigate("password/")
     }
+
 
     const submitChange = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -50,19 +55,18 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
             }
 
             else{
-                alert(responseJSON)
+                alert(responseJSON?.error)
             }
 
         }
         catch(error){alert('An error occurred. Please try again later.');}
     }
 
-    console.log(access)
+
 
     return(
         <div className = "edit-profile-card">
-            <form method = "POST">
-                <CSRFToken />
+            <form method = {method}>
                 
                 <div className = "edit-profile-card-content">
                     <span>{header}</span> <br/>
@@ -95,7 +99,7 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
                     : null}
 
 
-                    {link === "edit-password" && !access?.password[0] ? 
+                    {link === "change-password" && !access?.password[0] ? 
                     <>
                         <img src = {blocked_padlock} alt = "blocked" loading = "lazy" /> 
                         <span>Do: {access?.password[1]}</span>

@@ -36,6 +36,7 @@ const PasswordChange: React.FC = () => {
                     body: JSON.stringify({"current": currentRef.current?.value, "password":passwordRef.current?.value, "password2":password2Ref.current?.value})
                 })
                 const responseJSON = await response.json()
+                console.log(responseJSON)
 
                 if(responseJSON?.status){
                     setAlertStyle("hidden");
@@ -45,7 +46,7 @@ const PasswordChange: React.FC = () => {
     
                 else {
                     setAlertStyle("active");
-                    setAlertText(responseJSON);
+                    setAlertText(responseJSON?.error);
                 }
 
             }

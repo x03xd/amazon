@@ -13,7 +13,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from decimal import Decimal
 from django.contrib.auth.models import update_last_login
 
@@ -108,6 +108,12 @@ class ProcessAPI(APIView):
             user_id = request.data.get("user_id")
             quantity = int(request.data.get("quantity", 0))
 
+            try:
+                user = User.objects.get(id=user_id)
+
+            except User.DoesNotExist as e:
+                return Response({"error": "Error message", "detail": str(e)}, status=404)
+
             try: 
                 product = Product.objects.get(id=product_id) 
  
@@ -120,12 +126,16 @@ class ProcessAPI(APIView):
             if 10 > quantity < 1:
                 return Response("Quantity is not in range 1-10")
 
-            total_quantity = CartItem.objects.filter(cart__owner__id=user_id).aggregate(Sum('quantity'))['quantity__sum']
+            total_quantity = CartItem.objects.filter(cart__owner=user).aggregate(Sum('quantity'))['quantity__sum']
 
             if isinstance(total_quantity, int) and total_quantity + quantity > 10:
                 return Response("Maximum quantity of single item exceeded")
 
-            cart = Cart.objects.get(owner__id=user_id)  
+            try:
+                cart = Cart.objects.get(owner__id=user_id)  
+
+            except Cart.DoesNotExist:
+                return Response("Object does not exist", status=404)    
 
             try:
                 obj = CartItem.objects.get(cart=cart, product=product)
@@ -143,9 +153,6 @@ class ProcessAPI(APIView):
 
             return Response({"status": True})
 
-        except Product.DoesNotExist as e:
-            return Response({"error": "Error message", "detail": str(e)}, status=404)
-        
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
@@ -472,10 +479,10 @@ class EditUsername(APIView):
             today_date = date.today()
 
             if user.username_change_allowed >= today_date:
-                return Response(f"You cannot change username till {user.username_change_allowed}")
+                return Response({"error": f"You cannot change username till {user.username_change_allowed}"})
 
-            if User.objects.filter(email=change).exists():
-                return Response("User with passed username already exists")
+            if User.objects.filter(username=change).exists():
+                return Response({"error": "User with passed username already exists"})
             
             user.username = change
 
@@ -505,10 +512,12 @@ class EditEmail(APIView):
             today_date = date.today()
 
             if user.email_change_allowed >= today_date:
-                return Response(f"You cannot change email till {user.username_change_allowed}")
+                return Response({"error": f"You cannot change email till {user.email_change_allowed}"})
 
             if User.objects.filter(email=change).exists():
-                return Response("User with passed email already exists")
+                return Response({"error": "User with passed email already exists"})
+            
+            validate_email(change)
             
             user.email = change
 
@@ -522,8 +531,12 @@ class EditEmail(APIView):
         except User.DoesNotExist as e:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
 
+        except ValidationError as e:
+            return Response({"error": "Email format is not correct", "detail": e.messages}, status=status.HTTP_400_BAD_REQUEST)
+        
         except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            return Response({"error": "An error occurred during user registration", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
         
 
@@ -767,17 +780,19 @@ class EditPassword(APIView):
 
             user = User.objects.get(id = self.kwargs.get("id"))
 
-            if current != user.password:
-                return Response(f"Your current password is not correct")
-
-            if password != password2:
-                return Response("Passwords do not match.")
-            
             today_date = date.today()
 
             if user.password_change_allowed >= today_date:
-                return Response(f"You cannot change password till {user.username_change_allowed}")
+                return Response({"error": f"You cannot change password till {user.username_change_allowed}"})
 
+            password_matches = check_password(current, user.password)
+
+            if not password_matches:
+                return Response({"error": "Your current password is not correct"})
+
+            if password != password2:
+                return Response({"error": "Passwords do not match."})
+            
             validate_password(password)
 
             hashed_password = make_password(password)

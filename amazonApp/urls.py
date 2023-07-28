@@ -30,7 +30,7 @@ urlpatterns = [
     path("delete-rate/", views.DeleteRate.as_view()),
     path("edit-username/<id>", views.EditUsername.as_view()),
     path("edit-email/<id>", views.EditEmail.as_view()),
-    path("edit-password/<id>", views.EditPassword.as_view()),
+    path("change-password/<id>", views.EditPassword.as_view()),
 
     path("finalize-order/", views.FinalizeOrder.as_view()),
     path("transactions/<id>", views.TransactionsAPI.as_view()),
