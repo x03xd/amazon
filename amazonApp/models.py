@@ -11,15 +11,15 @@ date = datetime.now()
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, null=True, db_index=True)
+    name = models.CharField(max_length=100, db_index=True)
 
     def __str__(self):
         return self.name
 
 
 class Brand(models.Model):
-    brand_name = models.CharField(max_length=100, null=True, db_index=True)
-    belongs_to_category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE, db_index=True)
+    brand_name = models.CharField(max_length=100, db_index=True)
+    belongs_to_category = models.ForeignKey(Category, on_delete=models.CASCADE, db_index=True)
 
     def __str__(self):
         return self.brand_name
@@ -27,18 +27,17 @@ class Brand(models.Model):
 
 
 class Product(models.Model):
-    title = models.CharField(max_length=140, null=True, db_index=True)
-    description = models.CharField(max_length=1040, null=True)
-    price = models.FloatField(null=True, db_index=True)
+    title = models.CharField(max_length=140, db_index=True)
+    description = models.CharField(max_length=1040)
+    price = models.FloatField(db_index=True)
 
-    image = models.ImageField(null=True)
-    gallery1 = models.ImageField(null=True, blank=True)
+    image = models.ImageField()
 
-    status = models.BooleanField(null=True, blank=True)
-    quantity = models.PositiveIntegerField(null=True, blank=True)
+    status = models.BooleanField()
+    quantity = models.PositiveIntegerField()
 
-    category_name = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, db_index=True)
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, db_index=True)
+    category_name = models.ForeignKey(Category, on_delete=models.CASCADE, db_index=True)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, db_index=True)
 
     def __str__(self):
         return self.title
@@ -46,11 +45,11 @@ class Product(models.Model):
 
 
 class User(AbstractUser):
-    email = models.EmailField(max_length=30, null=True)
+    email = models.EmailField(max_length=30)
 
-    username_change_allowed = models.DateField(null=True, blank=True)
-    email_change_allowed = models.DateField(null=True, blank=True)
-    password_change_allowed = models.DateField(null=True, blank=True)
+    username_change_allowed = models.DateField(null=True)
+    email_change_allowed = models.DateField(null=True)
+    password_change_allowed = models.DateField(null=True)
 
     groups = models.ManyToManyField(Group, related_name='amazon_users', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='amazon_users', blank=True)
@@ -62,19 +61,19 @@ class User(AbstractUser):
 
 
 class Rate(models.Model):
-    rate = models.IntegerField(null=True, blank=True,
+    rate = models.IntegerField(
         validators=[
             MinValueValidator(1, message="Value must be greater than or equal to 0."),
             MaxValueValidator(5, message="Value must be less than or equal to 5.")
         ])
-    rated_products = models.ForeignKey(Product, null=True, blank=True, on_delete = models.CASCADE)
-    rated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    rated_products = models.ForeignKey(Product, on_delete = models.CASCADE)
+    rated_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 
 class Cart(models.Model):
-    test_name = models.CharField(max_length = 30, null = True)
-    owner = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    test_name = models.CharField(max_length=30)
+    owner = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.owner)
@@ -84,14 +83,14 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items', db_index=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
-    total_price = models.DecimalField(max_digits=8, decimal_places=2, null=True)
+    total_price = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
         return f"{self.cart}, {self.product}, {self.quantity}"
 
 
 class Transaction(models.Model):
-    bought_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, db_index=True)
+    bought_by = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     bought_products = ArrayField(models.IntegerField())
     date = models.DateField()
 

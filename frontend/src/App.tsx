@@ -1,7 +1,7 @@
 import {Outlet, useLocation} from 'react-router-dom';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Modal from './Modal';
 import LeftModal from './LeftModal';
 import  './css_modules/TagsStyling.css';
@@ -62,7 +62,7 @@ const App: React.FC = () => {
         <div className = "main-container">
                 <div className = {`navbar ${unclick}`}>
 
-                    <Navbar x = {overlayStyle} unclick = {unclick} overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} leftModalStyle = {leftModalStyler} unclickableNavbarChild = {unclickableNavbar}/>
+                    <Navbar dropStyle = {overlayStyle} unclick = {unclick} overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} leftModalStyle = {leftModalStyler} unclickableNavbarChild = {unclickableNavbar}/>
                     { paths.map((link, index) => link === path ? <MiniNavbar key = {index} /> : null) }
                     
                         

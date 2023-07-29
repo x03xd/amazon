@@ -14,7 +14,7 @@ export interface NavbarProps {
     leftModalStyle: (style: string) => void;
     unclickableNavbarChild: (style: string) => void;
     unclick?: string;
-    x: string;
+    dropStyle: string;
 }
 
 
@@ -25,7 +25,7 @@ interface Categories {
 
 
 
-const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle, leftModalStyle, unclickableNavbarChild, x }) => {
+const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle, leftModalStyle, unclickableNavbarChild, dropStyle }) => {
 
     const navigate = useNavigate();
 
@@ -46,8 +46,8 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
     
 
     useEffect(() => {
-        if(x === "") setDropdownOptionsStyle("")
-    }, [x])
+        if(dropStyle === "") setDropdownOptionsStyle("")
+    }, [dropStyle])
 
 
     const searchBarHandling = (e: ChangeEvent<HTMLInputElement>) => {
