@@ -11,15 +11,13 @@ interface TransactionsAPI {
     bought_by: number,
 }
 
-interface Products {
+export interface Products {
     brand: string;
     description: string;
-    gallery1: boolean | null;
     id: number;
     image: string;
     price: number;
     quantity: number;
-    status?: boolean | null;
     subcategory_name: number;
     title: string;
 }

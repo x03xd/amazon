@@ -56,13 +56,17 @@ class CartAPI(APIView):
             serializer = CartItemSerializer(cart, many=True)
             
             for cart_item in serializer.data:
-                prod = Product.objects.get(id=cart_item["product"])
-                p_serializer = ProductSerializer(prod)
-                cart_item["product_data"] = p_serializer.data
+                try:
+                    prod = Product.objects.get(id=cart_item["product"])
+                    p_serializer = ProductSerializer(prod)
+                    cart_item["product_data"] = p_serializer.data
+
+                except Product.DoesNotExist:
+                    return Response({"error": "Error message", "detail": str(e)}, status=404)
 
             sum_ = cart.aggregate(total_price_sum=Sum('total_price'))
         
-            return JsonResponse({"cart_items": serializer.data, "sum": sum_['total_price_sum']})
+            return Response({"cart_items": serializer.data, "sum": sum_['total_price_sum']})
 
         except CartItem.DoesNotExist:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
@@ -93,7 +97,7 @@ class CartAPI(APIView):
    
             return Response(product_id)
         
-        except CartItem.DoesNotExist as e:
+        except (CartItem.DoesNotExist, Product.DoesNotExist) as e:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
         
         except Exception as e:
@@ -112,15 +116,10 @@ class ProcessAPI(APIView):
 
             try:
                 user = User.objects.get(id=user_id)
-
-            except User.DoesNotExist as e:
-                return Response({"error": "Error message", "detail": str(e)}, status=404)
-
-            try: 
                 product = Product.objects.get(id=product_id) 
- 
-            except Product.DoesNotExist:
-                return Response("Object does not exist", status=404)
+
+            except (User.DoesNotExist, Product.DoesNotExist) as e:
+                return Response({"error": "Error message", "detail": str(e)}, status=404)
             
             if quantity > product.quantity:
                 return Response("Quantity exceeds available stock")

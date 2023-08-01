@@ -2,18 +2,13 @@ import React, { useRef, useContext } from 'react';
 import AuthContext from "./AuthenticationContext";
 import blocked_padlock from './images/password.png'
 import { useNavigate } from 'react-router-dom';
-import {DataOfOperation} from './EditProfile';
+import {DataOfOperation, AccessToChangeUsernameState} from './EditProfile';
 
 
 interface EditProfileCardProps extends DataOfOperation{
-    access: AccessToChangeUsernameStateProp | null
+    access: AccessToChangeUsernameState | null
 }
 
-interface AccessToChangeUsernameStateProp {
-    username: [boolean, string];
-    email: [boolean, string];
-    password: [boolean, string];
-}
 
 const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, buttonValue, id, accessLink, access, shortcut }) => {
 
@@ -47,8 +42,6 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
         catch(error){alert('An error occurred. Please try again later.');}
     }
 
-    console.log(access && (access[shortcut as keyof AccessToChangeUsernameStateProp]));
-
     return(
         <div className = "edit-profile-card">
             <div className = "edit-profile-card-grid">
@@ -57,7 +50,7 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
                     <span>{header}</span> <br/>
 
                     {
-                        id >= 2 ? <span>{text}</span> : (access && access[shortcut as keyof AccessToChangeUsernameStateProp][0] === false ?
+                        id >= 2 ? <span>{text}</span> : (access && access[shortcut as keyof AccessToChangeUsernameState][0] === false ?
                         <input ref = {inputValue} type = "text" defaultValue = {text || ""} readOnly /> : <input ref = {inputValue} type = "text" defaultValue = {text || ""} />)
                     }
                 </div>

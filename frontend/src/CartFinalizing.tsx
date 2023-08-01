@@ -3,7 +3,7 @@ import AuthContext from "./AuthenticationContext";
 import React from 'react';
 
 interface HashMap {
-    [key: string]: any;
+    [key: string]: boolean;
 }
 
 interface Nums {

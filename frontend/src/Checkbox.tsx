@@ -1,17 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-interface PriceRange {
-    item: {
-        desc: string,
-        range: {start : number, end : number}
-    }
-}
-
-interface BrandsAPI {
-    id: number,
-    brand_name: string,
-    belong_to_category: number
-}
+import {Brands, PriceLimits} from './Store'
 
 
 interface CheckboxProps {
@@ -36,10 +24,11 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
 
     const [items, setItems] = useState<boolean[]>(booleanArray);
     
-    let uniqueFilteredBrands2 = [...new Set(filteredBrands2)];
-    let uniqueFilteredPrices2 = [...new Set(filteredPrices2)];
+    //bylo let
+    const uniqueFilteredBrands2 = [...new Set(filteredBrands2)];
+    const uniqueFilteredPrices2 = [...new Set(filteredPrices2)];
 
-    const [allUniqueContentArray, setAllUniqueContentArray] = useState<PriceRange[] | BrandsAPI[]>(arrayProp); 
+    const [allUniqueContentArray, setAllUniqueContentArray] = useState<PriceLimits[] | Brands[]>(arrayProp); 
 
     useEffect(() => {
         setItems(booleanArray)
@@ -59,8 +48,8 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
     }, [items]);
     
  
-    function isPriceRange(value: BrandsAPI | PriceRange): value is PriceRange {
-        return value !== undefined && (value as PriceRange).item !== undefined;
+    function isPriceRange(value: Brands | PriceLimits): value is PriceLimits {
+        return value !== undefined && (value as PriceLimits).item !== undefined;
     }
       
 
@@ -75,7 +64,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
  
         items.map((item, index: number) => {
 
-            const object = {value: item, nut: nut, id: nut === "c" ? (allUniqueContentArray[index]) : isPriceRange(allUniqueContentArray[index]) ? (allUniqueContentArray[index] as PriceRange).item.range : null}
+            const object = {value: item, nut: nut, id: nut === "c" ? (allUniqueContentArray[index]) : isPriceRange(allUniqueContentArray[index]) ? (allUniqueContentArray[index] as PriceLimits).item.range : null}
 
             localStorage.setItem(nut + index, JSON.stringify(object))
 

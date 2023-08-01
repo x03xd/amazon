@@ -3,9 +3,7 @@ import MyAccountCard from './MyAccountCard';
 import { cardsData, cardsData2, CardData, CardData2 } from "./static_ts_files/myAccountCards";
 
 
-
 const MyAccount : React.FC = () => {
-
 
     return(
         <div className = "my-account-content">

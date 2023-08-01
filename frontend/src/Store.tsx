@@ -30,14 +30,14 @@ interface Rate {
 }
 
 
-interface PriceLimits {
+export interface PriceLimits {
     item: {
         desc: string,
         range: {start : number, end : number}
     }
 }
 
-interface Brands {
+export interface Brands {
     id: number,
     brand_name: string,
     belong_to_category: number
@@ -174,7 +174,7 @@ const Store: React.FC = () => {
             else if(parseFloat(minVal) > parseFloat(maxVal)) alert("The value of min input must be lower than the value of max input")
 
             else{
-                searchParams.set('u', `${aRef.current?.value}-${bRef.current?.value}`);
+                searchParams.set('u', `${parseFloat(minVal)}-${parseFloat(maxVal)}`);
                 const modifiedQueryString = searchParams.toString();
                 const baseUrl = window.location.href.split('?')[0];
                 const updatedUrl = baseUrl + '?' + modifiedQueryString;

@@ -60,7 +60,7 @@ const Lobby: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({'product_id': location.state.id, 'user_id': username?.user_id, "quantity": selectedValue})
+                body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
             });
             const responseJSON = await response.json();
 
@@ -71,6 +71,7 @@ const Lobby: React.FC = () => {
         catch(error){alert('An error occurred. Please try again later.');}
     }
 
+    console.log(location.state)
 
     return(
         <div className = "lobby-content">
@@ -95,7 +96,7 @@ const Lobby: React.FC = () => {
                     </div>
 
                     <div>
-                        <a className = "fw-550" href = "">DARMOWA dostawa </a> <br/>
+                        <a href = "#" className = "fw-550">DARMOWA dostawa </a> <br/>
                     </div>
 
                     <div>
@@ -103,7 +104,7 @@ const Lobby: React.FC = () => {
                     </div>
 
                     <div className = "d-flex align-items-center">
-                        <img src = {adress} alt = "address" loading = "lazy" /> <a className = "" href = "">Wybierz adres dostawy</a>
+                        <img src = {adress} alt = "address" loading = "lazy" /> <a href = "#" className = "">Wybierz adres dostawy</a>
                     </div>
 
                     <div className = "d-flex align-items-center">
@@ -142,7 +143,7 @@ const Lobby: React.FC = () => {
 
                     <div className = "d-flex align-items-center">
                         <img src = {padlock2} alt = "padlock" loading = "lazy"/>
-                        <a className = "ms-1" href = "">Bezpieczna transakcja</a>
+                        <a href = "#" className = "ms-1">Bezpieczna transakcja</a>
                     </div>
 
                     <div>
@@ -151,7 +152,7 @@ const Lobby: React.FC = () => {
 
                     <div>
                         <span>Zasady dotyczące zwrotów:</span> <br/>
-                        <a href = "">Możliwość zwrotu do 31 stycznia 2023</a>
+                        <a href = "#">Możliwość zwrotu do 31 stycznia 2023</a>
                     </div>
 
                 </div>

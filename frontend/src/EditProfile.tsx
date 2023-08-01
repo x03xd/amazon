@@ -2,7 +2,7 @@ import React, {useEffect, useState, useContext} from 'react';
 import AuthContext from "./AuthenticationContext";
 import EditProfileCard from "./EditProfileCard"
 
-interface AccessToChangeUsernameState {
+export interface AccessToChangeUsernameState {
     username: [boolean, string];
     email: [boolean, string];
     password: [boolean, string];

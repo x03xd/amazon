@@ -3,20 +3,7 @@ import { ratingStars } from './static_ts_files/ratingLevels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import AuthContext from "./AuthenticationContext";
-
-
-interface Products {
-    brand: string;
-    description: string;
-    gallery1: boolean | null;
-    id: number;
-    image: string;
-    price: number;
-    quantity: number;
-    status?: boolean | null;
-    subcategory_name: number;
-    title: string;
-}
+import {Products} from './Transactions'
 
 interface SingleTransactionProps {
     transaction: [number, Products, string];
