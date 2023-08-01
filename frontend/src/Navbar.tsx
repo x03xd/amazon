@@ -24,8 +24,7 @@ interface Categories {
 }
 
 
-
-const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle, leftModalStyle, unclickableNavbarChild, dropStyle }) => {
+const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, leftModalStyle, unclickableNavbarChild, dropStyle }) => {
 
     const navigate = useNavigate();
 
@@ -41,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
             .then(result => (setDropdownOptions(result)));
 
         }
-        catch (error){console.error("Error fetching data:", error);}
+        catch (error){}
     }, [])
     
 

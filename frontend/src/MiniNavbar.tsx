@@ -1,5 +1,5 @@
 
-const MiniNavbar = () => {
+const MiniNavbar: React.FC = () => {
 
     return(
         <div className = "mini-navbar">

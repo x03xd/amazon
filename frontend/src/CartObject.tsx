@@ -35,8 +35,6 @@ interface Data {
     product_id : number;
 }
 
-
-
 const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, removeIsPossibleCheck}) => {
   
     let {username} = useContext(AuthContext);
@@ -46,7 +44,6 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
     
     useEffect(() => {
         if(item.product_data.quantity < selectedValue) isPossibleCheck(item.product);
-
         else removeIsPossibleCheck(item.product);
   
     }, [selectedValue])
@@ -65,7 +62,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
             .then(response => response.json())
             .then(result => (setData(result)))  
         }
-        catch(error){console.log("Error: ", error);}
+        catch(error){alert("Item cannot be removed. Try later.");}
     }
 
 
@@ -80,9 +77,9 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
                 body: JSON.stringify({"product_id": item.product, "user_id": username?.user_id, "quantity": selectedValue})
             })
             .then(response => response.json())
-            .then(result => (prev(selectedValue, item.product), console.log(result)))
+            .then(result => prev(selectedValue, item.product))
         }
-        catch(error){console.log("Error: ", error);}
+        catch(error){}
 
     }, [selectedValue])
 
@@ -94,7 +91,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
                 handleAjaxRequest(param);
             }
         }    
-        catch(error){console.log("Error: ", error);}
+        catch(error){}
     }, [data])
 
 

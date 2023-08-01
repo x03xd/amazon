@@ -8,12 +8,12 @@ import yellow1 from './images/yellow1.jpg';
 import yellow2 from './images/yellow2.jpg';
 import yellow3 from './images/yellow3.jpg';
 import yellow4 from './images/yellow4.jpg';
-
 import Banner from './Banner';
+
 
 const Main: React.FC = () => {
 
-    const dlaTwojegoDomu = [
+    const dlaTwojegoDomu: string[][] = [
         [photo1, 'Oczyszczacze powietrza'],
         [photo2, 'Nawilżacze powietrza'],
         [photo3, 'Ogrzewanie'],
@@ -21,13 +21,12 @@ const Main: React.FC = () => {
     ];
 
 
-    const nowyEchoDot = [
+    const nowyEchoDot: string[][] = [
         [yellow1, 'Nowy Echo Dot'],
         [yellow2, 'Kindle Paperwhite'],
         [yellow3, 'Kindle Oasis'],
         [yellow4, 'Fire TV Stick']
     ];
-
 
 
     return(

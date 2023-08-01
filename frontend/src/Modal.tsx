@@ -10,10 +10,10 @@ export interface ModalProps{
     navbarStatus: (style : string) => void;
 }
 
-
 const Modal: React.FC<ModalProps> = ({ className, modalOFF, overlayOFF, navbarStatus}) => {
 
     const navigate = useNavigate();
+    const {logout, username} = useContext(AuthContext);
 
     const navigateTo = (): void => {
         navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
@@ -23,11 +23,8 @@ const Modal: React.FC<ModalProps> = ({ className, modalOFF, overlayOFF, navbarSt
         modalOFF(style);
         overlayOFF(style);
         navbarStatus("");
-
         navigate(location);
     }
-
-    let {logout, username} = useContext(AuthContext);
 
     return(
         <div className = {`login-modal ${className}`}>

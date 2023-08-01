@@ -1,19 +1,13 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation} from 'react-router-dom';
 import React, {useContext} from 'react';
-import CSRFToken from './CSRFToken';
 import Alert from './Alert';
 import AuthContext from "./AuthenticationContext";
 
 
 const Login: React.FC = () => {
 
-    const location = useLocation();
-    const navigate = useNavigate();
     const {loginUser, usernameFilter, username, alertStyle, alertText,} = useContext(AuthContext);
-
-    window.addEventListener('popstate', function(e) {
-        navigate("/");
-    });
+    const location = useLocation();
 
     return(
         <div className = "modal-container-wrapper">
@@ -30,7 +24,6 @@ const Login: React.FC = () => {
                     <p>{username?.email}</p>
 
                     <form onSubmit = {(['/login', '/login/'].includes(location.pathname)) ? usernameFilter : loginUser} method = "POST">
-                        <CSRFToken />
                         <span>{location.state.content}</span>
 
                         <input name = "usernameorpassword" defaultValue = "" className = "text-input login" type = {location.state.type} /> <br/>

@@ -10,7 +10,6 @@ interface MyAccountCardProps {
 }
 
 
-
 const MyAccountCard: React.FC<MyAccountCardProps> = ({ title, image, content, alt, link }) => {
 
     const navigate = useNavigate();
@@ -19,7 +18,6 @@ const MyAccountCard: React.FC<MyAccountCardProps> = ({ title, image, content, al
         navigate(`/account${link}`);
         window.location.reload();
     }
-
 
     if(image != null){
         return(
@@ -37,7 +35,6 @@ const MyAccountCard: React.FC<MyAccountCardProps> = ({ title, image, content, al
             </div>
         )
     }
-
 
     else {
         return(

@@ -29,8 +29,6 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
     const {username} = useContext(AuthContext);
     const [rate, setRate] = useState<number | undefined>()
 
-    console.log(product_id)
-
     useEffect(() => {
 
         try{
@@ -38,7 +36,7 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
             .then(response => response.json())
             .then(result => setRate(result));
         }
-        catch(error){console.log("Error: ", error)}
+        catch(error){}
 
     }, [])
 
@@ -57,7 +55,7 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
         }
         
 
-        catch(error){console.log("Error: ", error)}
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
 
@@ -74,7 +72,7 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
             window.location.reload()
         }
 
-        catch(error){console.log("Error: ", error)}
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
 
@@ -121,8 +119,6 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
 
 
 }
-
-
 
 
 export default SingleTransaction;

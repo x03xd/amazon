@@ -1,17 +1,18 @@
-import { useState, useEffect, useContext } from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import adress from './images/loc1.png';
 import padlock2 from './images/padlock2.png';
-import CSRFToken from './CSRFToken';
 import AuthContext from "./AuthenticationContext";
 import React from 'react';
 
 const Lobby: React.FC = () => {
 
     const [selectedValue, setSelectedValue] = useState<number>(1);
-    let {username} = useContext(AuthContext)
     const [brand, setBrand] = useState<string>("");
+    const {username} = useContext(AuthContext)
+
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/api/brand/${location.state.brand}`)
@@ -22,26 +23,15 @@ const Lobby: React.FC = () => {
     useEffect(() => {
     }, [selectedValue])
 
-    const handleSelectChange = (e: any) => {
-        setSelectedValue(parseInt(e.target.value, 10))
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedValue(parseInt(e.target.value, 10));
     };
 
-    let status = location.state.status
-    let statusColor;
+    window.addEventListener('popstate', function(e: PopStateEvent) {
+        navigate("/s");
+    });
 
-    if(status <= 0){
-        status = "Niedostępny"
-        statusColor = "text-danger";
-    }
-
-    else {
-        status = "Dostępny"
-        statusColor = "text-success";
-    }
-
-    console.log(location.state.id_product)
-
-    const finalizeOrderLobby = async (product_id: number) => {
+    const finalizeOrderLobby = async () => {
         try{
             const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
                 method:'POST',
@@ -51,15 +41,14 @@ const Lobby: React.FC = () => {
                 body:JSON.stringify({"location": "lobby", "product_id": [location.state.id_product], "quantity": selectedValue, "user": username?.user_id})
             })
             const responseJSON = await response.json()
+            console.log(responseJSON)
 
             if(responseJSON?.status) alert(`Pomyślnie kupiono ${location.state.title}`)
-
             else alert(responseJSON)
         }
 
         catch(error){alert('An error occurred. Please try again later.');}
     }
-
     
     async function addToCard(e: React.MouseEvent<HTMLInputElement>){
         e.preventDefault();
@@ -71,26 +60,24 @@ const Lobby: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
+                body: JSON.stringify({'product_id': location.state.id, 'user_id': username?.user_id, "quantity": selectedValue})
             });
             const responseJSON = await response.json();
 
-            console.log(responseJSON)
-
             if(responseJSON?.status) alert("Produkt pomyślnie dodano do koszyka");
-
             else alert(responseJSON)
 
         }
         catch(error){alert('An error occurred. Please try again later.');}
     }
 
+
     return(
         <div className = "lobby-content">
 
             <div className = "lobby-content-gallery mt-5">
                 <div>
-                    <img className = "p-5" height = "450" width = "600" src = {location.state.g1} />
+                    <img src = {location.state.image} alt = "product" loading = "lazy" className = "p-5" height = "450" width = "600" />
                 </div>
 
                 <div>
@@ -116,11 +103,7 @@ const Lobby: React.FC = () => {
                     </div>
 
                     <div className = "d-flex align-items-center">
-                        <img src = {adress} alt = "address" /> <a className = "" href = "">Wybierz adres dostawy</a>
-                    </div>
-
-                    <div>
-                        <span className = {`fs-18 fw-500 ${statusColor}`}>{status}</span>
+                        <img src = {adress} alt = "address" loading = "lazy" /> <a className = "" href = "">Wybierz adres dostawy</a>
                     </div>
 
                     <div className = "d-flex align-items-center">
@@ -142,26 +125,23 @@ const Lobby: React.FC = () => {
 
                     <div className = "lobby-buttons">
                         <form method = "POST">
-                            <CSRFToken />
                             <input onClick = {addToCard} type = "button" id = "add-to-card-button" value = "Dodaj do koszyka"/>
                         </form>
 
                         <form method = "POST">
-                            <CSRFToken />
 
                             {selectedValue <= location.state.quantity
                             ?
-                            <input onClick = {() => finalizeOrderLobby(location.state.id)} className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
+                            <input onClick = {() => finalizeOrderLobby()} className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
                             :
                             <input disabled type = "button" className = "bg-danger" id = "buy-now-button" value = "Nie mamy takiej ilości produktu" />
                             }
-
                             
                         </form>
                     </div>
 
                     <div className = "d-flex align-items-center">
-                        <img src = {padlock2} />
+                        <img src = {padlock2} alt = "padlock" loading = "lazy"/>
                         <a className = "ms-1" href = "">Bezpieczna transakcja</a>
                     </div>
 

@@ -40,7 +40,6 @@ const AuthLayout: React.FC = () => {
                         }       
                     </div>
 
-
                     <div className = "auth-navbar">
                         <div className = "mt-3">
                              <a href = "#">Warunki użytkowania i sprzedaży</a>

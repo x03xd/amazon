@@ -16,8 +16,6 @@ const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
 
     const {username} = React.useContext(AuthContext);
     const navigate = useNavigate();
-    
-    console.log(buyButton, buyButton?.size)
 
     const finalizeOrder = async () => {
 
@@ -32,13 +30,9 @@ const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
                 })
                 const responseJSON = await response.json()
 
-                if(responseJSON?.status){
-                    navigate("/")
-                }
+                if(responseJSON?.status) navigate("/")
 
-                else{
-                    alert(responseJSON)
-                }
+                else alert(responseJSON)
 
             }
 

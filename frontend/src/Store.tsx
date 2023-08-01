@@ -10,14 +10,10 @@ import {priceLimits} from './static_ts_files/priceLimits'
 interface Products {
     brand: string;
     description: string;
-    gallery1: boolean | null;
-    gallery2: boolean | null;
-    gallery3: boolean | null;
     id: number;
     image: string;
     price: number;
     quantity: number;
-    status?: boolean | null;
     category_name: number;
     title: string;
 }
@@ -41,13 +37,11 @@ interface PriceLimits {
     }
 }
 
-
-interface BrandsAPI {
+interface Brands {
     id: number,
     brand_name: string,
     belong_to_category: number
 }
-
 
 
 const Store: React.FC = () => {
@@ -59,7 +53,7 @@ const Store: React.FC = () => {
 
         const [prices, setPrices] = useState<PriceLimits[]>([]);
         const [categories, setCategories] = useState<Categories[]>([]);
-        const [brands, setBrands] = useState<BrandsAPI[]>([]);
+        const [brands, setBrands] = useState<Brands[]>([]);
         const [averageRate, setAverageRate] = useState<Rate[]>([]);
 
         const aRef = useRef<HTMLInputElement>(null);
@@ -68,7 +62,7 @@ const Store: React.FC = () => {
         const [pricesFalseFilled, setPricesFalseFilled] = useState<boolean[]>([]);
         const [brandsFalseFilled, setBrandsFalseFilled] = useState<boolean[]>([]);
 
-        let {q_QueryParam} = useContext(QueryParamsContext);
+        const {q_QueryParam} = useContext(QueryParamsContext);
         const url = window.location.href;
 
         const index = url.indexOf('http://localhost:3000/s');
@@ -91,9 +85,9 @@ const Store: React.FC = () => {
 
                 fetch(`http://127.0.0.1:8000/api/products/${queryLinkPart}`)
                 .then(response => response.json())
-                .then(result => setProducts(result));
+                .then(result => (setProducts(result)));
             }
-            catch (error){console.error("Error fetching data:", error);}
+            catch(error){alert('An error occurred. Please try again later.');}
 
             for(let nums of priceLimits){
                 setPrices(prev => [...prev, nums]);
@@ -106,7 +100,7 @@ const Store: React.FC = () => {
                 setPricesFalseFilled(ar2 => [...ar2, false])
             }
         }, [prices])    
-       
+    
 
         useEffect(() => {        
             for(let i: number = 0; i <= [...new Set(brands)].length - 1; i++){
@@ -114,19 +108,18 @@ const Store: React.FC = () => {
             }
         }, [brands])     
         
-
         function clearQueryString(arg: string){
 
             switch (arg) {
                 case "c":
 
-                    brands.map((item: any, index: number) => {
+                    brands.map((item: Brands, index: number) => {
 
                         let storage = JSON.parse(localStorage.getItem("c" + index) || "");
                         let checkStorage = storage ? storage.value : "";
 
                         if(checkStorage){
-                            let object = {value: false, nut: "c", id: (item["brand_name"] || []) }
+                            const object = {value: false, nut: "c", id: (item["brand_name"] || []) }
                             localStorage.setItem("c" + index, JSON.stringify(object));
                         }
                     
@@ -135,13 +128,13 @@ const Store: React.FC = () => {
                     break;
 
                 case "u":
-                    prices.map((item: any, index: number) => {
+                    prices.map((item: PriceLimits, index: number) => {
 
                         const storage = JSON.parse(localStorage.getItem("u" + index) || "");
                         const checkStorage = storage ? storage.value : "";
 
                         if(checkStorage){
-                            const object = {value: false, nut: "u", id: ([...new Set(prices)] || [])[index] }
+                            const object = {value: false, nut: "u", id: (prices || [])[index] }
                             localStorage.setItem("u" + index, JSON.stringify(object));
                         }
                         
@@ -167,16 +160,30 @@ const Store: React.FC = () => {
             window.location.reload();
         }
 
-
-        function customPrice(): void{
-            searchParams.set('u', `${aRef.current?.value}-${bRef.current?.value}`);
-            const modifiedQueryString = searchParams.toString();
-            const baseUrl = window.location.href.split('?')[0];
-            const updatedUrl = baseUrl + '?' + modifiedQueryString;
-            window.location.href = updatedUrl;
+        function isOnlyNumber(str: string) {
+            return /^[0-9]+$/.test(str);
         }
 
-        function changeQ(qValue: string): void{
+        function customPrice(): void {
+            const minVal: string = aRef.current?.value || "";
+            const maxVal: string = bRef.current?.value || "";
+
+            if(!isOnlyNumber(minVal)) alert("Only positive integers accepted at min input");
+            if(!isOnlyNumber(maxVal)) alert("Only positive integers accepted at max input");
+
+            else if(parseFloat(minVal) > parseFloat(maxVal)) alert("The value of min input must be lower than the value of max input")
+
+            else{
+                searchParams.set('u', `${aRef.current?.value}-${bRef.current?.value}`);
+                const modifiedQueryString = searchParams.toString();
+                const baseUrl = window.location.href.split('?')[0];
+                const updatedUrl = baseUrl + '?' + modifiedQueryString;
+                window.location.href = updatedUrl;       
+            }
+
+        }
+
+        function changeQ(qValue: string): void {
             searchParams.set('q', qValue.toLowerCase());
             const modifiedQueryString = searchParams.toString();
             const baseUrl = window.location.href.split('?')[0];
@@ -249,12 +256,11 @@ const Store: React.FC = () => {
                         </ul>
                     </div>
 
-
-                        <div className = "d-flex align-items-center price-filters">
-                            <input ref = {aRef} className = "" type = "text" placeholder = "Min"/>
-                            <input ref = {bRef} className = "ms-1" type = "text" placeholder = "Max"/>
-                            <button onClick = {customPrice} className = "ms-1 border 0">Szukaj</button>
-                        </div>
+                    <div className = "d-flex align-items-center price-filters">
+                        <input ref = {aRef} className = "" type="number" placeholder = "Min" step="1" />
+                        <input ref = {bRef} className = "ms-1" type="number" placeholder = "Max" step="1" />
+                        <button onClick = {customPrice} className = "ms-1 border 0">Szukaj</button>
+                    </div>
 
                 </div>
 

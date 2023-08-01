@@ -8,8 +8,12 @@ import payment from '.././images/payment.png';
 import contact2 from '.././images/contant_2.png';
 
 
-interface CardData {
-    title: string, image : string, content: string, alt: string, link: string;
+export interface CardData {
+    title: string,
+    image: string,
+    content: string,
+    alt: string,
+    link: string;
 }
 
 interface CardDataArray {
@@ -30,8 +34,10 @@ const cardsData : CardDataArray["array"] = [
 ]
 
 
-interface CardData2 {
-    title: string, content: string, link :string;
+export interface CardData2 {
+    title: string;
+    content: string;
+    link :string;
 }
 
 interface CardDataArray2 {

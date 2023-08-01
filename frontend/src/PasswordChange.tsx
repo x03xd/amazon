@@ -1,6 +1,5 @@
 import {useNavigate} from 'react-router-dom';
 import React, {useContext, useState, useRef} from 'react';
-import CSRFToken from './CSRFToken';
 import Alert from './Alert';
 import AuthContext from "./AuthenticationContext";
 
@@ -36,7 +35,6 @@ const PasswordChange: React.FC = () => {
                     body: JSON.stringify({"current": currentRef.current?.value, "password":passwordRef.current?.value, "password2":password2Ref.current?.value})
                 })
                 const responseJSON = await response.json()
-                console.log(responseJSON)
 
                 if(responseJSON?.status){
                     setAlertStyle("hidden");
@@ -69,14 +67,13 @@ const PasswordChange: React.FC = () => {
                     <p>Zmiana hasła</p>
 
                     <form onSubmit = {changePassword} method = "PATCH">
-                        <CSRFToken />
                         <span>Obecne hasło</span>
                         <input type = "password" ref = {currentRef} defaultValue = "" className = "text-input login" /> <br/>
 
-                        <span>Podaj nowe hasło</span>
+                        <span>Nowe hasło</span>
                         <input type = "password" ref = {passwordRef} defaultValue = "" className = {`text-input login ${dangerBorder}`} /> <br/>
 
-                        <span>*</span>
+                        <span>Nowe hasło*</span>
                         <input type = "password" ref = {password2Ref} defaultValue = "" className = {`text-input login ${dangerBorder}`} /> <br/>
 
                         <input type = "submit" className = "login-button login" value = "Zmień hasło" />

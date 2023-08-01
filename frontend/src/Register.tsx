@@ -1,6 +1,5 @@
 import {useNavigate} from 'react-router-dom';
 import React, {useState, useRef} from 'react';
-import CSRFToken from './CSRFToken';
 import Alert from './Alert';
 
 
@@ -17,6 +16,10 @@ const Register: React.FC = () => {
 
     const navigate = useNavigate();
 
+    const navigateTo = (): void => {
+        navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
+    }
+
     async function submitForm(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault();
             
@@ -24,34 +27,32 @@ const Register: React.FC = () => {
             setDangerBorder("border border-danger")
         }
 
-        else{
+        else setDangerBorder("")
 
-            try{
-                const response = await fetch("http://127.0.0.1:8000/api/registration/", {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type':'application/json',
-                    },
-                    body: JSON.stringify({"email":emailRef.current?.value, "username":usernameRef.current?.value, "password":passwordRef.current?.value, "password2":password2Ref.current?.value})
-                })
-                const jsonResponse = await response.json()
+        try{
+            const response = await fetch("http://127.0.0.1:8000/api/registration/", {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify({"email":emailRef.current?.value, "username":usernameRef.current?.value, "password":passwordRef.current?.value, "password2":password2Ref.current?.value})
+            })
+            const responseJSON = await response.json()
 
-                if(jsonResponse?.status){
-                    setAlertStyle("hidden");
-                    navigate("/")
-                }
+            if(responseJSON?.status){
+                setAlertStyle("hidden");
+                navigate("/")
+            }
     
-                else {
-                    setAlertStyle("active");
-                    setAlertText(jsonResponse?.email || jsonResponse?.non_field_errors);
-                }
-
+            else {
+                setAlertStyle("active");
+                setAlertText(responseJSON?.detail || responseJSON?.error?.email);
             }
 
-            catch(error){console.log("Error: ", error)}
-
         }
+        catch(error){alert('An error occurred. Please try again later.');}
+
     }
 
 
@@ -67,7 +68,6 @@ const Register: React.FC = () => {
                 <p className = "">Utwórz konto</p>
 
                 <form onSubmit = {submitForm} method = "POST">
-                    <CSRFToken />
                     <span className = "">Nazwa użytkownika</span>
                     <input ref = {usernameRef} name = "username" defaultValue = "" className = "text-input login" type = "text" placeholder = "Imię i nazwisko" /><br/>
 
@@ -75,7 +75,7 @@ const Register: React.FC = () => {
                     <input ref = {emailRef} name = "email" defaultValue = "" className = "text-input login" type = "text"  /><br/>
 
                     <span className = "">Hasło</span>
-                    <input ref = {passwordRef} name = "password" defaultValue = "" className = {`text-input login ${dangerBorder}`} type = "password"  placeholder = "Co najmniej 6 znaków" /><br/>
+                    <input ref = {passwordRef} name = "password" defaultValue = "" className = {`text-input login ${dangerBorder}`} type = "password"  placeholder = "Co najmniej 8 znaków" /><br/>
 
                     <span className = "">Ponownie podaj hasło</span>
                     <input ref = {password2Ref} name = "password2" defaultValue = "" className = {`text-input login ${dangerBorder}`} type = "password"  /><br/>
@@ -84,16 +84,13 @@ const Register: React.FC = () => {
                 </form>
 
                 <div className = "mt-4">
-
                     <input type = "checkbox" /> {'\u00A0'}
-
                     <span>Zaznacz to pole, aby otrzymywać powiadomienia o nowych produktach, pomysłach na prezenty, specjalnych okazjach, promocjach i nie tylko. Wyrażam zgodę na otrzymywanie informacji marketingowych, w tym okazji i promocji, od Amazon za pomocą środków komunikacji elektronicznej takich jak e-mail. Możesz dostosować zakres lub zrezygnować z otrzymywanych od nas wiadomości, korzystając z karty Moje konto lub ustawień powiadomień w swojej aplikacji lub na urządzeniu mobilnym.</span>
-
                 </div>
 
                 <div className = "mt-5">
                     <span>Masz już konto? </span>
-                    <a href = "#">Zaloguj się</a>
+                    <span className = "cursor-finger" onClick = {() => {navigateTo()}}>Zaloguj się</span>
                 </div>
 
             </div>

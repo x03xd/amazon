@@ -1,37 +1,23 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {useNavigate} from 'react-router-dom';
 import {useState, useEffect} from 'react';
-import {useLocation} from 'react-router-dom';
 import React from 'react';
-import { starStyling } from './static_ts_files/starStyling';
-
-
-interface StarStyling {
-    icon: unknown;
-    style: string;
-}
-
-interface StarStylingArray {
-    [index: number]: StarStyling[];
-}
+import { starStyling, StarStyling } from './static_ts_files/starStyling';
 
 
 interface ProductCard {
     item: {
         brand: string;
         description: string;
-        gallery1: boolean | null;
         id: number;
         image: string;
         price: number;
         quantity: number;
-        status?: boolean | null;
         category_name: number;
         title: string;
     };
     rate: number;
 }
-
 
 
 const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
@@ -46,8 +32,8 @@ const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
         .replace(/[\s_-]+/g, '-')
         .replace(/^-+|-+$/g, '')
 
-        navigate(`/l/${slug}`, {state: {title: item.title, id_product: item.id, image: item.image, desc: item.description, price: item.price
-        , g1: item.gallery1, status: item.quantity, brand: item.brand, slug: slug, quantity: item.quantity}})
+        navigate(`/l/${slug}`, {state: {title: item.title, id_product: item.id, image: item.image, desc: item.description, price: item.price,
+        quantity: item.quantity, brand: item.brand, slug: slug}})
     }
 
 
@@ -101,7 +87,7 @@ const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
 
     return(
         <div className = "product-card-content">
-            <div>
+            <div className = "product-card-image-container">
                 <img alt = "product" loading = "lazy" width = "288" height = "234" className = "p-3" src = {item.image} />
             </div>
 
@@ -109,8 +95,12 @@ const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
                 <span onClick = {handleClick} className = "a-text-normal">{item.description.substring(0, 150)}...</span>
             </div>
 
+            <div className = "product-card-status ps-3 pt-1">
+                {item.quantity === 0 ? <span className = "text-danger">Brak</span> : <span className = "text-success">Dostępne</span>}
+            </div>
+
             <div className = "star-rating-container p-3">
-                {starStyling[rateRange].map((item: any, index: number) => (<div key = {index} className = {item.style}><FontAwesomeIcon icon = {item.icon} className = "star-rating-icon-small" /></div>) )}
+                {starStyling[rateRange].map((item: StarStyling, index: number) => (<div key = {index} className = {item.style}><FontAwesomeIcon icon = {item.icon} className = "star-rating-icon-small" /></div>) )}
             </div>
 
             <div className = "ps-3 pb-3">
@@ -122,6 +112,7 @@ const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
     );
 
 }
+
 
 
 export default ProductCard;

@@ -7,7 +7,6 @@ interface PriceRange {
     }
 }
 
-
 interface BrandsAPI {
     id: number,
     brand_name: string,

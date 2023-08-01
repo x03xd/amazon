@@ -179,8 +179,6 @@ const Footer: React.FC = () => {
                                 </span>
                             </div>
 
-
-
                         </div>
 
                         <div></div>

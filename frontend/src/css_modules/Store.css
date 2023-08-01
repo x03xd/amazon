@@ -49,20 +49,15 @@
 }
 
 
-
-
-
 .product-card-content {
     display: grid;
     justify-content: center;
 }
 
+
 div.store-content-products > div span {
     font-size: 1.3rem !important;
 }
-
-
-
 
 
 .product-card-content div:first-child {
@@ -102,7 +97,9 @@ div.store-content-products > div span {
 }
 
 
-
+.product-card-status {
+    font-weight: 600;
+}
 
 
 .price-filters input {

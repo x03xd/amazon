@@ -4,6 +4,7 @@ import React, { useState, useEffect} from 'react';
 import { ratingStars, ratingLevels } from './static_ts_files/ratingLevels';
 
 
+
 const Rating: React.FC = () => {
 
     const [rate, setRate] = useState<number | null>(null);
@@ -17,7 +18,7 @@ const Rating: React.FC = () => {
                 setRate(parsedRate);
             }
             
-            catch (error) {console.error("Error parsing rate from localStorage: ", error)}
+            catch (error) {}
         }
     },[]);
     
@@ -55,7 +56,7 @@ const Rating: React.FC = () => {
 
                 return(
                     <div key = {index} className = "star-rating-container mt-1">
-                        {ratingStars.map((star, key) => {        
+                        {ratingStars.map((star: string[], key) => {        
                     
                             return(
                                 <div onClick = {() => {ratingFilter(row[1]["key"])}} key = {key} className = {ratingStars[key][1]}>

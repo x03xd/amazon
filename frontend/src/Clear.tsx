@@ -45,7 +45,7 @@ const Clear: React.FC<ClearProps> = ({ func, nut, text }) => {
 
     return(
         <div onClick = {() => { clearResults(); }} className = "d-flex align-items-center ms-n2 cursor-pointer">
-            <img src = {arrow} alt = "arrow" /><span className = "cursor-pointer">{text}</span>
+            <img loading = "lazy" src = {arrow} alt = "arrow" /><span className = "cursor-pointer">{text}</span>
         </div>
     );
 

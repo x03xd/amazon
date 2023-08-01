@@ -1,8 +1,6 @@
 
-import React, {useState} from 'react';
+import React from 'react';
 import {Outlet} from 'react-router-dom';
-import MiniNavbar from './MiniNavbar';
-
 
 
 const NarrowGrid : React.FC = () => {

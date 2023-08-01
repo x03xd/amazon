@@ -59,7 +59,7 @@ const Transactions: React.FC = () => {
                 .then(result => setProducts(result));
             }
 
-            catch(error) {console.log("Error: ", error)}
+            catch(error) {}
         }
 
         setLoading(false);
@@ -89,8 +89,8 @@ const Transactions: React.FC = () => {
                             transactions && transactions.length > 0
                             ?
                                 <>
-                                    <img onClick = {() => selectPage(-5)} className = "mb-3 ms-3" width = "32" src = {leftArrow} alt = "left-arrow" />
-                                    <img onClick = {() => selectPage(5)} className = "mb-3 ms-3" width = "32" src = {rightArrow} alt = "left-arrow" />
+                                    <img onClick = {() => selectPage(-5)} className = "mb-3 ms-3" width = "32" src = {leftArrow} alt = "left-arrow" loading = "lazy" />
+                                    <img onClick = {() => selectPage(5)} className = "mb-3 ms-3" width = "32" src = {rightArrow} alt = "left-arrow" loading = "lazy" />
                                         
                                     <div className = "mt-3">
                                         {Array.isArray(products) ? (

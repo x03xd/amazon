@@ -1,9 +1,9 @@
 import card_picture from './images/cardz.svg';
 import React, { useState, useEffect, useContext} from 'react';
-import CardObject from './CardObject';
+import CardObject from './CartObject';
 import AuthContext from "./AuthenticationContext";
 import CSRFToken from './CSRFToken';
-import CardFinalizing from './CardFinalizing';
+import CardFinalizing from './CartFinalizing';
 import CartSideBar from './CartSideBar'
 import { useNavigate } from 'react-router-dom';
 
@@ -85,6 +85,8 @@ const Card: React.FC = () => {
         delete isPossible[val]
     }
 
+    console.log(cardUserGetter)
+
 
     if(cardUserGetter && cardUserGetter.length === 0){
         return(
@@ -93,7 +95,7 @@ const Card: React.FC = () => {
                 <div className = "card-content-left">
                     <div className = "card-content-left-first bg-light">
                         <div className = "card-content-left-first-img">
-                            <img width = "350" src = {card_picture} />
+                            <img width = "350" src = {card_picture} loading = "lazy" alt = "" />
                         </div>
 
                         <div className = "card-content-left-first-content">
@@ -111,7 +113,7 @@ const Card: React.FC = () => {
 
                     </div>
 
-                    <p className = "fs-11">Ceny i dostępność produktów w serwisie Amazon.pl mogą ulec zmianie. Produ,kty sa tymsaczowo przechowywane w koszyku. Wyświetlone w tym miescu cena są zawsze aktualne. <br/> Chesz Chcwsz zrealizować kod z karty podarunkowej lub kod promocyjny? Wpisz kod podusmowując zamówienie</p>
+                    <p className = "fs-11">Ceny i dostępność produktów w serwisie Amazon.pl mogą ulec zmianie. Produkty sa tymsaczowo przechowywane w koszyku. Wyświetlone w tym miescu cena są zawsze aktualne. <br/> Chesz Chcwsz zrealizować kod z karty podarunkowej lub kod promocyjny? Wpisz kod podusmowując zamówienie</p>
                 </div>
 
                 <div className = "card-content-right bg-light">
@@ -144,7 +146,7 @@ const Card: React.FC = () => {
                         <div className = "card-content-objects-inner mt-5 bg-light">
                             {
                             
-                            (cardUserGetter as CartItem[] || []).map((item: any, index: number) => {
+                            (cardUserGetter as CartItem[] || []).map((item: CartItem, index: number) => {
                                 return(
                                     <CardObject
                                         item = {item} key = {index}

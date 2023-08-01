@@ -46,17 +46,16 @@ const LeftModal: React.FC<LeftModalProps> = ({ className }) => {
 
                 <div className = "line-separator"></div>
 
-                <div>
-                    <a>Programy i usługi</a>
-                    <a>Okazje</a>
-                    <a>Karty podarunkowe</a>
-                    <a>Prime Video</a>
-                    <a>Amazon Music</a>
-                    <a>Sprzedawaj na Amazon</a>
-                </div>
+            <div>
+                <a>Programy i usługi</a>
+                <a>Okazje</a>
+                <a>Karty podarunkowe</a>
+                <a>Prime Video</a>
+                <a>Amazon Music</a>
+                <a>Sprzedawaj na Amazon</a>
+            </div>
 
-                <div className = "line-separator"></div>
-
+            <div className = "line-separator"></div>
                 <div>
                     <a>Pomoc i ustawienia</a>
                     <a>Moje konto</a>
@@ -64,7 +63,6 @@ const LeftModal: React.FC<LeftModalProps> = ({ className }) => {
                     <a>Zaloguj sie</a>
 
                 </div>
-
             </div>
 
         </div>

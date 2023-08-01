@@ -5,7 +5,7 @@ from datetime import datetime
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator, MaxValueValidator
-
+from django.core.validators import RegexValidator
 
 date = datetime.now()
 
@@ -28,14 +28,10 @@ class Brand(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=140, db_index=True)
-    description = models.CharField(max_length=1040)
+    description = models.CharField(max_length=1200)
     price = models.FloatField(db_index=True)
-
-    image = models.ImageField()
-
-    status = models.BooleanField()
+    image = models.CharField(max_length=500)
     quantity = models.PositiveIntegerField()
-
     category_name = models.ForeignKey(Category, on_delete=models.CASCADE, db_index=True)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, db_index=True)
 
@@ -44,20 +40,20 @@ class Product(models.Model):
 
 
 
-class User(AbstractUser):
-    email = models.EmailField(max_length=30)
 
+class User(AbstractUser):
+    username = models.CharField(max_length=20, unique=True, validators=[RegexValidator(r'^[a-zA-Z]*$', 'Only letters are allowed.')],)
+    email = models.EmailField(max_length=30, unique=True)
     username_change_allowed = models.DateField(null=True)
     email_change_allowed = models.DateField(null=True)
     password_change_allowed = models.DateField(null=True)
-
     groups = models.ManyToManyField(Group, related_name='amazon_users', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='amazon_users', blank=True)
 
-
     def __str__(self):
         return self.username
-    
+
+
 
 
 class Rate(models.Model):
@@ -65,9 +61,9 @@ class Rate(models.Model):
         validators=[
             MinValueValidator(1, message="Value must be greater than or equal to 0."),
             MaxValueValidator(5, message="Value must be less than or equal to 5.")
-        ])
-    rated_products = models.ForeignKey(Product, on_delete = models.CASCADE)
-    rated_by = models.ForeignKey(User, on_delete=models.CASCADE)
+        ], default = 0, null=True)
+    rated_products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    rated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
 
 
@@ -103,13 +99,6 @@ def create_one_to_one(sender, instance, created, **kwargs):
         instance.save()
 
 
-@receiver(post_save, sender=Product)
-def create_one_to_one(sender, instance, created, **kwargs):
-    if created:
-        rating = Rate.objects.create(rated_products = instance, rate = None)
-        instance.rating = rating
-        instance.save()
-
 
 @receiver(post_save, sender=User)
 def create_one_to_one(sender, instance, created, **kwargs):
@@ -121,5 +110,9 @@ def create_one_to_one(sender, instance, created, **kwargs):
 
 
 
-
-
+@receiver(post_save, sender=Product)
+def create_one_to_one(sender, instance, created, **kwargs):
+    if created:
+        rating = Rate.objects.create(rated_products = instance, rate = None)
+        instance.rating = rating
+        instance.save()

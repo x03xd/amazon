@@ -16,6 +16,8 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password, check_password
 from decimal import Decimal
 from django.contrib.auth.models import update_last_login
+from django.db.models import Q
+import re
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -231,12 +233,26 @@ class UserRegistrationSerializer(serializers.Serializer):
         password = data.get('password')
         password2 = data.get('password2')
         email = data.get('email')
+        username = data.get('username')
 
         if password != password2:
-            raise serializers.ValidationError("Passwords do not match.")
+            raise Exception("Passwords do not match.")
 
-        validate_password(password)
+        if not re.match(r'^[a-zA-Z]*$', username):
+            raise Exception("Username should contain only letters.")
+        
+        if User.objects.filter(username=username).exists():
+            raise Exception("A username with that username already exists")
+        
         validate_email(email)
+
+        if User.objects.filter(email=email).exists():
+            raise Exception("A username with that email already exists")
+        
+        if User.objects.filter(email=email, username=username).exists():
+            raise Exception("A username with that username and email already exists")
+        
+        validate_password(password)
 
         return data
 
@@ -256,7 +272,7 @@ class RegisterSystem(APIView):
             if serializer.is_valid():
                 serializer.save()
                 return Response({"status": True}, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
         except serializers.ValidationError as e:  
@@ -318,9 +334,6 @@ class ProductsAPI(APIView):
             except Rate.DoesNotExist:
                 return Response({"error": "Object does not exist"}, status=404)
 
-            except Exception as e:
-                return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-        
 
         if c is not None:
             multiple_brands_filter = c.split(",")
@@ -331,18 +344,19 @@ class ProductsAPI(APIView):
 
             for index, s in enumerate(multiple_prices_filter):
                 first, second = s.split('-')
-                first_lst.append(float(first))
-                second_lst.append(float(second))
 
+                first = float(first)
+                second = float(second)
+
+                if first > 0 and second > 0:
+                    first_lst.append(first)
+                    second_lst.append(second)
 
         try:
             queryset = Product.objects.all()
 
-        except Rate.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({"error": "Object does not exist"}, status=404)
-        
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
   
         if q is None:
@@ -480,6 +494,9 @@ class EditUsername(APIView):
 
             if user.username_change_allowed >= today_date:
                 return Response({"error": f"You cannot change username till {user.username_change_allowed}"})
+            
+            if not re.match(r'^[a-zA-Z]+$', change):
+                return Response({"error": "Username should contain only letters."})
 
             if User.objects.filter(username=change).exists():
                 return Response({"error": "User with passed username already exists"})
@@ -513,11 +530,11 @@ class EditEmail(APIView):
 
             if user.email_change_allowed >= today_date:
                 return Response({"error": f"You cannot change email till {user.email_change_allowed}"})
+            
+            validate_email(change)
 
             if User.objects.filter(email=change).exists():
                 return Response({"error": "User with passed email already exists"})
-            
-            validate_email(change)
             
             user.email = change
 
@@ -559,7 +576,7 @@ class FinalizeOrder(APIView):
 
             if location == "cart":
 
-                cart_items = CartItem.objects.filter(cart__owner = user)
+                cart_items = CartItem.objects.filter(cart__owner=user)
                 serializer = CartItemSerializer(cart_items, many=True)
                 bought = []
 
@@ -578,10 +595,9 @@ class FinalizeOrder(APIView):
  
     
             elif location == "lobby":
-            
+
                 bought = product_id * int(quantity)
                 product = Product.objects.get(id=product_id[0])
-
 
                 if product.quantity >= int(quantity):
                     product.quantity -= int(quantity)
@@ -593,7 +609,7 @@ class FinalizeOrder(APIView):
 
             Transaction.objects.create(
                 bought_by = user,
-                bought_products = [],
+                bought_products = bought,
                 date = datetime.now().date()
             )
 

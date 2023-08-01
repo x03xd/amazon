@@ -3,17 +3,14 @@ import React, {createContext, useEffect, useState, ChangeEvent} from 'react';
 import jwt_decode from "jwt-decode";
 import {parsedCookies} from './static_ts_files/parsingCookie'
 
-
 interface ContextProvider {
     children: React.ReactNode;
 }
 
-    
 const initialValues = {
     loginUser: () => {},
     usernameFilter: () => {},
     logout: () => {},
-    email: null,
     alertStyle: "",
     alertText: "",
     username: null,
@@ -42,7 +39,6 @@ interface InitialValuesTypes {
     loginUser: (e: ChangeEvent<HTMLFormElement>) => void;
     usernameFilter: (e: ChangeEvent<HTMLFormElement>) => void;
     logout: () => void;
-    email: null | string;
     alertStyle: string;
     alertText: string;
     username: null | UserData;
@@ -57,16 +53,19 @@ export default AuthContext;
 export const AuthProvider = ({children}: ContextProvider) => {
     const navigate = useNavigate();
 
+    window.addEventListener('popstate', function(e: PopStateEvent) {
+        setAlertStyle("hidden")
+        navigate("/");
+    });
+
     const [authToken, setAuthToken] = useState<AuthToken | null>(parsedCookies.authToken ? parsedCookies.authToken : null);
     const [username, setUsername] = useState<UserData | null>(parsedCookies.username ? jwt_decode(parsedCookies.username) : null);
 
-    const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
-    const [email, setEmail] = useState<string>("");
-    
+    const [alertText, setAlertText] = useState<string>("");
 
     const navigateBack = (): void => {
-        navigate("/login/", {state: {type: 'text', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
+        navigate("/login/", {state: {type: 'text', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'Nazwa użytkownika'}});
     }
 
     const navigateToPasswordInput = (): void => {
@@ -76,7 +75,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
     const navigateToHome = (): void => {
         navigate("/");
     }
-
 
     async function usernameFilter(e: ChangeEvent<HTMLFormElement>){
         e.preventDefault();
@@ -91,9 +89,9 @@ export const AuthProvider = ({children}: ContextProvider) => {
                 body: JSON.stringify({'username': e.target.usernameorpassword.value})
             })
             const jsonResponse = await response.json();
-            setUsername(jsonResponse.username)
+            setUsername(jsonResponse?.username)
 
-            if(jsonResponse.authenticated){
+            if(jsonResponse?.authenticated){
                 navigateToPasswordInput();
                 setAlertStyle("hidden");
             }
@@ -107,7 +105,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
             e.target.usernameorpassword.value = "";
         }
 
-        catch(error){console.log('Error:', error)}
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
 
@@ -144,8 +142,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
             e.target.usernameorpassword.value = "";
         }
         
-        catch(error){console.log('Error:', error)}
-
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
 
@@ -179,13 +176,11 @@ export const AuthProvider = ({children}: ContextProvider) => {
                 setUsername(jwt_decode(data.access))
             }
 
-            else{
-                logout();
-            }
+            else logout();
 
         }
 
-        catch(error){console.error('Error updating token:', error)}
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
     const fourMinutes = 1000 * 60 * 4;
@@ -199,10 +194,9 @@ export const AuthProvider = ({children}: ContextProvider) => {
     }, [authToken])
 
 
-    let contextData = {
+    const contextData = {
         loginUser: loginUser,
         usernameFilter: usernameFilter,
-        email: email,
         alertStyle: alertStyle,
         alertText: alertText,
         username: username,
