@@ -2,18 +2,12 @@ import React, { useRef, useContext } from 'react';
 import AuthContext from "./AuthenticationContext";
 import blocked_padlock from './images/password.png'
 import { useNavigate } from 'react-router-dom';
+import {DataOfOperation} from './EditProfile';
 
-interface EditProfileCardProps {
-    text: string;
-    header: string;
-    buttonValue: string;
-    id: number;
-    link: string;
-    accessLink: string | null;
+
+interface EditProfileCardProps extends DataOfOperation{
     access: AccessToChangeUsernameStateProp | null
-    method: string
 }
-
 
 interface AccessToChangeUsernameStateProp {
     username: [boolean, string];
@@ -21,7 +15,7 @@ interface AccessToChangeUsernameStateProp {
     password: [boolean, string];
 }
 
-const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, buttonValue, id, accessLink, access, method }) => {
+const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, buttonValue, id, accessLink, access, shortcut }) => {
 
     const inputValue = useRef<HTMLInputElement>(null)
     const {username, logout} = useContext(AuthContext);
@@ -53,15 +47,19 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
         catch(error){alert('An error occurred. Please try again later.');}
     }
 
-    console.log(access)
+    console.log(access && (access[shortcut as keyof AccessToChangeUsernameStateProp]));
 
     return(
         <div className = "edit-profile-card">
-            <form method = {method}>
+            <div className = "edit-profile-card-grid">
                 
                 <div className = "edit-profile-card-content">
                     <span>{header}</span> <br/>
-                    {id >= 2 ? <span>{text}</span> : <input ref = {inputValue} type = "text" defaultValue = {text || ""} />}
+
+                    {
+                        id >= 2 ? <span>{text}</span> : (access && access[shortcut as keyof AccessToChangeUsernameStateProp][0] === false ?
+                        <input ref = {inputValue} type = "text" defaultValue = {text || ""} readOnly /> : <input ref = {inputValue} type = "text" defaultValue = {text || ""} />)
+                    }
                 </div>
 
                 <div className = "edit-profile-card-button">
@@ -98,7 +96,8 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
                     : null}
 
                 </div>
-            </form>
+                
+            </div>
         </div>
     );
 

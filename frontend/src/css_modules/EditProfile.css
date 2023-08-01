@@ -22,7 +22,7 @@
 }
 
 
-.edit-profile-card form {
+.edit-profile-card-grid {
     display:grid;
     grid-template-columns: 6fr 1.5fr;
     place-items: unset !important;
