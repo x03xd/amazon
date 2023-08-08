@@ -9,6 +9,7 @@ const Login: React.FC = () => {
     const {loginUser, usernameFilter, username, alertStyle, alertText,} = useContext(AuthContext);
     const location = useLocation();
 
+
     return(
         <div className = "modal-container-wrapper">
 

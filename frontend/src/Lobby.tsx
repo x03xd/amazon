@@ -71,8 +71,6 @@ const Lobby: React.FC = () => {
         catch(error){alert('An error occurred. Please try again later.');}
     }
 
-    console.log(location.state)
-
     return(
         <div className = "lobby-content">
 

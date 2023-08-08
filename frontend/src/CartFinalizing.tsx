@@ -12,10 +12,12 @@ interface Nums {
     buyButton: HashMap
 }
 
-const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
+const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
 
     const {username} = React.useContext(AuthContext);
     const navigate = useNavigate();
+
+    console.log(total)
 
     const finalizeOrder = async () => {
 
@@ -51,13 +53,11 @@ const CardFinalizing : React.FC<Nums> = ({ num, total, buyButton }) => {
                     <span className = "green-text text-success">Niektóre przedmioty w zamówieniu kwalifikują się do DARMOWEJ dostawy. Wybierz tę opcję przy kasie. Obowiązują ograniczenia</span>
                 </div>
 
-
                 <div className = "p-3">
-                    <span>Suma: (ilość produktów wynosi: {num}):{'\u00a0'}{'\u00a0'}<span className = "fw-600">{total}</span></span> 
+                    <span className = "fw-600">Suma: {total}</span>
                 </div>
 
                 <div className = "pe-3">
-
                 </div>
 
                 <div className = "pb-5 pt-3">

@@ -2,7 +2,6 @@ import card_picture from './images/cardz.svg';
 import React, { useState, useEffect, useContext} from 'react';
 import CardObject from './CartObject';
 import AuthContext from "./AuthenticationContext";
-import CSRFToken from './CSRFToken';
 import CardFinalizing from './CartFinalizing';
 import CartSideBar from './CartSideBar'
 import { useNavigate } from 'react-router-dom';
@@ -56,7 +55,7 @@ const Card: React.FC = () => {
             .then(response => response.json())
             .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0)));
         }
-        catch(error) {console.log("Error: ", error)}
+        catch(error){alert('An error occurred. Please try again later.');}
 
     }, [reload])
 
@@ -85,13 +84,10 @@ const Card: React.FC = () => {
         delete isPossible[val]
     }
 
-    console.log(cardUserGetter)
-
 
     if(cardUserGetter && cardUserGetter.length === 0){
         return(
             <div className = "card-content mt-5">
-            <CSRFToken />
                 <div className = "card-content-left">
                     <div className = "card-content-left-first bg-light">
                         <div className = "card-content-left-first-img">
@@ -178,5 +174,7 @@ const Card: React.FC = () => {
 
         );
     }
+
+
 }
 export default Card;

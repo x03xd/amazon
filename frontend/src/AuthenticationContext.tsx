@@ -177,7 +177,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
             }
 
             else logout();
-
         }
 
         catch(error){alert('An error occurred. Please try again later.');}

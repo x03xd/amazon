@@ -85,7 +85,7 @@ const Store: React.FC = () => {
 
                 fetch(`http://127.0.0.1:8000/api/products/${queryLinkPart}`)
                 .then(response => response.json())
-                .then(result => (setProducts(result)));
+                .then(result => (setProducts(result), console.log(result)));
             }
             catch(error){alert('An error occurred. Please try again later.');}
 
@@ -154,7 +154,6 @@ const Store: React.FC = () => {
                     }
                         
                     return null;
-
             }
 
             window.location.reload();
@@ -213,7 +212,7 @@ const Store: React.FC = () => {
 
                     <div className = "pt-0">
                         <span>Możliwość darmowej dostawy</span> <br/>
-                        <input type = "checkbox" /> <a className = "" href = ""> Darmowa wysyłka przez Amazon <br/>
+                        <input type = "checkbox" /> <a href = "#" className = ""> Darmowa wysyłka przez Amazon <br/>
                         Darmowa dostawa dla wszystkich klientów <br/> przy zamówieniach o wartosci powyżej 40 zł, wysyłanych przez Amazon</a>
                     </div>
 
@@ -268,7 +267,7 @@ const Store: React.FC = () => {
                 <div className = "store-content-products">
                     <div className = "">
                         <span className = "fw-525">WYNIKI</span><br/>
-                        <a className = "text-decoration-none">Dowiedz się o tych wynikach.</a>
+                        <a href = "#" className = "text-decoration-none">Dowiedz się o tych wynikach.</a>
                     </div>
 
                     <div className = "store-content-results mt-3">

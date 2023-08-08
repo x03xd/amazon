@@ -2,11 +2,11 @@ import {useNavigate} from 'react-router-dom';
 import React, {useState, ChangeEvent, FormEvent, useEffect} from 'react';
 import logo from './images/xd.png';
 import cart from './images/shopping-cart-xxl.png';
+import SelectCurrency from './SelectCurrency'
 
 export interface setValueState{
     value: string;
 }
-
 
 export interface NavbarProps {
     overlayStyle: (style: string) => void;
@@ -17,28 +17,23 @@ export interface NavbarProps {
     dropStyle: string;
 }
 
-
 interface Categories {
     id: number;
     name : string;
 }
 
-
 const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, leftModalStyle, unclickableNavbarChild, dropStyle }) => {
 
     const navigate = useNavigate();
-
     const [value, setValue] = useState<string>("");
     const [dropdownOptions, setDropdownOptions] = useState<Categories[] | []>([])
     const [dropdownOptionsStyle, setDropdownOptionsStyle] = useState<string>("")
 
-    
     useEffect(() => {  
         try {
             fetch(`http://127.0.0.1:8000/api/categories/`)
             .then(response => response.json())
             .then(result => (setDropdownOptions(result)));
-
         }
         catch (error){}
     }, [])
@@ -77,7 +72,6 @@ const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, leftModa
         if(value == null) navigate("") ;
         else navigate("s");
     }
-
 
     const navigateTo = (location: string): void => {
         navigate(location)
@@ -126,8 +120,7 @@ const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, leftModa
                     </div>
 
                     <div>
-                        <span>Zwroty</span><br/>
-                        <span>i zamówienia</span>
+                        <SelectCurrency />
                     </div>
 
                     <div className = "cart-box cursor-finger">

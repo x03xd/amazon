@@ -86,8 +86,8 @@ DATABASES = {
         'NAME': 'new_amazon',
         'USER': 'postgres',
         'PASSWORD': 'admin',
-        'HOST': 'localhost',  # Usually 'localhost' for local development
-        'PORT': '5432',  # Usually '5432' for PostgreSQL
+        'HOST': 'localhost',  
+        'PORT': '5432',  
     }
 }
 
@@ -200,3 +200,4 @@ SIMPLE_JWT = {
 }
 
 LOGIN_URL = 'token_obtain_pair'
+

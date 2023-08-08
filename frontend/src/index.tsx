@@ -47,7 +47,6 @@ root.render(
                             <Route path = "/login2" element={<ProtectedRoute path="/login2" element={<Login />} />} />
                             <Route path = "/registration" element={<ProtectedRoute path="/registration" element={<Register />} />} />
 
-
                         <Route path="/account/edit-profile/password" element={<ProtectedRoute path="/account/edit-profile/password" element={<PasswordChange />} />} />
                     </Route>
 

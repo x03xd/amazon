@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from .models import Product, Category, User, Cart, Rate, Transaction, CartItem, Brand
 from rest_framework import serializers
-
+from django.core.cache import cache
 
 class RateSerializer(ModelSerializer):
     average_rate = serializers.FloatField()
@@ -38,15 +38,14 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"
+        
 
 
 class ProductSerializer(ModelSerializer):
 
-
     class Meta:
         model = Product
         fields = "__all__"
-
 
 
 

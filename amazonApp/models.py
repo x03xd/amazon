@@ -39,11 +39,21 @@ class Product(models.Model):
         return self.title
 
 
+CURRENCY_CHOICES = (
+    ("USD", "USD"),
+    ("EUR", "EUR"),
+    ("GBP", "GBP"),
+    ("PLN", "PLN")
+)
+
 
 
 class User(AbstractUser):
-    username = models.CharField(max_length=20, unique=True, validators=[RegexValidator(r'^[a-zA-Z]*$', 'Only letters are allowed.')],)
+    username = models.CharField(max_length=20, unique=True, validators=[RegexValidator(r'^[a-zA-Z]*$', 'Only letters are allowed.')], db_index=True)
     email = models.EmailField(max_length=30, unique=True)
+    currency = models.CharField(max_length=3, null=True, default = "EUR", choices=CURRENCY_CHOICES)
+
+
     username_change_allowed = models.DateField(null=True)
     email_change_allowed = models.DateField(null=True)
     password_change_allowed = models.DateField(null=True)

@@ -28,5 +28,6 @@ urlpatterns = [
     path("finalize-order/", views.FinalizeOrder.as_view()),
     path("transactions/<id>", views.TransactionsAPI.as_view()),
     path("access-to-change-status/<id>", views.AccessToChangeStatus.as_view()),
-    path("products-from-transactions/", views.ProductsFromTransactions.as_view())
+    path("products-from-transactions/", views.ProductsFromTransactions.as_view()),
+    path("currency-converter/<id>", views.CurrencyConverterAPI.as_view())
 ]

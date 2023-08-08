@@ -17,6 +17,33 @@ from django.contrib.auth.hashers import make_password, check_password
 from decimal import Decimal
 from django.contrib.auth.models import update_last_login
 import re
+from django.http import JsonResponse
+import requests
+from django.core.cache import cache
+import threading
+import time
+
+def update_exchange_rates():
+    while True:
+        API_URL = "http://data.fixer.io/api/latest"
+        API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
+
+        params = {
+            "access_key": API_KEY,
+            "symbols": "EUR, USD, PLN, GBP"
+        }
+
+        response = requests.get(API_URL, params=params)
+
+        if response.status_code == 200:
+            data = response.json()
+            cache.set("exchange_rates", data["rates"], timeout=3600)
+
+        else:
+            return Response({"error": "Currency exchanging does not work properly."})
+
+        time.sleep(3600)  
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -25,6 +52,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token['username'] = user.username
         token['email'] = user.email
+        token['currency'] = user.currency
 
         return token
     
@@ -42,6 +70,24 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+
+class CurrencyConverterAPI(APIView):
+    def patch(self, request, *args, **kwargs):
+
+        try:
+            currency = request.data.get("currency")
+            user = User.objects.get(id = self.kwargs.get("id"))
+            user.currency = currency 
+            user.save()
+
+            return Response({"currency": currency})
+
+        except User.DoesNotExist:
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+        
 
 
 class CartAPI(APIView):
@@ -197,6 +243,7 @@ class CategoriesAPI(ListAPIView):
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
+
 
 class LoginAPI(APIView):
     def post(self, request):
@@ -426,7 +473,7 @@ class ProductsAPI(APIView):
 
             serializer = ProductSerializer(products, many=True)
 
-            return JsonResponse({"products": serializer.data})
+            return Response({"products": serializer.data})
 
         except Product.DoesNotExist:
             return Response({"error": "Object does not exist"}, status=404)
@@ -434,6 +481,7 @@ class ProductsAPI(APIView):
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
    
+
 
 class AccessToChangeStatus(APIView):
         
@@ -475,8 +523,6 @@ class AccessToChangeStatus(APIView):
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-
-
 
 
 
@@ -830,4 +876,8 @@ class EditPassword(APIView):
 
 
         
+
+if __name__ == "__main__":
+    exchange_updater_thread = threading.Thread(target=update_exchange_rates)
+    exchange_updater_thread.start()
 

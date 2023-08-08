@@ -77,7 +77,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
                 body: JSON.stringify({"product_id": item.product, "user_id": username?.user_id, "quantity": selectedValue})
             })
             .then(response => response.json())
-            .then(result => (prev(selectedValue, item.product), console.log(result)))
+            .then(result => (prev(selectedValue, item.product)))
         }
         catch(error){}
 
