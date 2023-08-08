@@ -68,7 +68,7 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
                 
             <div className = "single-transaction-card-content">
                 <div>
-                    <img alt = "product" src = {transaction[1]?.image} loading = "lazy" />
+                    <img width = "50" alt = "product" src = {transaction[1]?.image} loading = "lazy" />
                 </div>
                 
                 <div>

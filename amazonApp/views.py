@@ -16,7 +16,6 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password, check_password
 from decimal import Decimal
 from django.contrib.auth.models import update_last_login
-from django.db.models import Q
 import re
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

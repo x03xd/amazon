@@ -184,7 +184,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
     }
 
     const fourMinutes = 1000 * 60 * 4;
-    useEffect(()=>{
+    useEffect(() => {
         let interval = setInterval(() => {
             if(authToken){
                 updateToken()
