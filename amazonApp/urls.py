@@ -31,3 +31,4 @@ urlpatterns = [
     path("products-from-transactions/", views.ProductsFromTransactions.as_view()),
     path("currency-converter/<id>", views.CurrencyConverterAPI.as_view())
 ]
+

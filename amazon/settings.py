@@ -201,3 +201,7 @@ SIMPLE_JWT = {
 
 LOGIN_URL = 'token_obtain_pair'
 
+
+CRON_CLASSES = [
+    'amazonApp.cron.HourlyRequestCronJob',  # Ścieżka do Twojego zadania cyklicznego
+]

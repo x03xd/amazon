@@ -35,7 +35,6 @@ interface HashMap {
 const Card: React.FC = () => {
 
     const [cardUserGetter, setCardUserGetter] = useState<CartItem[]>([]);
-
     const [reload, setReload] = useState<[number, number]>();
     const [isPossible, setIsPossible] = useState<HashMap>([]);
     const [total, setTotal] = useState<number>(0);
@@ -53,13 +52,13 @@ const Card: React.FC = () => {
                 body:JSON.stringify({"username": username?.username})
             })
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0)));
+            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0), console.log(result)));
         }
         catch(error){alert('An error occurred. Please try again later.');}
 
     }, [reload])
 
-    
+
     const removeProduct = (num: number) => {
         setCardUserGetter(prevItems => prevItems.filter(item => item.product !== num));
     }

@@ -29,7 +29,7 @@ class Brand(models.Model):
 class Product(models.Model):
     title = models.CharField(max_length=140, db_index=True)
     description = models.CharField(max_length=1200)
-    price = models.FloatField(db_index=True)
+    price = models.DecimalField(db_index=True, max_digits=8, decimal_places=2)
     image = models.CharField(max_length=500)
     quantity = models.PositiveIntegerField()
     category_name = models.ForeignKey(Category, on_delete=models.CASCADE, db_index=True)
@@ -52,7 +52,6 @@ class User(AbstractUser):
     username = models.CharField(max_length=20, unique=True, validators=[RegexValidator(r'^[a-zA-Z]*$', 'Only letters are allowed.')], db_index=True)
     email = models.EmailField(max_length=30, unique=True)
     currency = models.CharField(max_length=3, null=True, default = "EUR", choices=CURRENCY_CHOICES)
-
 
     username_change_allowed = models.DateField(null=True)
     email_change_allowed = models.DateField(null=True)

@@ -6,6 +6,8 @@ import Rating from './Rating';
 import Checkbox from './Checkbox';
 import QueryParamsContext from "./QueryParamsContext";
 import {priceLimits} from './static_ts_files/priceLimits'
+import AuthContext from "./AuthenticationContext";
+
 
 interface Products {
     brand: string;

@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from .models import Product, Category, User, Cart, Rate, Transaction, CartItem, Brand
 from rest_framework import serializers
 from django.core.cache import cache
+from decimal import Decimal
 
 class RateSerializer(ModelSerializer):
     average_rate = serializers.FloatField()
@@ -10,6 +11,7 @@ class RateSerializer(ModelSerializer):
     class Meta:
         model = Rate
         fields = ("rated_products", "average_rate")
+        
 
 class GetterRateSerializer(ModelSerializer):
 
@@ -25,13 +27,6 @@ class StandardUserRateSerializer(ModelSerializer):
         fields = "__all__"
 
 
-class CartItemSerializer(ModelSerializer):
-
-    class Meta:
-        model = CartItem
-        fields = "__all__"
-
-
 
 class UserSerializer(ModelSerializer):
 
@@ -40,20 +35,16 @@ class UserSerializer(ModelSerializer):
         fields = "__all__"
         
 
-
-class ProductSerializer(ModelSerializer):
-
-    class Meta:
-        model = Product
-        fields = "__all__"
-
-
-
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = "__all__"
 
+
+class CurrencySerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["currency"]
 
 
 
@@ -72,6 +63,27 @@ class ProductSerializer(ModelSerializer):
         fields = "__all__"
 
 
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = "__all__"
+
+
+
+class CartItemSerializer(ModelSerializer):
+
+    class Meta:
+        model = CartItem
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        context = self.context
+        custom_setting = context.get('user_preferred_currency')
+
+        representation = super().to_representation(instance)
+        representation['total_price'] = round(Decimal(representation['total_price']) * Decimal(custom_setting), 2)
+        return representation
+    
 
 class TransactionSerializer(ModelSerializer):
 

@@ -1,6 +1,6 @@
 from rest_framework import generics, status
 from .models import Product, Category, Rate, User, Transaction, CartItem, Brand, Cart
-from .serializers import ProductSerializer, CategorySerializer, RateSerializer, TransactionSerializer, CartItemSerializer, GetterRateSerializer, BrandsByCategoriesSerializer, BrandsByIdSerializer
+from .serializers import ProductSerializer, CategorySerializer, RateSerializer, CurrencySerializer, TransactionSerializer, CartItemSerializer, GetterRateSerializer, BrandsByCategoriesSerializer, BrandsByIdSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http.response import JsonResponse
@@ -18,31 +18,32 @@ from decimal import Decimal
 from django.contrib.auth.models import update_last_login
 import re
 from django.http import JsonResponse
-import requests
 from django.core.cache import cache
-import threading
-import time
+import requests
+from concurrent.futures import ThreadPoolExecutor
 
-def update_exchange_rates():
-    while True:
-        API_URL = "http://data.fixer.io/api/latest"
-        API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
 
-        params = {
-            "access_key": API_KEY,
-            "symbols": "EUR, USD, PLN, GBP"
-        }
+def background_task():
+    API_URL = "http://data.fixer.io/api/latest"
+    API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
+    
+    params = {
+        "access_key": API_KEY,
+        "symbols": "EUR, USD, PLN, GBP"
+    }
 
-        response = requests.get(API_URL, params=params)
+    response = requests.get(API_URL, params=params)
 
-        if response.status_code == 200:
-            data = response.json()
-            cache.set("exchange_rates", data["rates"], timeout=36000)
+    if response.status_code == 200:
+        data = response.json()
+        cache.set("exchange_rates", data["rates"], timeout=3600)
+    else:
+        cache.set("exchange_rates", "USD", timeout=3600)
 
-        else:
-            return Response({"error": "Currency exchanging does not work properly."})
 
-        time.sleep(3600)  
+'''with ThreadPoolExecutor() as executor:
+    future = executor.submit(background_task)
+'''
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -71,6 +72,8 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
+
+
 class CurrencyConverterAPI(APIView):
     def patch(self, request, *args, **kwargs):
 
@@ -90,18 +93,25 @@ class CurrencyConverterAPI(APIView):
         
     
         
-
-
 class CartAPI(APIView):
 
     def post(self, request):
 
         try:
             username = request.data.get("username")
+            user = User.objects.get(username = username)
+
+            serialized_currency = CurrencySerializer(user)
+            currency = user.currency
+
+            cache_dict = cache.get("exchange_rates")
+            preferred_curr = cache_dict[serialized_currency.data["currency"]]
+
+            serializer_context = {'user_preferred_currency': preferred_curr}
 
             cart = CartItem.objects.filter(cart__owner__username = username).order_by('product__title')
-            serializer = CartItemSerializer(cart, many=True)
-            
+            serializer = CartItemSerializer(cart, many=True, context=serializer_context)
+
             for cart_item in serializer.data:
                 try:
                     prod = Product.objects.get(id=cart_item["product"])
@@ -112,8 +122,9 @@ class CartAPI(APIView):
                     return Response({"error": "Error message", "detail": str(e)}, status=404)
 
             sum_ = cart.aggregate(total_price_sum=Sum('total_price'))
-        
-            return Response({"cart_items": serializer.data, "sum": sum_['total_price_sum']})
+            sum_r = round(sum_['total_price_sum'] * Decimal(preferred_curr), 2)
+
+            return Response({"cart_items": serializer.data, "sum": sum_r, "key": cache_dict})
 
         except CartItem.DoesNotExist:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
@@ -361,7 +372,7 @@ class CountAvgRate(generics.ListAPIView):
 
 class ProductsAPI(APIView):
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
     
         r = self.request.query_params.get('rating')
         q = self.request.query_params.get('q')
@@ -455,15 +466,16 @@ class ProductsAPI(APIView):
 
             if (c is None) and (u is None) and (r is None):
                 queryset = queryset.filter(category_name__name__icontains=q)
-   
-   
+                
+
+
         serializer = ProductSerializer(queryset, many=True)
 
         return Response(serializer.data)
  
 
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
                 
         try:
             lst = request.data.get("lst")
@@ -878,8 +890,3 @@ class EditPassword(APIView):
 
 
         
-
-if __name__ == "__main__":
-    exchange_updater_thread = threading.Thread(target=update_exchange_rates)
-    exchange_updater_thread.start()
-
