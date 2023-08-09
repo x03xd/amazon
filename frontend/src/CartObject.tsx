@@ -1,5 +1,6 @@
 import React, {useEffect, useContext, useState} from 'react';
 import AuthContext from "./AuthenticationContext";
+import getCookie from './getCookie'
 
 interface Item {
     item: {
@@ -13,12 +14,10 @@ interface Item {
         {
             brand: string;
             description: string;
-            gallery1: boolean | null;
             id: number;
             image: string;
             price: number;
             quantity: number;
-            status?: boolean | null;
             category_name: number;
             title: string;
         }
@@ -40,7 +39,6 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
     let {username} = useContext(AuthContext);
     const [data, setData] = useState<Data | null>(null);
     const [selectedValue, setSelectedValue] = useState<number>(item.quantity);
-
     
     useEffect(() => {
         if(item.product_data.quantity < selectedValue) isPossibleCheck(item.product);
@@ -80,7 +78,6 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
             .then(result => (prev(selectedValue, item.product)))
         }
         catch(error){}
-
     }, [selectedValue])
 
 
@@ -94,7 +91,6 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
         catch(error){}
     }, [data])
 
-
     const handleAjaxRequest = (num: number): void => {
         ajaxFunction(num);
     }
@@ -103,7 +99,6 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
         setSelectedValue(parseInt(e.target.value, 10))
     };
 
-    
     let statusColor: string;
     let status: string;
 
@@ -149,7 +144,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
             </div>
 
             <div className = "card-content-objects-inner-col-3">
-                <span>{item.total_price}</span>
+                <span>{item.total_price} {getCookie("currency") ? getCookie("currency") : "USD"}</span>
             </div>
         </>
     );

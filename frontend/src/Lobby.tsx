@@ -4,6 +4,7 @@ import adress from './images/loc1.png';
 import padlock2 from './images/padlock2.png';
 import AuthContext from "./AuthenticationContext";
 import React from 'react';
+import getCookie from './getCookie'
 
 const Lobby: React.FC = () => {
 
@@ -30,6 +31,8 @@ const Lobby: React.FC = () => {
     window.addEventListener('popstate', function(e: PopStateEvent) {
         navigate("/s");
     });
+
+
 
     const finalizeOrderLobby = async () => {
         try{
@@ -90,7 +93,7 @@ const Lobby: React.FC = () => {
                 <div className = "lobby-content-sidebar border border-secondary">
 
                     <div className = "">
-                        <span>{location.state.price * selectedValue}</span><br/>
+                        <span>{location.state.price * selectedValue} {getCookie("currency") ? getCookie("currency") : "USD"}</span><br/>
                     </div>
 
                     <div>

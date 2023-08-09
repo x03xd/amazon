@@ -4,14 +4,14 @@ import AuthContext from "./AuthenticationContext";
 
 const SelectCurrency: React.FC = () => {
 
-    const {username} = useContext(AuthContext);
-
-    console.log(username)
+    const {authToken, username} = useContext(AuthContext);
 
     const handleCurrencyChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
 
+        if(!authToken) {alert("You have to be authenticated to change currency")}
+
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/currency-converter/${username?.user_id}`, {
+            await fetch(`http://127.0.0.1:8000/api/currency-converter/${username?.user_id}`, {
                 method: 'PATCH',
                 credentials: 'include', 
                 headers: {
@@ -19,14 +19,13 @@ const SelectCurrency: React.FC = () => {
                 },
                 body: JSON.stringify({"currency": e.target.value})
             })
-            const responseJSON = await response.json();
-            console.log(responseJSON)
+            
+            document.cookie = `currency=${e.target.value}`
+            window.location.reload();
 
         }
         catch(error){alert('An error occurred. Please try again later.');}
     }
-
-
 
     return(
         <>

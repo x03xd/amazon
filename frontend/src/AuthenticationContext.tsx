@@ -7,6 +7,7 @@ interface ContextProvider {
     children: React.ReactNode;
 }
 
+
 const initialValues = {
     loginUser: () => {},
     usernameFilter: () => {},
@@ -14,7 +15,7 @@ const initialValues = {
     alertStyle: "",
     alertText: "",
     username: null,
-    authToken: null
+    authToken: null,
 }
 
 
@@ -125,11 +126,15 @@ export const AuthProvider = ({children}: ContextProvider) => {
             const data = await response.json()
 
             if(response.status === 200){
+                const decodedCurrency: any = jwt_decode(data.access)
+
                 document.cookie = `username=${JSON.stringify(data.access)}`
+                document.cookie = `currency=${decodedCurrency["currency"]}`;
                 document.cookie = `authToken=${JSON.stringify(data)}`;
-          
+            
                 setAuthToken(data)
                 setUsername(data.access)
+
                 navigateToHome()
             }
 
@@ -152,11 +157,11 @@ export const AuthProvider = ({children}: ContextProvider) => {
 
         document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
         document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+        document.cookie = "currency=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
 
         navigateToHome()
         window.location.reload();
     }
-
 
     const updateToken = async () => {
 

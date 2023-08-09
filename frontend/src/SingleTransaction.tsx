@@ -83,7 +83,7 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
                             <span onClick = {deleteRate}>reset</span>
                             {ratingStars.map((star, key) => {        
                                 return(
-                                    <div onClick = {() => {productRate(key+1)}} key = {key} className = {key+1 <= (rate as number) ? "yellow-filled" : "lightgrey-empty"}>
+                                    <div onClick = {() => {productRate(key+1)}} key = {key} className = {`cursor-finger ${key+1 <= (rate as number) ? "yellow-filled" : "lightgrey-empty"}`}>
                                         <FontAwesomeIcon icon = {faStar} className = "star-rating-icon" />
                                     </div>
                                 );

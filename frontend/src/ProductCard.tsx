@@ -1,8 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {useNavigate} from 'react-router-dom';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import React from 'react';
 import { starStyling, StarStyling } from './static_ts_files/starStyling';
+import AuthContext from "./AuthenticationContext";
+import getCookie from './getCookie'
 
 
 interface ProductCard {
@@ -104,7 +106,7 @@ const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
             </div>
 
             <div className = "ps-3 pb-3">
-                <p className = "fw-500">{item["price"]}</p>
+                <p className = "fw-500">{item["price"]} {getCookie("currency") ? getCookie("currency") : "USD"}</p>
                 <span>Dostawa do dnia:</span><br/>
                 <span>DARMOWA dostawa przez Amazon</span>
             </div>

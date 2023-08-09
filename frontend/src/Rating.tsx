@@ -59,7 +59,7 @@ const Rating: React.FC = () => {
                         {ratingStars.map((star: string[], key) => {        
                     
                             return(
-                                <div onClick = {() => {ratingFilter(row[1]["key"])}} key = {key} className = {ratingStars[key][1]}>
+                                <div onClick = {() => {ratingFilter(row[1]["key"])}} key = {key} className = {`${ratingStars[key][1]} cursor-finger`}>
                                     <FontAwesomeIcon icon = {faStar} className = "star-rating-icon" />
                                 </div>
                             );

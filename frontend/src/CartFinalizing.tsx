@@ -1,6 +1,7 @@
 import {useNavigate} from 'react-router-dom';
 import AuthContext from "./AuthenticationContext";
 import React from 'react';
+import getCookie from './getCookie'
 
 interface HashMap {
     [key: string]: boolean;
@@ -16,8 +17,6 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
 
     const {username} = React.useContext(AuthContext);
     const navigate = useNavigate();
-
-    console.log(total)
 
     const finalizeOrder = async () => {
 
@@ -54,7 +53,7 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
                 </div>
 
                 <div className = "p-3">
-                    <span className = "fw-600">Suma: {total}</span>
+                    <span className = "fw-600">Suma: {total} {getCookie("currency") ? getCookie("currency") : "USD"}</span>
                 </div>
 
                 <div className = "pe-3">

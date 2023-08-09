@@ -37,7 +37,7 @@ def update_exchange_rates():
 
         if response.status_code == 200:
             data = response.json()
-            cache.set("exchange_rates", data["rates"], timeout=3600)
+            cache.set("exchange_rates", data["rates"], timeout=36000)
 
         else:
             return Response({"error": "Currency exchanging does not work properly."})
@@ -87,6 +87,8 @@ class CurrencyConverterAPI(APIView):
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+        
+    
         
 
 

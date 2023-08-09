@@ -242,7 +242,6 @@ const Store: React.FC = () => {
                         </ul>
                     </div>
 
-
                     <div>
                         <span>Cena</span>
                         <Clear text = "Wyczyść" nut = "u" func = {clearQueryString} />
@@ -262,7 +261,6 @@ const Store: React.FC = () => {
                     </div>
 
                 </div>
-
 
                 <div className = "store-content-products">
                     <div className = "">
