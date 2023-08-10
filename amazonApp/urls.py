@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
 
 
 urlpatterns = [
-    path("products/", views.ProductsAPI.as_view()),
+    path("products/<id>/", views.ProductsAPI.as_view()),
     path("categories/", views.CategoriesAPI.as_view()),
     path("process/", views.ProcessAPI.as_view()),
     path("remove-item/", views.RemoveItemCart.as_view()),

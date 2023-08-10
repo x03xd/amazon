@@ -49,6 +49,7 @@ export interface Brands {
 const Store: React.FC = () => {
     
         const searchParams = new URLSearchParams(window.location.search);
+        const {username} = useContext(AuthContext);
 
         const [productsWithRatings, setProductsWithRatings] = useState<JSX.Element[]>([]);
         const [products, setProducts] = useState<Products[]>([]);
@@ -85,7 +86,7 @@ const Store: React.FC = () => {
                 .then(response => response.json())
                 .then(result => setAverageRate(result));
 
-                fetch(`http://127.0.0.1:8000/api/products/${queryLinkPart}`)
+                fetch(`http://127.0.0.1:8000/api/products/${username?.user_id}/${queryLinkPart}`)
                 .then(response => response.json())
                 .then(result => (setProducts(result), console.log(result)));
             }

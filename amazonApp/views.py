@@ -30,6 +30,7 @@ def background_task():
     params = {
         "access_key": API_KEY,
         "symbols": "EUR, USD, PLN, GBP"
+        #base -> EUR
     }
 
     response = requests.get(API_URL, params=params)
@@ -38,12 +39,11 @@ def background_task():
         data = response.json()
         cache.set("exchange_rates", data["rates"], timeout=3600)
     else:
-        cache.set("exchange_rates", "USD", timeout=3600)
+        return Response({"error": "Current exchange rates cannot be fetched"})
 
 
-'''with ThreadPoolExecutor() as executor:
-    future = executor.submit(background_task)
-'''
+#with ThreadPoolExecutor() as executor:
+#    future = executor.submit(background_task)
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -79,11 +79,15 @@ class CurrencyConverterAPI(APIView):
 
         try:
             currency = request.data.get("currency")
+
+            if currency not in {"USD", "GBP", "PLN", "EUR"}:
+                return Response({"error": "Invalid currency choice"})
+
             user = User.objects.get(id = self.kwargs.get("id"))
             user.currency = currency 
             user.save()
 
-            return Response({"currency": currency})
+            return Response({"Valid currency choice": currency})
 
         except User.DoesNotExist:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
@@ -466,12 +470,26 @@ class ProductsAPI(APIView):
 
             if (c is None) and (u is None) and (r is None):
                 queryset = queryset.filter(category_name__name__icontains=q)
-                
+        
+        user_id = self.kwargs.get("id")
+        serializer_context = {}
 
+        if user_id != "undefined":
+            
+            user = User.objects.get(id = user_id)
 
-        serializer = ProductSerializer(queryset, many=True)
+            serialized_currency = CurrencySerializer(user)
+            currency = user.currency
+
+            cache_dict = cache.get("exchange_rates")
+            preferred_curr = cache_dict[serialized_currency.data["currency"]]
+
+            serializer_context['user_preferred_currency'] = preferred_curr
+    
+        serializer = ProductSerializer(queryset, many=True, context=serializer_context)
 
         return Response(serializer.data)
+
  
 
 

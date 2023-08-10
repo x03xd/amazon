@@ -62,12 +62,15 @@ class ProductSerializer(ModelSerializer):
         model = Product
         fields = "__all__"
 
+    def to_representation(self, instance):
+        context = self.context
+        representation = super().to_representation(instance)
 
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = "__all__"
-
+        if context:
+            exchange_rate = context.get('user_preferred_currency')
+            representation['price'] = round(Decimal(representation['price']) * Decimal(exchange_rate), 2)
+            
+        return representation
 
 
 class CartItemSerializer(ModelSerializer):
@@ -78,10 +81,10 @@ class CartItemSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         context = self.context
-        custom_setting = context.get('user_preferred_currency')
+        exchange_rate = context.get('user_preferred_currency')
 
         representation = super().to_representation(instance)
-        representation['total_price'] = round(Decimal(representation['total_price']) * Decimal(custom_setting), 2)
+        representation['total_price'] = round(Decimal(representation['total_price']) * Decimal(exchange_rate), 2)
         return representation
     
 

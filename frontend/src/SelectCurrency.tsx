@@ -1,14 +1,16 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import AuthContext from "./AuthenticationContext";
-
+import getCookie from "./getCookie";
 
 const SelectCurrency: React.FC = () => {
 
     const {authToken, username} = useContext(AuthContext);
+    const [selectedCurrency] = useState(getCookie("currency") || "USD");
+
 
     const handleCurrencyChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
 
-        if(!authToken) {alert("You have to be authenticated to change currency")}
+        if(!authToken) {alert("You have to be authenticated to change preferred currency");}
 
         try{
             await fetch(`http://127.0.0.1:8000/api/currency-converter/${username?.user_id}`, {
@@ -19,7 +21,6 @@ const SelectCurrency: React.FC = () => {
                 },
                 body: JSON.stringify({"currency": e.target.value})
             })
-            
             document.cookie = `currency=${e.target.value}`
             window.location.reload();
 
@@ -29,7 +30,7 @@ const SelectCurrency: React.FC = () => {
 
     return(
         <>
-            <select onChange={handleCurrencyChange}>
+            <select defaultValue={selectedCurrency} onChange={handleCurrencyChange}>
                 <option value = "EUR">EUR</option>
                 <option value = "GBP">GBP</option>
                 <option value = "USD">USD</option>
