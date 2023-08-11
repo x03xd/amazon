@@ -6,15 +6,13 @@ import CardFinalizing from './CartFinalizing';
 import CartSideBar from './CartSideBar'
 import { useNavigate } from 'react-router-dom';
 
-interface Product {
+interface ProductAPI {
     brand: string;
     description: string;
-    gallery1: boolean | null;
     id: number;
     image: string;
     price: number;
     quantity: number;
-    status?: boolean | null;
     category_name: number;
     title: string;
 }
@@ -25,7 +23,7 @@ interface CartItem {
     cart: number;
     product: number;
     total_price: number;
-    product_data: Product
+    product_data: ProductAPI
 }
 
 interface HashMap {
@@ -52,7 +50,7 @@ const Card: React.FC = () => {
                 body:JSON.stringify({"username": username?.username})
             })
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0), console.log(result)));
+            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0)));
         }
         catch(error){alert('An error occurred. Please try again later.');}
 
@@ -140,7 +138,6 @@ const Card: React.FC = () => {
              
                         <div className = "card-content-objects-inner mt-5 bg-light">
                             {
-                            
                             (cardUserGetter as CartItem[] || []).map((item: CartItem, index: number) => {
                                 return(
                                     <CardObject
@@ -151,7 +148,8 @@ const Card: React.FC = () => {
                                         removeIsPossibleCheck = {removeIsPossibleCheck}
                                     />
                                 )    
-                            })}
+                            })
+                            }
                         </div>
 
 

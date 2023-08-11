@@ -16,6 +16,7 @@ const initialValues = {
     alertText: "",
     username: null,
     authToken: null,
+    currency: null
 }
 
 
@@ -33,6 +34,7 @@ interface UserData {
     user_id: number;
     username: string;
     email: string;
+    currency: string;
 }
 
 
@@ -126,7 +128,8 @@ export const AuthProvider = ({children}: ContextProvider) => {
             const data = await response.json()
 
             if(response.status === 200){
-                const decodedCurrency: any = jwt_decode(data.access)
+                const decodedCurrency: UserData = jwt_decode(data.access)
+                console.log(decodedCurrency)
 
                 document.cookie = `username=${JSON.stringify(data.access)}`
                 document.cookie = `currency=${decodedCurrency["currency"]}`;

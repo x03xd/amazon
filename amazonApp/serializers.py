@@ -81,10 +81,12 @@ class CartItemSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         context = self.context
-        exchange_rate = context.get('user_preferred_currency')
-
         representation = super().to_representation(instance)
-        representation['total_price'] = round(Decimal(representation['total_price']) * Decimal(exchange_rate), 2)
+
+        if context:
+            exchange_rate = context.get('user_preferred_currency')
+            representation['total_price'] = round(Decimal(representation['total_price']) * Decimal(exchange_rate), 2)
+            
         return representation
     
 

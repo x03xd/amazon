@@ -38,7 +38,7 @@ const Transactions: React.FC = () => {
             .then(response => response.json())
             .then(result => setTransactions(result || []));
         }
-        catch(error) {console.log("Error: ", error)}
+        catch(error){alert("There was an error displaying your transaction.");}
     }, [pages])
 
     
@@ -57,19 +57,16 @@ const Transactions: React.FC = () => {
                 .then(result => setProducts(result));
             }
 
-            catch(error) {}
+            catch(error){alert('An error occurred. Please try again later.');}
         }
 
         setLoading(false);
     }, [transactions])
 
-
     const selectPage = (num: number) => {
         if(products?.length !== 5 && num > 0) return null;
         if(pages + num >= 0) {setPages(current_page => current_page + num)}
     }
-
-    console.log(products)
 
     return(
         <div className = "my-account-content">

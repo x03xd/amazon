@@ -1,4 +1,4 @@
-from rest_framework import generics, status
+from rest_framework import status
 from .models import Product, Category, Rate, User, Transaction, CartItem, Brand, Cart
 from .serializers import ProductSerializer, CategorySerializer, RateSerializer, CurrencySerializer, TransactionSerializer, CartItemSerializer, GetterRateSerializer, BrandsByCategoriesSerializer, BrandsByIdSerializer
 from rest_framework.views import APIView
@@ -19,18 +19,18 @@ from django.contrib.auth.models import update_last_login
 import re
 from django.http import JsonResponse
 from django.core.cache import cache
+import schedule
 import requests
 from concurrent.futures import ThreadPoolExecutor
+import time
 
+API_URL = "http://data.fixer.io/api/latest"
+API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
 
 def background_task():
-    API_URL = "http://data.fixer.io/api/latest"
-    API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
-    
     params = {
         "access_key": API_KEY,
         "symbols": "EUR, USD, PLN, GBP"
-        #base -> EUR
     }
 
     response = requests.get(API_URL, params=params)
@@ -38,12 +38,16 @@ def background_task():
     if response.status_code == 200:
         data = response.json()
         cache.set("exchange_rates", data["rates"], timeout=3600)
-    else:
-        return Response({"error": "Current exchange rates cannot be fetched"})
 
+def run_background_task():
+    with ThreadPoolExecutor() as executor:
+        future = executor.submit(background_task)
 
-#with ThreadPoolExecutor() as executor:
-#    future = executor.submit(background_task)
+schedule.every(1).hour.do(run_background_task)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -72,8 +76,6 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-
-
 class CurrencyConverterAPI(APIView):
     def patch(self, request, *args, **kwargs):
 
@@ -95,50 +97,54 @@ class CurrencyConverterAPI(APIView):
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
-    
-        
+      
 class CartAPI(APIView):
 
-    def post(self, request):
+    def adding_product_by_id(self, cart_item_serializer):
+        product_data_list = []
 
+        for cart_item in cart_item_serializer:
+            try:
+                prod = Product.objects.get(id=cart_item["product"])
+                p_serializer = ProductSerializer(prod)
+                cart_item["product_data"] = p_serializer.data
+                product_data_list.append(cart_item)
+            except Product.DoesNotExist as e:
+                return Response({"error": "Error message", "detail": str(e)}, status=404)
+        
+        return product_data_list
+                
+        
+    def post(self, request):
         try:
             username = request.data.get("username")
             user = User.objects.get(username = username)
 
             serialized_currency = CurrencySerializer(user)
-            currency = user.currency
-
             cache_dict = cache.get("exchange_rates")
             preferred_curr = cache_dict[serialized_currency.data["currency"]]
-
             serializer_context = {'user_preferred_currency': preferred_curr}
-
+            
             cart = CartItem.objects.filter(cart__owner__username = username).order_by('product__title')
             serializer = CartItemSerializer(cart, many=True, context=serializer_context)
 
-            for cart_item in serializer.data:
-                try:
-                    prod = Product.objects.get(id=cart_item["product"])
-                    p_serializer = ProductSerializer(prod)
-                    cart_item["product_data"] = p_serializer.data
-
-                except Product.DoesNotExist:
-                    return Response({"error": "Error message", "detail": str(e)}, status=404)
+            prod_data = self.adding_product_by_id(serializer.data)
 
             sum_ = cart.aggregate(total_price_sum=Sum('total_price'))
             sum_r = round(sum_['total_price_sum'] * Decimal(preferred_curr), 2)
 
-            return Response({"cart_items": serializer.data, "sum": sum_r, "key": cache_dict})
+            return Response({"cart_items": prod_data, "sum": sum_r})
+        
 
-        except CartItem.DoesNotExist:
+        except (CartItem.DoesNotExist, User.DoesNotExist) as e:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
 
-    def patch(self, request, *args, **kwargs):
 
+    def patch(self, request, *args, **kwargs):
         try:
             product_id = request.data.get("product_id")
             user_id = request.data.get("user_id")
@@ -166,11 +172,9 @@ class CartAPI(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
-
 class ProcessAPI(APIView):
 
     def post(self, request):
-
         try:
             product_id = request.data.get("product_id")
             user_id = request.data.get("user_id")
@@ -220,9 +224,6 @@ class ProcessAPI(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
         
-
-
-
 class RemoveItemCart(APIView):
 
     def post(self, request):
@@ -234,16 +235,13 @@ class RemoveItemCart(APIView):
             cart = CartItem.objects.get(cart__owner__id = username, product__id = item_id)
             cart.delete()
 
-            return JsonResponse({"done": True, "product_id": item_id})
-
+            return Response({"done": True, "product_id": item_id})
 
         except Product.DoesNotExistc as e:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-
-
 
 
 class CategoriesAPI(ListAPIView):
@@ -255,12 +253,11 @@ class CategoriesAPI(ListAPIView):
             return queryset
 
         except Category.DoesNotExist:
-            return Response({'authenticated': False, "error": "Object does not exist"}, status=404)
+            return Response({'status': False, "error": "Object does not exist"}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
-
 
 class LoginAPI(APIView):
     def post(self, request):
@@ -269,7 +266,7 @@ class LoginAPI(APIView):
             username = request.data.get("username")
 
             user_object = User.objects.get(username=username)
-            return JsonResponse({'authenticated': True, 'email': user_object.email, 'username': username})
+            return Response({'authenticated': True, 'email': user_object.email, 'username': username})
         
         except User.DoesNotExist as e:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
@@ -278,11 +275,9 @@ class LoginAPI(APIView):
             return Response({'authenticated': False, "error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
-
 class LogoutView(APIView):
-    def get(self, request, format = None):
+    def get(self, request, format=None):
         pass
-
 
 
 class UserRegistrationSerializer(serializers.Serializer):
@@ -344,8 +339,7 @@ class RegisterSystem(APIView):
             return Response({"error": "An error occurred during user registration", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
-class ProductsBySubsAPI(generics.ListAPIView):
+class ProductsBySubsAPI(ListAPIView):
     serializer_class = ProductSerializer
 
     def get_queryset(self):
@@ -362,8 +356,7 @@ class ProductsBySubsAPI(generics.ListAPIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-class CountAvgRate(generics.ListAPIView):
+class CountAvgRate(ListAPIView):
     serializer_class = RateSerializer
 
     def get_queryset(self):
@@ -377,122 +370,58 @@ class CountAvgRate(generics.ListAPIView):
 class ProductsAPI(APIView):
 
     def get(self, request, *args, **kwargs):
-    
         r = self.request.query_params.get('rating')
         q = self.request.query_params.get('q')
         c = self.request.query_params.get('c')
         u = self.request.query_params.get('u')
         
-        lst = []
+        filters = {}
 
         if r is not None:
-            try:
-                rates = Rate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=r)
-                serializer = RateSerializer(rates, many = True)
-
-                for rate in rates:
-                    lst.append(rate["rated_products"])
-
-            except Rate.DoesNotExist:
-                return Response({"error": "Object does not exist"}, status=404)
-
-
+            filters['rating'] = float(r)
+        
         if c is not None:
-            multiple_brands_filter = c.split(",")
-
+            filters['brands'] = c.split(",")
+        
         if u is not None:
-            multiple_prices_filter = u.split(",")
-            first_lst, second_lst = [], []
+            filters['prices'] = [list(map(float, u.split("-"))) for u in u.split(",")]
 
-            for index, s in enumerate(multiple_prices_filter):
-                first, second = s.split('-')
+        queryset = Product.objects.all()
 
-                first = float(first)
-                second = float(second)
 
-                if first > 0 and second > 0:
-                    first_lst.append(first)
-                    second_lst.append(second)
-
-        try:
-            queryset = Product.objects.all()
-
-        except Product.DoesNotExist:
-            return Response({"error": "Object does not exist"}, status=404)
-
-  
-        if q is None:
-
-            if (c is not None) and (u is not None) and (r is not None):
-                queryset = queryset.filter(id__in = lst, brand__brand_name__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
-
-            if (c is not None) and (u is not None) and (r is None):
-                queryset = queryset.filter(brand__brand_name__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
-
-            if (c is not None) and (u is None) and (r is not None):
-                queryset = queryset.filter(id__in = lst, brand__brand_name__in = multiple_brands_filter)
-
-            if (c is None) and (u is not None) and (r is not None):
-                queryset = queryset.filter(id__in = lst, price__range=(first_lst[0], second_lst[-1]))
-            
-            if (c is None) and (u is None) and (r is not None):
-                queryset = queryset.filter(id__in = lst)
-
-            if (c is not None) and (u is None) and (r is None):
-                queryset = queryset.filter(brand__brand_name__in = multiple_brands_filter)
-
-            if (c is None) and (u is not None) and (r is None):
-                queryset = queryset.filter(price__range=(first_lst[0], second_lst[-1]))
-
+        if q:
+            queryset = queryset.filter(category_name__name__icontains=q)
         
-        else:
+        if filters:
+            queryset = self.apply_filters(queryset, filters)
 
-            if (c is not None) and (u is not None) and (r is not None):
-                queryset = queryset.filter(category_name__name__icontains=q, id__in = lst, brand__brand_name__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
-
-            if (c is not None) and (u is not None) and (r is None):
-                queryset = queryset.filter(category_name__name__icontains=q, brand__brand_name__in = multiple_brands_filter, price__range=(first_lst[0], second_lst[-1]))
-
-            if (c is not None) and (u is None) and (r is not None):
-                queryset = queryset.filter(category_name__name__icontains=q, id__in = lst, brand__brand_name__in = multiple_brands_filter)
-
-            if (c is None) and (u is not None) and (r is not None):
-                queryset = queryset.filter(category_name__name__icontains=q, id__in = lst, price__range=(first_lst[0], second_lst[-1]))
-            
-            if (c is None) and (u is None) and (r is not None):
-                queryset = queryset.filter(category_name__name__icontains=q, id__in = lst)
-
-            if (c is not None) and (u is None) and (r is None):
-                queryset = queryset.filter(category_name__name__icontains=q, brand__brand_name__in = multiple_brands_filter)
-
-            if (c is None) and (u is not None) and (r is None):
-                queryset = queryset.filter(category_name__name__icontains=q, price__range=(first_lst[0], second_lst[-1]))
-
-            if (c is None) and (u is None) and (r is None):
-                queryset = queryset.filter(category_name__name__icontains=q)
-        
-        user_id = self.kwargs.get("id")
         serializer_context = {}
-
+        user_id = self.kwargs.get("id")
+        
         if user_id != "undefined":
-            
-            user = User.objects.get(id = user_id)
-
+            user = User.objects.get(id=user_id)
             serialized_currency = CurrencySerializer(user)
-            currency = user.currency
-
             cache_dict = cache.get("exchange_rates")
-            preferred_curr = cache_dict[serialized_currency.data["currency"]]
-
+            preferred_curr = cache_dict.get(serialized_currency.data["currency"])
             serializer_context['user_preferred_currency'] = preferred_curr
-    
-        serializer = ProductSerializer(queryset, many=True, context=serializer_context)
 
+        serializer = ProductSerializer(queryset, many=True, context=serializer_context)
         return Response(serializer.data)
 
+    def apply_filters(self, queryset, filters):
+        if "rating" in filters:
+            queryset = queryset.filter(id__in=self.filter_by_rating(filters['rating']))
+        if "brands" in filters:
+            queryset = queryset.filter(brand__brand_name__in=filters['brands'])
+        if "prices" in filters:
+            queryset = queryset.filter(price__range=(min([p[0] for p in filters['prices']]), max([p[1] for p in filters['prices']])))
+        return queryset
+    
+    def filter_by_rating(self, rating):
+        rates = Rate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=rating)
+        return [rate["rated_products"] for rate in rates]
+
  
-
-
     def post(self, request, *args, **kwargs):
                 
         try:
@@ -513,7 +442,6 @@ class ProductsAPI(APIView):
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
    
-
 
 class AccessToChangeStatus(APIView):
         
@@ -557,7 +485,6 @@ class AccessToChangeStatus(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
-
 class EditUsername(APIView):
     
     def patch(self, request, **kwargs):
@@ -593,11 +520,9 @@ class EditUsername(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
-
 class EditEmail(APIView):
 
     def patch(self, request, **kwargs):
-
         try:
             change = request.data.get("change")
 
@@ -616,7 +541,6 @@ class EditEmail(APIView):
 
             new_date = date.today() + timedelta(days=30) 
             user.email_change_allowed = new_date
-
             user.save()
 
             return Response({"status": True})
@@ -631,13 +555,61 @@ class EditEmail(APIView):
             return Response({"error": "An error occurred during user registration", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-        
-
-
 class FinalizeOrder(APIView):
 
-    def post(self, request):
 
+    def handle_lobby(self, product_id, quantity):
+        try:
+            bought = product_id * int(quantity)
+            product = Product.objects.get(id=product_id[0])
+
+            if product.quantity >= int(quantity):
+                product.quantity -= int(quantity)
+                product.save()
+
+                return bought
+
+            else:
+                return Response("User's input greater than product's quantity")
+                    
+        except Cart.DoesNotExist:
+            return Response({"error": "Object does not exist"}, status=404)    
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+
+
+    def handle_cart(self, user):
+        try:
+            cart_items = CartItem.objects.filter(cart__owner=user)
+            serializer = CartItemSerializer(cart_items, many=True)
+            bought = []
+
+            for record in serializer.data:
+                product = Product.objects.get(id=record["product"])
+
+                if product.quantity >= record["quantity"]:
+                    bought += [record["product"]] * record["quantity"]
+                    product.quantity -= record["quantity"]
+                else:
+                    return Response("User's input greater than product's quantity")
+                        
+                product.save()
+                        
+            cart_items.delete()
+            return bought
+
+             
+        except (CartItem.DoesNotExist, Product.DoesNotExist):
+            return Response({"error": "Object does not exist"}, status=404)    
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+
+
+
+
+    def post(self, request):
         try:
             user = request.data.get("user")
             location = request.data.get("location")
@@ -651,38 +623,14 @@ class FinalizeOrder(APIView):
                 return Response("Object does not exist", status=404) 
 
             if location == "cart":
-
-                cart_items = CartItem.objects.filter(cart__owner=user)
-                serializer = CartItemSerializer(cart_items, many=True)
-                bought = []
-
-                for record in serializer.data:
-                    product = Product.objects.get(id=record["product"])
-
-                    if product.quantity >= record["quantity"]:
-                        bought += [record["product"]] * record["quantity"]
-                        product.quantity -= record["quantity"]
-                    else:
-                        return Response("User's input greater than product's quantity")
-                    
-                    product.save()
-                    
-                cart_items.delete()
- 
+                bought = self.handle_cart(user)
     
             elif location == "lobby":
+                bought = self.handle_lobby(product_id, quantity)
 
-                bought = product_id * int(quantity)
-                product = Product.objects.get(id=product_id[0])
-
-                if product.quantity >= int(quantity):
-                    product.quantity -= int(quantity)
-                    product.save()
-
-                else:
-                    return Response("User's input greater than product's quantity")
-
-
+            else:
+                raise Exception("Given paramteter is wrong.") 
+                
             Transaction.objects.create(
                 bought_by = user,
                 bought_products = bought,
@@ -699,14 +647,10 @@ class FinalizeOrder(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
         
-            
-
-
 class TransactionsAPI(ListAPIView):
     serializer_class = TransactionSerializer
 
     def get_queryset(self):
-      
         try:
             queryset = Transaction.objects.filter(bought_by__id = self.kwargs.get("id"))
             return queryset
@@ -720,32 +664,37 @@ class TransactionsAPI(ListAPIView):
     
 class ProductsFromTransactions(APIView):
 
+    def adding_products(self, end, table):
+        counter, lst_f = 0, []
+
+        for (index, date), count in table.items():
+            product = Product.objects.get(id=index)
+            serializer = ProductSerializer(product)
+            lst_f.append((count, serializer.data, date))
+            counter += 1
+                
+            if counter == end:
+                break
+
+        return lst_f
+
+
     def post(self, request):
-        table, lst_f = {}, []
+        table = {}
 
         try:
-
             pages = request.data.get("pages")
             lst = request.data.get("lst")
-
-            start, end = pages, pages + 5
-
+            
             flattened_lst = [[item, sublist["date"]] for sublist in lst for item in sublist["bought_products"]]
+            start, end = pages, pages + 5
 
             for index, date in flattened_lst:
                 table[(index, date)] = table.get((index, date), 0) + 1
 
-            counter = 0
-            for (index, date), count in table.items():
-                product = Product.objects.get(id=index)
-                serializer = ProductSerializer(product)
-                lst_f.append((count, serializer.data, date))
-                counter += 1
+            lst_result = self.adding_products(end, table)
 
-                if counter == end:
-                    break
-
-            return Response(lst_f)
+            return Response(lst_result)
 
         except Product.DoesNotExist:
             return Response({"error": "Object does not exist"}, status=404)
@@ -808,7 +757,6 @@ class RateProduct(APIView):
 class DeleteRate(APIView):
 
     def post(self, request, **kwargs):
-
         try:
             user_id = request.data.get("user_id")
             product_id = request.data.get("product_id")
@@ -821,7 +769,6 @@ class DeleteRate(APIView):
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-
 
 
 class BrandsByCategoriesAPI(APIView):
@@ -841,7 +788,6 @@ class BrandsByCategoriesAPI(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
 
-
 class BrandsByIdAPI(APIView):
 
     def get(self, request, **kwargs):
@@ -852,15 +798,12 @@ class BrandsByIdAPI(APIView):
 
             return Response(serializer.data)
 
-
         except Brand.DoesNotExist as e:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
-
-
 
 class EditPassword(APIView):
     def patch(self, request, *args, **kwargs):
