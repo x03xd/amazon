@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import generics, status
 from .models import Product, Category, Rate, User, Transaction, CartItem, Brand, Cart
 from .serializers import ProductSerializer, CategorySerializer, RateSerializer, CurrencySerializer, TransactionSerializer, CartItemSerializer, GetterRateSerializer, BrandsByCategoriesSerializer, BrandsByIdSerializer
 from rest_framework.views import APIView
@@ -17,37 +17,9 @@ from django.contrib.auth.hashers import make_password, check_password
 from decimal import Decimal
 from django.contrib.auth.models import update_last_login
 import re
-from django.http import JsonResponse
 from django.core.cache import cache
-import schedule
-import requests
-from concurrent.futures import ThreadPoolExecutor
-import time
+from rest_framework.response import Response
 
-API_URL = "http://data.fixer.io/api/latest"
-API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
-
-def background_task():
-    params = {
-        "access_key": API_KEY,
-        "symbols": "EUR, USD, PLN, GBP"
-    }
-
-    response = requests.get(API_URL, params=params)
-
-    if response.status_code == 200:
-        data = response.json()
-        cache.set("exchange_rates", data["rates"], timeout=3600)
-
-def run_background_task():
-    with ThreadPoolExecutor() as executor:
-        future = executor.submit(background_task)
-
-schedule.every(1).hour.do(run_background_task)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
