@@ -21,7 +21,6 @@ from django.core.cache import cache
 from rest_framework.response import Response
 
 
-
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -146,6 +145,19 @@ class CartAPI(APIView):
 
 class ProcessAPI(APIView):
 
+    def validate_conditions(self, quantity, product_quantity, total_quantity):
+
+        if quantity > product_quantity:
+            return Response("Quantity exceeds available stock")
+
+        if 10 > quantity < 1:
+                return Response("Quantity is not in range 1-10")
+
+        if isinstance(total_quantity, int) and total_quantity + quantity > 10:
+            return Response("Maximum quantity of single item exceeded")
+
+        
+
     def post(self, request):
         try:
             product_id = request.data.get("product_id")
@@ -159,16 +171,9 @@ class ProcessAPI(APIView):
             except (User.DoesNotExist, Product.DoesNotExist) as e:
                 return Response({"error": "Error message", "detail": str(e)}, status=404)
             
-            if quantity > product.quantity:
-                return Response("Quantity exceeds available stock")
-
-            if 10 > quantity < 1:
-                return Response("Quantity is not in range 1-10")
-
             total_quantity = CartItem.objects.filter(cart__owner=user).aggregate(Sum('quantity'))['quantity__sum']
-
-            if isinstance(total_quantity, int) and total_quantity + quantity > 10:
-                return Response("Maximum quantity of single item exceeded")
+            
+            self.validate_conditions(quantity, product.quantity, total_quantity)
 
             try:
                 cart = Cart.objects.get(owner__id=user_id)  
@@ -340,13 +345,14 @@ class CountAvgRate(ListAPIView):
 
 
 class ProductsAPI(APIView):
+    
 
     def get(self, request, *args, **kwargs):
         r = self.request.query_params.get('rating')
         q = self.request.query_params.get('q')
         c = self.request.query_params.get('c')
         u = self.request.query_params.get('u')
-        
+
         filters = {}
 
         if r is not None:

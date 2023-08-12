@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'frontend',
     'corsheaders',
     'rest_framework',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -202,6 +203,9 @@ SIMPLE_JWT = {
 LOGIN_URL = 'token_obtain_pair'
 
 
-CRON_CLASSES = [
-    'amazonApp.cron.HourlyRequestCronJob',  # Ścieżka do Twojego zadania cyklicznego
-]
+CELERY_BEAT_SCHEDULE = {
+    'update-exchange-rates': {
+        'task': 'amazonApp.tasks.background_task',  # Path to your task
+        'schedule': 86400,  # 60 minutes in seconds
+    },
+}
