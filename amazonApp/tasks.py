@@ -2,11 +2,13 @@ from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 import requests
 from rest_framework.response import Response
+from django.conf import settings
+
 
 @shared_task
 def background_task():
-    
-    API_URL = "http://data.fixer.io/api/latest"
+   
+    API_URL = settings.FIXER_API_KEY
     API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
         
     params = {
@@ -15,12 +17,15 @@ def background_task():
         #base -> EUR
     }
 
-    response = requests.get(API_URL, params=params)
+    try:
+        response = requests.get(API_URL, params=params)
+        response.raise_for_status() 
 
-    if response.status_code == 200:
         data = response.json()
-        return data["rates"]
-    else:
-        return Response("Exchange rates have not been loaded initially")
+        if "rates" in data:
+            return data["rates"]
+        else:
+            return {}  
 
-
+    except requests.exceptions.RequestException as e:
+        return Response("You cannot fetch currency exchange rates")

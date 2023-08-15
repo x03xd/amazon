@@ -209,3 +209,5 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': 86400,  # 60 minutes in seconds
     },
 }
+
+FIXER_API_KEY = "http://data.fixer.io/api/latest"
