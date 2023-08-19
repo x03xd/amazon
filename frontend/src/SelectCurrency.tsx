@@ -12,25 +12,27 @@ const SelectCurrency: React.FC = () => {
 
         if(!authToken) {alert("You have to be authenticated to change preferred currency");}
 
-        try{
-            await fetch(`http://127.0.0.1:8000/api/currency-converter/${username?.user_id}`, {
-                method: 'PATCH',
-                credentials: 'include', 
-                headers: {
-                    'Content-Type':'application/json',
-                },
-                body: JSON.stringify({"currency": e.target.value})
-            })
-            document.cookie = `currency=${e.target.value}`
-            window.location.reload();
+        else{
+            try{
+                await fetch(`http://127.0.0.1:8000/api/currency-converter/${username?.user_id}`, {
+                    method: 'PATCH',
+                    credentials: 'include', 
+                    headers: {
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify({"currency": e.target.value})
+                })
+                document.cookie = `currency=${e.target.value}`
+                window.location.reload();
 
+            }
+            catch(error){alert('An error occurred. Please try again later.');}
         }
-        catch(error){alert('An error occurred. Please try again later.');}
     }
 
     return(
         <>
-            <select defaultValue={selectedCurrency} onChange={handleCurrencyChange}>
+            <select disabled={!authToken} defaultValue={selectedCurrency} onChange={handleCurrencyChange}>
                 <option value = "EUR">EUR</option>
                 <option value = "GBP">GBP</option>
                 <option value = "USD">USD</option>
