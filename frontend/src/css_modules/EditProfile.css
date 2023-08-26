@@ -1,4 +1,5 @@
 
+
 .edit-profile-container {
     display: grid;
     grid-template-columns: 2fr 7fr 2fr;
@@ -13,8 +14,20 @@
 .edit-profile-container-main > div > div {
     border: 0.1rem solid gray;
     padding: 2.5rem;
-
 }
+
+.edit-profile-container-main > div > div:first-child {
+    border-top-left-radius: 0.4rem;
+    border-top-right-radius: 0.4rem;
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.3);
+}
+
+.edit-profile-container-main > div > div:last-child {
+    border-bottom-left-radius: 0.4rem;;
+    border-bottom-right-radius: 0.4rem;
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.3);
+}
+
 
 .single-transaction-card-content > div span:first-child {
     font-weight: 600;

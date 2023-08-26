@@ -3,6 +3,8 @@ import AuthContext from "./AuthenticationContext";
 import SingleTransaction from './SingleTransaction'
 import leftArrow from './images/left-arrow.png';
 import rightArrow from './images/right-arrow.png';
+import { ProductsInterface } from './static_ts_files/commonInterfaces';
+
 
 interface TransactionsAPI {
     id: number,
@@ -25,7 +27,7 @@ export interface Products {
 const Transactions: React.FC = () => {
 
     const [transactions, setTransactions] = useState<TransactionsAPI[]>();
-    const [products, setProducts] = useState<[number, Products, string][]>();
+    const [products, setProducts] = useState<[number, ProductsInterface, string][]>();
     const [loading, setLoading] = useState<boolean>(true);
 
     const [pages, setPages] = useState<number>(0);

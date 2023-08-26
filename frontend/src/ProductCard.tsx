@@ -1,13 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {useNavigate} from 'react-router-dom';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect} from 'react';
 import React from 'react';
 import { starStyling, StarStyling } from './static_ts_files/starStyling';
-import AuthContext from "./AuthenticationContext";
 import getCookie from './getCookie'
 
 
-interface ProductCard {
+interface ProductCardProps {
     item: {
         brand: string;
         description: string;
@@ -22,13 +21,12 @@ interface ProductCard {
 }
 
 
-const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ item, rate }) => {
 
     const navigate = useNavigate();
     const [rateRange, setRateRange] = useState<number>(0);
 
     function handleClick(){
-
         let slug = item.description.toLowerCase().trim()
         .replace(/[^\w\s-]/g, '')
         .replace(/[\s_-]+/g, '-')
@@ -36,8 +34,8 @@ const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
 
         navigate(`/l/${slug}`, {state: {title: item.title, id_product: item.id, image: item.image, desc: item.description, price: item.price,
         quantity: item.quantity, brand: item.brand, slug: slug}})
+        window.location.reload()
     }
-
 
     useEffect(() => {
         if(rate <= 5 && rate >= 4.76){
@@ -106,7 +104,7 @@ const ProductCard: React.FC<ProductCard> = ({ item, rate }) => {
             </div>
 
             <div className = "ps-3 pb-3">
-                <p className = "fw-500">{item["price"]} {getCookie("currency") ? getCookie("currency") : "USD"}</p>
+                <p className = "fw-500">{item.price} {getCookie("currency") ? getCookie("currency") : "USD"}</p>
                 <span>Dostawa do dnia:</span><br/>
                 <span>DARMOWA dostawa przez Amazon</span>
             </div>

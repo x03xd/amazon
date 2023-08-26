@@ -6,14 +6,12 @@ from rest_framework_simplejwt.views import (
 )
 
 
-
-
 urlpatterns = [
     path("products/<id>/", views.ProductsAPI.as_view()),
     path("categories/", views.CategoriesAPI.as_view()),
     path("process/", views.ProcessAPI.as_view()),
     path("remove-item/", views.RemoveItemCart.as_view()),
-    path("cart/", views.CartAPI.as_view()),
+    path("cart/<user_id>", views.CartAPI.as_view()),
     path("brands/<category>", views.BrandsByCategoriesAPI.as_view()),
     path("brand/<id>", views.BrandsByIdAPI.as_view()),
     path('token/',MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -31,6 +29,8 @@ urlpatterns = [
     path("transactions/<id>", views.TransactionsAPI.as_view()),
     path("access-to-change-status/<id>", views.AccessToChangeStatus.as_view()),
     path("products-from-transactions/", views.ProductsFromTransactions.as_view()),
-    path("currency-converter/<id>", views.CurrencyConverterAPI.as_view())
+    path("currency-converter/<id>", views.CurrencyConverterAPI.as_view()),
+    path("recommendations/<username>/<id>/<user_id>", views.Recommendations.as_view()),
+    path("lobby-price-mod/<user_id>/<product_id>", views.LobbyPriceMod.as_view())
 ]
 

@@ -43,7 +43,7 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
 
 
     return(
-        <div className = "cart-finalizing-container bg-light">
+        <div className = "cart-finalizing-container bg-light shadow">
 
             <div className = "cart-finalizing-container-sideL"></div>
 

@@ -205,9 +205,10 @@ LOGIN_URL = 'token_obtain_pair'
 
 CELERY_BEAT_SCHEDULE = {
     'update-exchange-rates': {
-        'task': 'amazonApp.tasks.background_task',  # Path to your task
-        'schedule': 86400,  # 60 minutes in seconds
+        'task': 'amazonApp.tasks.background_task',  
+        'schedule': 7 * 24 * 3600,  
     },
 }
 
-FIXER_API_KEY = "http://data.fixer.io/api/latest"
+FIXER_API_URL = "http://data.fixer.io/api/latest"
+FIXER_API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'

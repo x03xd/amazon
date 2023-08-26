@@ -19,6 +19,21 @@ from django.contrib.auth.models import update_last_login
 import re
 from django.core.cache import cache
 from rest_framework.response import Response
+from django.db.models import Count
+
+
+def provide_currency_context(user_id):
+    serializer_context = {}
+        
+    if user_id != "undefined":
+        user = User.objects.get(id=user_id)
+        serialized_currency = CurrencySerializer(user)
+        cache_dict = cache.get("exchange_rates")
+
+        preferred_curr = cache_dict.get(serialized_currency.data["currency"])
+        serializer_context['user_preferred_currency'] = preferred_curr
+
+    return serializer_context
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -32,7 +47,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
     
-
     def validate(self, attrs):
         data = super().validate(attrs)
         user = self.user
@@ -67,8 +81,9 @@ class CurrencyConverterAPI(APIView):
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-        
-      
+
+
+
 class CartAPI(APIView):
 
     def adding_product_by_id(self, cart_item_serializer):
@@ -86,23 +101,22 @@ class CartAPI(APIView):
         return product_data_list
                 
         
-    def post(self, request):
+    def get(self, request, *args, **kwargs):
         try:
-            username = request.data.get("username")
-            user = User.objects.get(username = username)
+            user_id = self.kwargs.get("user_id")
 
-            serialized_currency = CurrencySerializer(user)
-            cache_dict = cache.get("exchange_rates")
-            preferred_curr = cache_dict[serialized_currency.data["currency"]]
-            serializer_context = {'user_preferred_currency': preferred_curr}
-            
-            cart = CartItem.objects.filter(cart__owner__username = username).order_by('product__title')
-            serializer = CartItemSerializer(cart, many=True, context=serializer_context)
+            currency_context = provide_currency_context(user_id)
+
+            cart = CartItem.objects.filter(cart__owner__id = user_id).order_by('product__title')
+            serializer = CartItemSerializer(cart, many=True, context=currency_context)
 
             prod_data = self.adding_product_by_id(serializer.data)
 
+            if currency_context["user_preferred_currency"] is None:
+                currency_context["user_preferred_currency"] = 1
+
             sum_ = cart.aggregate(total_price_sum=Sum('total_price'))
-            sum_r = round(sum_['total_price_sum'] * Decimal(preferred_curr), 2)
+            sum_r = round(sum_['total_price_sum'] * Decimal(currency_context["user_preferred_currency"]), 2)
 
             return Response({"cart_items": prod_data, "sum": sum_r})
         
@@ -118,8 +132,9 @@ class CartAPI(APIView):
     def patch(self, request, *args, **kwargs):
         try:
             product_id = request.data.get("product_id")
-            user_id = request.data.get("user_id")
             quantity = request.data.get("quantity")
+
+            user_id = self.kwargs.get("user_id")
 
             product = Product.objects.get(id=product_id)
             cart = CartItem.objects.get(cart__owner__id = user_id, product = product)
@@ -156,8 +171,7 @@ class ProcessAPI(APIView):
         if isinstance(total_quantity, int) and total_quantity + quantity > 10:
             return Response("Maximum quantity of single item exceeded")
 
-        
-
+    
     def post(self, request):
         try:
             product_id = request.data.get("product_id")
@@ -344,8 +358,9 @@ class CountAvgRate(ListAPIView):
             return Response({"error": "Object does not exist"}, status=404)
 
 
+
+
 class ProductsAPI(APIView):
-    
 
     def get(self, request, *args, **kwargs):
         r = self.request.query_params.get('rating')
@@ -373,17 +388,9 @@ class ProductsAPI(APIView):
         if filters:
             queryset = self.apply_filters(queryset, filters)
 
-        serializer_context = {}
         user_id = self.kwargs.get("id")
-        
-        if user_id != "undefined":
-            user = User.objects.get(id=user_id)
-            serialized_currency = CurrencySerializer(user)
-            cache_dict = cache.get("exchange_rates")
-            preferred_curr = cache_dict.get(serialized_currency.data["currency"])
-            serializer_context['user_preferred_currency'] = preferred_curr
 
-        serializer = ProductSerializer(queryset, many=True, context=serializer_context)
+        serializer = ProductSerializer(queryset, many=True, context=provide_currency_context(user_id))
         return Response(serializer.data)
 
     def apply_filters(self, queryset, filters):
@@ -583,8 +590,6 @@ class FinalizeOrder(APIView):
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-
-
 
 
     def post(self, request):
@@ -828,4 +833,48 @@ class EditPassword(APIView):
             return Response({"error": "An error occurred during user registration", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-        
+
+class Recommendations(APIView):
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            username = self.kwargs.get("username")
+            products_id = self.kwargs.get("id")
+            products_id = products_id.split(",")
+            user_id = self.kwargs.get("user_id")
+   
+            recommended = Product.objects.filter(bought_by_rec__username=username).exclude(id__in=products_id)
+            recommended = recommended.annotate(freq=Count('bought_by_rec')).order_by('-freq')
+            serialized = ProductSerializer(recommended, many=True, context=provide_currency_context(user_id))
+            
+            return Response({"recommendations": serialized.data[:5]})
+
+        except Product.DoesNotExist:
+            return Response({"error": "Object does not exist"}, status=404)    
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            
+
+
+class LobbyPriceMod(APIView):
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            product_id = self.kwargs.get("product_id")
+            user_id = self.kwargs.get("user_id")
+
+            product = Product.objects.get(id=product_id)
+            serialized_current = ProductSerializer(product, context=provide_currency_context(user_id))
+
+            print(serialized_current)
+
+            return Response({"modified_price": serialized_current.data["price"]})
+
+        except Product.DoesNotExist:
+            return Response({"error": "Object does not exist"}, status=404)    
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)

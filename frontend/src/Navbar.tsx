@@ -11,7 +11,6 @@ export interface setValueState{
 export interface NavbarProps {
     overlayStyle: (style: string) => void;
     loginModalStyle: (style: string) => void;
-    leftModalStyle: (style: string) => void;
     unclickableNavbarChild: (style: string) => void;
     unclick?: string;
     dropStyle: string;
@@ -22,7 +21,7 @@ interface Categories {
     name : string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, leftModalStyle, unclickableNavbarChild, dropStyle }) => {
+const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, unclickableNavbarChild, dropStyle }) => {
 
     const navigate = useNavigate();
     const [value, setValue] = useState<string>("");
@@ -43,7 +42,6 @@ const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, leftModa
         if(dropStyle === "") setDropdownOptionsStyle("")
     }, [dropStyle])
 
-
     const searchBarHandling = (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
     }
@@ -58,10 +56,6 @@ const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, leftModa
 
     const activeLoginModal = (style: string) => {
         loginModalStyle(style);
-    }
-
-    const activeLeftModal = (style: string) => {
-        leftModalStyle(style);
     }
 
     const unclickableNavbar = (style: string) => {
@@ -130,10 +124,9 @@ const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, leftModa
 
                 </div>
 
-
                 <div className = 'navbar-lower-part'>
                     <div>
-                        <span className = "ms-5" onClick= {() => {activeOverlay('active'); activeLeftModal('active'); unclickableNavbar('pointer-event-handler')}}>Menu</span>
+                        <span className = "ms-5">Menu</span>
                     </div>
 
                     <div>
@@ -159,10 +152,8 @@ const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, leftModa
                     <div>
                         <span>Dział Obsługi Klienta</span>
                     </div>
-
                 </div>
             </nav>
-
     );
 }
 

@@ -32,10 +32,6 @@ button, input {
 }
 
 
-
-
-
-
 * {
     color: black !important;
     font-family: Arial !important;
@@ -46,8 +42,6 @@ li {
     list-style-type: none !important;
     
 }
-
-
 
 
 .fw-500 {

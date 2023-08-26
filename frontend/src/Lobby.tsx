@@ -5,20 +5,28 @@ import padlock2 from './images/padlock2.png';
 import AuthContext from "./AuthenticationContext";
 import React from 'react';
 import getCookie from './getCookie'
+import Recommendations from './Recommendations';
 
 const Lobby: React.FC = () => {
-
     const [selectedValue, setSelectedValue] = useState<number>(1);
     const [brand, setBrand] = useState<string>("");
-    const {username} = useContext(AuthContext)
+    const [modPrice, setModPrice] = useState<number>(0);
+    const {username} = useContext(AuthContext);
 
     const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/brand/${location.state.brand}`)
-        .then(response => response.json())
-        .then(result => setBrand(result?.brand_name))
+        try{
+            fetch(`http://127.0.0.1:8000/api/brand/${location.state.brand}`)
+            .then(response => response.json())
+            .then(result => setBrand(result?.brand_name))
+
+            fetch(`http://127.0.0.1:8000/api/lobby-price-mod/${username?.user_id}/${location.state.id_product}`)
+            .then(response => response.json())
+            .then(result => setModPrice(result?.modified_price))
+        }
+        catch(error){alert(error);}
     }, [])
 
     useEffect(() => {
@@ -32,8 +40,6 @@ const Lobby: React.FC = () => {
         navigate("/s");
     });
 
-
-
     const finalizeOrderLobby = async () => {
         try{
             const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
@@ -44,7 +50,6 @@ const Lobby: React.FC = () => {
                 body:JSON.stringify({"location": "lobby", "product_id": [location.state.id_product], "quantity": selectedValue, "user": username?.user_id})
             })
             const responseJSON = await response.json()
-            console.log(responseJSON)
 
             if(responseJSON?.status) alert(`Pomyślnie kupiono ${location.state.title}`)
             else alert(responseJSON)
@@ -52,7 +57,7 @@ const Lobby: React.FC = () => {
 
         catch(error){alert('An error occurred. Please try again later.');}
     }
-    
+
     async function addToCard(e: React.MouseEvent<HTMLInputElement>){
         e.preventDefault();
 
@@ -82,7 +87,7 @@ const Lobby: React.FC = () => {
                     <img src = {location.state.image} alt = "product" loading = "lazy" className = "p-5" height = "450" width = "600" />
                 </div>
 
-                <div>
+                <div className = "mt-5">
                     <span className = "mt-p-5">{location.state.desc}</span> <br/>
                     <span>Marka: {brand}</span>
                 </div>
@@ -90,10 +95,16 @@ const Lobby: React.FC = () => {
 
 
             <div className = "mt-5">
-                <div className = "lobby-content-sidebar border border-secondary">
+                <div className = "lobby-content-sidebar">
 
                     <div className = "">
-                        <span>{location.state.price * selectedValue} {getCookie("currency") ? getCookie("currency") : "USD"}</span><br/>
+                        <span>
+                            {modPrice !== 0 ? (
+                                `${modPrice * selectedValue} ${getCookie("currency") ? getCookie("currency") : "USD"}`
+                            ) : (
+                                null
+                            )}
+                        </span><br />
                     </div>
 
                     <div>
@@ -131,14 +142,12 @@ const Lobby: React.FC = () => {
                         </form>
 
                         <form method = "POST">
-
                             {selectedValue <= location.state.quantity
-                            ?
-                            <input onClick = {() => finalizeOrderLobby()} className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
-                            :
-                            <input disabled type = "button" className = "bg-danger" id = "buy-now-button" value = "Nie mamy takiej ilości produktu" />
+                                ?
+                                <input onClick = {() => finalizeOrderLobby()} className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
+                                :
+                                <input disabled type = "button" className = "bg-danger" id = "buy-now-button" value = "Nie mamy takiej ilości produktu" />
                             }
-                            
                         </form>
                     </div>
 
@@ -157,6 +166,10 @@ const Lobby: React.FC = () => {
                     </div>
 
                 </div>
+            </div>
+
+            <div className = "recommendation-bar">
+                <Recommendations products_id = {[location.state.id_product]} />
             </div>
         </div>
     );

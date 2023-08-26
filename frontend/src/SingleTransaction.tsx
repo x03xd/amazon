@@ -3,15 +3,17 @@ import { ratingStars } from './static_ts_files/ratingLevels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import AuthContext from "./AuthenticationContext";
-import {Products} from './Transactions'
+import { ProductsInterface } from './static_ts_files/commonInterfaces';
 
 interface SingleTransactionProps {
-    transaction: [number, Products, string];
+    transaction: [number, ProductsInterface, string];
     product_id: number;
     key: number;
 }
 
 const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, product_id }) => {
+
+    console.log(transaction)
 
     const {username} = useContext(AuthContext);
     const [rate, setRate] = useState<number | undefined>()

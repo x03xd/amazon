@@ -1,8 +1,11 @@
+.card-content-objects-inner-col-1 {
+    display: flex;
+    justify-content: center;
+}
 
-
-.card-content-objects-inner {
+.card-content-objects-object {
     display: grid;
-    grid-template-columns: 2fr 6fr 1fr;
+    grid-template-columns: 2fr 6fr 1.8fr;
     grid-auto-rows: 150px;
 }
 
