@@ -66,13 +66,13 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
 
     useEffect(() => {
         try{
-            fetch(`http://127.0.0.1:8000/api/cart/`, {
+            fetch(`http://127.0.0.1:8000/api/cart/${username?.user_id}`, {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({"product_id": item.product, "user_id": username?.user_id, "quantity": selectedValue})
+                body: JSON.stringify({"product_id": item.product,"quantity": selectedValue})
             })
             .then(response => response.json())
             .then(result => (prev(selectedValue, item.product)))
@@ -113,7 +113,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
     }
 
     return(
-        <>
+        <div className = "card-content-objects-object">
             <div className = "card-content-objects-inner-col-1">
                 <img width = "100" height = "100" loading = "lazy" alt = "object" src= {item.product_data.image} />
             </div>
@@ -146,7 +146,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
             <div className = "card-content-objects-inner-col-3">
                 <span>{item.total_price} {getCookie("currency") ? getCookie("currency") : "USD"}</span>
             </div>
-        </>
+        </div>
     );
 }
 

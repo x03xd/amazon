@@ -87,7 +87,7 @@ const Lobby: React.FC = () => {
                     <img src = {location.state.image} alt = "product" loading = "lazy" className = "p-5" height = "450" width = "600" />
                 </div>
 
-                <div>
+                <div className = "mt-5">
                     <span className = "mt-p-5">{location.state.desc}</span> <br/>
                     <span>Marka: {brand}</span>
                 </div>
@@ -95,7 +95,7 @@ const Lobby: React.FC = () => {
 
 
             <div className = "mt-5">
-                <div className = "lobby-content-sidebar border border-secondary">
+                <div className = "lobby-content-sidebar">
 
                     <div className = "">
                         <span>
@@ -169,7 +169,7 @@ const Lobby: React.FC = () => {
             </div>
 
             <div className = "recommendation-bar">
-                <Recommendations product_id = {location.state.id_product} />
+                <Recommendations products_id = {[location.state.id_product]} />
             </div>
         </div>
     );

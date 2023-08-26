@@ -34,6 +34,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, rate }) => {
 
         navigate(`/l/${slug}`, {state: {title: item.title, id_product: item.id, image: item.image, desc: item.description, price: item.price,
         quantity: item.quantity, brand: item.brand, slug: slug}})
+        window.location.reload()
     }
 
     useEffect(() => {

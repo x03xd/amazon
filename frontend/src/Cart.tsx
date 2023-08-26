@@ -6,7 +6,7 @@ import CardFinalizing from './CartFinalizing';
 import CartSideBar from './CartSideBar'
 import { useNavigate } from 'react-router-dom';
 import { ProductsInterface } from './static_ts_files/commonInterfaces';
-
+import Recommendations from './Recommendations';
 
 interface CartItem {
     id: number;
@@ -33,20 +33,12 @@ const Card: React.FC = () => {
 
     useEffect(() => {
         try{
-            fetch('http://127.0.0.1:8000/api/cart/', {
-                method: 'POST',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({"username": username?.username})
-            })
+            fetch(`http://127.0.0.1:8000/api/cart/${username?.user_id}`)
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0)));
+            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0), console.log(result)));
         }
         catch(error){alert('An error occurred. Please try again later.');}
-
     }, [reload])
-
 
     const removeProduct = (num: number) => {
         setCardUserGetter(prevItems => prevItems.filter(item => item.product !== num));
@@ -72,7 +64,6 @@ const Card: React.FC = () => {
         delete isPossible[val]
     }
 
-
     if(cardUserGetter && cardUserGetter.length === 0){
         return(
             <div className = "card-content mt-5">
@@ -94,7 +85,7 @@ const Card: React.FC = () => {
                     </div>
 
                     <div className = "card-content-left-second bg-light">
-
+                        <Recommendations products_id = {["9", "8"]} />
                     </div>
 
                     <p className = "fs-11">Ceny i dostępność produktów w serwisie Amazon.pl mogą ulec zmianie. Produkty sa tymsaczowo przechowywane w koszyku. Wyświetlone w tym miescu cena są zawsze aktualne. <br/> Chesz Chcwsz zrealizować kod z karty podarunkowej lub kod promocyjny? Wpisz kod podusmowując zamówienie</p>
@@ -115,10 +106,10 @@ const Card: React.FC = () => {
 
                 <div className = "card-content-left">
 
-                    <div className = "card-content-objects bg-light">
+                    <div className = "card-content-objects bg-light shadow">
                         <div>
                             <div className = "p-4 ms-3">
-                                <p className = "">Koszyk</p>
+                                <p className = "ms-4">Koszyk</p>
                             </div>
 
                             <div className = "d-flex justify-content-center">
@@ -128,27 +119,26 @@ const Card: React.FC = () => {
              
                         <div className = "card-content-objects-inner mt-5 bg-light">
                             {
-                            (cardUserGetter as CartItem[] || []).map((item: CartItem, index: number) => {
-                                return(
-                                    <CardObject
-                                        item = {item} key = {index}
-                                        ajaxFunction = {removeProduct}
-                                        prev = {prev}
-                                        isPossibleCheck = {isPossibleCheck}
-                                        removeIsPossibleCheck = {removeIsPossibleCheck}
-                                    />
-                                )    
-                            })
+                                (cardUserGetter as CartItem[] || []).map((item: CartItem, index: number) => {
+                                    return(
+                                        <CardObject
+                                            item = {item} key = {index}
+                                            ajaxFunction = {removeProduct}
+                                            prev = {prev}
+                                            isPossibleCheck = {isPossibleCheck}
+                                            removeIsPossibleCheck = {removeIsPossibleCheck}
+                                        />
+                                    )    
+                                })
                             }
                         </div>
-
 
                         <div className = "card-content-objects-footer">
                         </div>
                     </div>
 
-
-                    <div className = "card-content-left-second bg-light">
+                    <div className = "card-content-left-second bg-light shadow">
+                        <Recommendations products_id = {["9", "8"]} />
                     </div>
                 </div>
 
