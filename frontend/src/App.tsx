@@ -27,7 +27,8 @@ import './css_modules/MiniNavbar.css';
 import './css_modules/EditProfile.css';
 import './css_modules/EditProfileModal.css';
 import './css_modules/SingleTransaction.css';
-
+import './css_modules/ProductCard.css';
+import './css_modules/Recommendation.css';
 
 const App: React.FC = () => {
 

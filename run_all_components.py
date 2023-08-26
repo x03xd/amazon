@@ -1,6 +1,11 @@
 import subprocess
 import concurrent.futures
 
+
+'''
+PROGRAM URUCHAMIA SIE OK. 30 SEKUND Z POWODU UZYCIA BIBLIOTEKI EVENTLET Z CELERY
+'''
+
 '''
 w przypadku klopotow mozna wlaczyc recznie
     {"location": "C:/Users/ja/Desktop/amazon-poprawki/frontend", "command": "npm start"},
@@ -12,6 +17,7 @@ w przypadku klopotow mozna wlaczyc recznie
 def run_command(config):
     location = config["location"]
     command = config["command"]
+
 
     process = subprocess.Popen(command, cwd=location, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.communicate()

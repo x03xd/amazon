@@ -7,7 +7,7 @@ const SelectCurrency: React.FC = () => {
     const {authToken, username} = useContext(AuthContext);
     const [selectedCurrency] = useState(getCookie("currency") || "USD");
 
-
+    
     const handleCurrencyChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
 
         if(!authToken) {alert("You have to be authenticated to change preferred currency");}

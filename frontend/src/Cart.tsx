@@ -5,17 +5,8 @@ import AuthContext from "./AuthenticationContext";
 import CardFinalizing from './CartFinalizing';
 import CartSideBar from './CartSideBar'
 import { useNavigate } from 'react-router-dom';
+import { ProductsInterface } from './static_ts_files/commonInterfaces';
 
-interface ProductAPI {
-    brand: string;
-    description: string;
-    id: number;
-    image: string;
-    price: number;
-    quantity: number;
-    category_name: number;
-    title: string;
-}
 
 interface CartItem {
     id: number;
@@ -23,7 +14,7 @@ interface CartItem {
     cart: number;
     product: number;
     total_price: number;
-    product_data: ProductAPI
+    product_data: ProductsInterface;
 }
 
 interface HashMap {
@@ -118,7 +109,6 @@ const Card: React.FC = () => {
     }
 
     else{
-
         return(
 
              <div className = "card-content mt-5">

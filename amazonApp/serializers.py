@@ -126,4 +126,3 @@ class BrandsByIdSerializer(ModelSerializer):
         fields = "__all__"
 
 
-        

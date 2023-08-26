@@ -25,20 +25,6 @@ class Brand(models.Model):
         return self.brand_name
     
 
-
-class Product(models.Model):
-    title = models.CharField(max_length=140, db_index=True)
-    description = models.CharField(max_length=1200)
-    price = models.DecimalField(db_index=True, max_digits=8, decimal_places=2)
-    image = models.CharField(max_length=500)
-    quantity = models.PositiveIntegerField()
-    category_name = models.ForeignKey(Category, on_delete=models.CASCADE, db_index=True)
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, db_index=True)
-
-    def __str__(self):
-        return self.title
-
-
 CURRENCY_CHOICES = (
     ("USD", "USD"),
     ("EUR", "EUR"),
@@ -52,7 +38,6 @@ class User(AbstractUser):
     username = models.CharField(max_length=20, unique=True, validators=[RegexValidator(r'^[a-zA-Z]*$', 'Only letters are allowed.')], db_index=True)
     email = models.EmailField(max_length=30, unique=True)
     currency = models.CharField(max_length=3, null=True, default = "EUR", choices=CURRENCY_CHOICES)
-
     username_change_allowed = models.DateField(null=True)
     email_change_allowed = models.DateField(null=True)
     password_change_allowed = models.DateField(null=True)
@@ -62,6 +47,20 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+
+
+class Product(models.Model):
+    title = models.CharField(max_length=140, db_index=True)
+    description = models.CharField(max_length=1200)
+    price = models.DecimalField(db_index=True, max_digits=8, decimal_places=2)
+    image = models.CharField(max_length=500)
+    quantity = models.PositiveIntegerField()
+    category_name = models.ForeignKey(Category, on_delete=models.CASCADE, db_index=True)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, db_index=True)
+    bought_by_rec = models.ManyToManyField(User, blank=True)
+
+    def __str__(self):
+        return self.title
 
 
 
@@ -74,6 +73,8 @@ class Rate(models.Model):
     rated_products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     rated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return f"{self.rated_by} has rated {self.rated_products} with {self.rate} rate"
 
 
 class Cart(models.Model):

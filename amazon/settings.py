@@ -205,8 +205,8 @@ LOGIN_URL = 'token_obtain_pair'
 
 CELERY_BEAT_SCHEDULE = {
     'update-exchange-rates': {
-        'task': 'amazonApp.tasks.background_task',  # Path to your task
-        'schedule': 86400,  # 60 minutes in seconds
+        'task': 'amazonApp.tasks.background_task',  
+        'schedule': 7 * 24 * 3600,  
     },
 }
 
