@@ -8,8 +8,8 @@ from django.conf import settings
 @shared_task
 def background_task():
    
-    API_URL = settings.FIXER_API_KEY
-    API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
+    API_URL = settings.FIXER_API_URL
+    API_KEY = settings.FIXER_API_KEY
         
     params = {
         "access_key": API_KEY,

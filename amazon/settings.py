@@ -210,4 +210,5 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-FIXER_API_KEY = "http://data.fixer.io/api/latest"
+FIXER_API_URL = "http://data.fixer.io/api/latest"
+FIXER_API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
