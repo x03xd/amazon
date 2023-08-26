@@ -2,9 +2,9 @@
 .card-content {
    display: grid;
    grid-template-columns: 4fr 1fr;
-   min-height: 1200px;
-   gap: 20px;
+   gap: 2.7rem;
 }
+
 
 
 .card-content-objects p {
@@ -19,20 +19,18 @@
 
 .card-content-left-first-content {
     width: 100%;
-    padding: 20px;
-    place-items: center;
 }
 
 
 .card-content-left-first {
     grid-row: 1 / 2;
-    padding: 20px;
     display: flex;
 }
 
 
 .card-content-left-second {
     grid-row: 2 / 3;
+    height: 8rem;
 }
 
 
