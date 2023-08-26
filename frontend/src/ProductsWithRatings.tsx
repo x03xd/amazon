@@ -15,7 +15,7 @@ const ProductsWithRatings: React.FC<ProductsWithRatingsProps> = ({ products }) =
 
     const [productsWithRatings, setProductsWithRatings] = useState<JSX.Element[]>([]);
     const [averageRate, setAverageRate] = useState<Rate[]>([]);
-
+    
     useEffect(() => {
         try {
             fetch(`http://127.0.0.1:8000/api/avg-rate`)

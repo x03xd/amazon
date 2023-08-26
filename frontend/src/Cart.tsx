@@ -24,6 +24,7 @@ interface HashMap {
 const Card: React.FC = () => {
 
     const [cardUserGetter, setCardUserGetter] = useState<CartItem[]>([]);
+    const [cardUserGetterID, setCardUserGetterID] = useState<number[]>([]);
     const [reload, setReload] = useState<[number, number]>();
     const [isPossible, setIsPossible] = useState<HashMap>([]);
     const [total, setTotal] = useState<number>(0);
@@ -35,7 +36,7 @@ const Card: React.FC = () => {
         try{
             fetch(`http://127.0.0.1:8000/api/cart/${username?.user_id}`)
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0), console.log(result)));
+            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0), setCardUserGetterID(result?.serialized_id)));
         }
         catch(error){alert('An error occurred. Please try again later.');}
     }, [reload])
@@ -84,10 +85,9 @@ const Card: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className = "card-content-left-second bg-light">
-                        <Recommendations products_id = {["9", "8"]} />
+                    <div className = "card-content-left-second bg-light"> 
                     </div>
-
+                    
                     <p className = "fs-11">Ceny i dostępność produktów w serwisie Amazon.pl mogą ulec zmianie. Produkty sa tymsaczowo przechowywane w koszyku. Wyświetlone w tym miescu cena są zawsze aktualne. <br/> Chesz Chcwsz zrealizować kod z karty podarunkowej lub kod promocyjny? Wpisz kod podusmowując zamówienie</p>
                 </div>
 
@@ -101,11 +101,8 @@ const Card: React.FC = () => {
 
     else{
         return(
-
-             <div className = "card-content mt-5">
-
+            <div className = "card-content mt-5">
                 <div className = "card-content-left">
-
                     <div className = "card-content-objects bg-light shadow">
                         <div>
                             <div className = "p-4 ms-3">
@@ -138,7 +135,6 @@ const Card: React.FC = () => {
                     </div>
 
                     <div className = "card-content-left-second bg-light shadow">
-                        <Recommendations products_id = {["9", "8"]} />
                     </div>
                 </div>
 
@@ -147,11 +143,13 @@ const Card: React.FC = () => {
                     <CartSideBar />              
                 </div>
 
+                <div className = "recommendation-bar">
+                    <Recommendations products_id = {cardUserGetterID} />
+                </div>
+            
             </div>
 
         );
     }
-
-
 }
 export default Card;

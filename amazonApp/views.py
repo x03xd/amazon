@@ -1,6 +1,6 @@
 from rest_framework import generics, status
 from .models import Product, Category, Rate, User, Transaction, CartItem, Brand, Cart
-from .serializers import ProductSerializer, CategorySerializer, RateSerializer, CurrencySerializer, TransactionSerializer, CartItemSerializer, GetterRateSerializer, BrandsByCategoriesSerializer, BrandsByIdSerializer
+from .serializers import ProductSerializer, CategorySerializer, RateSerializer, CurrencySerializer, TransactionSerializer, CartItemSerializer, GetterRateSerializer, BrandsByCategoriesSerializer, BrandsByIdSerializer, CartItemIDSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http.response import JsonResponse
@@ -83,7 +83,6 @@ class CurrencyConverterAPI(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
-
 class CartAPI(APIView):
 
     def adding_product_by_id(self, cart_item_serializer):
@@ -92,9 +91,11 @@ class CartAPI(APIView):
         for cart_item in cart_item_serializer:
             try:
                 prod = Product.objects.get(id=cart_item["product"])
+
                 p_serializer = ProductSerializer(prod)
                 cart_item["product_data"] = p_serializer.data
                 product_data_list.append(cart_item)
+
             except Product.DoesNotExist as e:
                 return Response({"error": "Error message", "detail": str(e)}, status=404)
         
@@ -104,11 +105,12 @@ class CartAPI(APIView):
     def get(self, request, *args, **kwargs):
         try:
             user_id = self.kwargs.get("user_id")
-
             currency_context = provide_currency_context(user_id)
 
             cart = CartItem.objects.filter(cart__owner__id = user_id).order_by('product__title')
             serializer = CartItemSerializer(cart, many=True, context=currency_context)
+
+            serializer_id = list(map(lambda item: item['product'], CartItemSerializer(cart, many=True).data))
 
             prod_data = self.adding_product_by_id(serializer.data)
 
@@ -118,7 +120,7 @@ class CartAPI(APIView):
             sum_ = cart.aggregate(total_price_sum=Sum('total_price'))
             sum_r = round(sum_['total_price_sum'] * Decimal(currency_context["user_preferred_currency"]), 2)
 
-            return Response({"cart_items": prod_data, "sum": sum_r})
+            return Response({"cart_items": prod_data, "sum": sum_r, "serialized_id": serializer_id})
         
 
         except (CartItem.DoesNotExist, User.DoesNotExist) as e:
@@ -841,8 +843,10 @@ class Recommendations(APIView):
         try:
             username = self.kwargs.get("username")
             products_id = self.kwargs.get("id")
-            products_id = products_id.split(",")
+            products_id = [int(item) for item in products_id.split(", ")]
             user_id = self.kwargs.get("user_id")
+
+            print(products_id)
    
             recommended = Product.objects.filter(bought_by_rec__username=username).exclude(id__in=products_id)
             recommended = recommended.annotate(freq=Count('bought_by_rec')).order_by('-freq')
@@ -868,8 +872,6 @@ class LobbyPriceMod(APIView):
 
             product = Product.objects.get(id=product_id)
             serialized_current = ProductSerializer(product, context=provide_currency_context(user_id))
-
-            print(serialized_current)
 
             return Response({"modified_price": serialized_current.data["price"]})
 

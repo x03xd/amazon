@@ -2,7 +2,7 @@
 .card-content {
    display: grid;
    grid-template-columns: 4fr 1fr;
-   min-height: 1600px;
+   min-height: 1200px;
    gap: 20px;
 }
 
@@ -11,16 +11,13 @@
     font-size: 3rem !important;
 }
 
-
-
 .card-content-left {
     grid-column: 1 / 2;
     display: grid;
-    grid-template-rows: minmax(15%, auto) 5% 1fr 1fr;
     gap: 2.5rem;
 }
 
-.card-content-left-first-content{
+.card-content-left-first-content {
     width: 100%;
     padding: 20px;
     place-items: center;

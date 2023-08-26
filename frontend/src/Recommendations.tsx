@@ -5,7 +5,7 @@ import { ProductsInterface } from './static_ts_files/commonInterfaces';
 
 
 interface RecommendationProps {
-    products_id: string[];
+    products_id: number[];
 }
 
 const Recommendations: React.FC<RecommendationProps> = ({ products_id }) => {
@@ -13,7 +13,7 @@ const Recommendations: React.FC<RecommendationProps> = ({ products_id }) => {
     const [recommended, setRecommendations] = useState<ProductsInterface[]>([]);
     const {username} = useContext(AuthContext);
 
-    const joined = products_id.join(",")
+    const joined = Array.isArray(products_id) ? products_id.join(", ") : "";
 
     useEffect(() => {
         try {
