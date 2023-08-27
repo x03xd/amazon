@@ -88,12 +88,6 @@ class CartItemSerializer(ModelSerializer):
             
         return representation
     
-class CartItemIDSerializer(ModelSerializer):
-
-    class Meta:
-        model = CartItem
-        fields = ("id",)
-    
 
 class TransactionSerializer(ModelSerializer):
 
