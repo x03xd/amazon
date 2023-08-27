@@ -1,6 +1,5 @@
-from rest_framework import status
-from .models import Product, Category, Brand
-from .serializers import ProductSerializer, CategorySerializer, BrandsByCategoriesSerializer, BrandsByIdSerializer
+from amazonApp.models import Product, Category, Brand
+from amazonApp.serializers import ProductSerializer, CategorySerializer, BrandsByCategoriesSerializer, BrandsByIdSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
@@ -14,34 +13,8 @@ class CategoriesAPI(ListAPIView):
     serializer_class = CategorySerializer
 
     def get_queryset(self):
-        try:
-            queryset = Category.objects.all()
-            return queryset
-
-        except Category.DoesNotExist:
-            return Response({'status': False, "error": "Object does not exist"}, status=404)
-
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-        
-
-
-class ProductsBySubsAPI(ListAPIView):
-    serializer_class = ProductSerializer
-
-    def get_queryset(self):
-        q = self.request.query_params.get('q')
-
-        try:
-            if q is not None:
-                queryset = Product.objects.filter(category_name__name=q)
-                return queryset
-            else:
-                raise ValueError("Parameter 'q' is missing.")
-            
-        except ValueError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+        queryset = Category.objects.all()
+        return queryset
 
 
 class BrandsByCategoriesAPI(APIView):
@@ -64,9 +37,13 @@ class BrandsByCategoriesAPI(APIView):
 class BrandsByIdAPI(APIView):
 
     def get(self, request, **kwargs):
+        brand_id = self.kwargs.get("id")
+
+        if brand_id is None:
+            return Response({"error": "Brand ID is missing"}, status=404)
 
         try:
-            brand = Brand.objects.get(id = self.kwargs.get("id"))
+            brand = Brand.objects.get(id = brand_id)
             serializer = BrandsByIdSerializer(brand)
 
             return Response(serializer.data)
@@ -89,8 +66,6 @@ class Recommendations(APIView):
             products_id = [int(item) for item in products_id.split(", ")]
             user_id = self.kwargs.get("user_id")
 
-            print(products_id)
-   
             recommended = Product.objects.filter(bought_by_rec__username=username).exclude(id__in=products_id)
             recommended = recommended.annotate(freq=Count('bought_by_rec')).order_by('-freq')
             serialized = ProductSerializer(recommended, many=True, context=provide_currency_context(user_id))

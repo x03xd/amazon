@@ -6,7 +6,7 @@ from decimal import Decimal
 
 class RateSerializer(ModelSerializer):
     average_rate = serializers.FloatField()
-    rated_products = serializers.CharField() # trzeba nadpsiac jako charfield bo foreinkey nie dziala w serializers
+    rated_products = serializers.CharField() 
 
     class Meta:
         model = Rate

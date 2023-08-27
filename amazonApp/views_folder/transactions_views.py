@@ -2,7 +2,6 @@ from amazonApp.models import Product, User, Transaction, CartItem, Cart
 from amazonApp.serializers import ProductSerializer, TransactionSerializer, CartItemSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView
 from datetime import datetime
 from rest_framework.response import Response
 
@@ -100,16 +99,10 @@ class TransactionsAPI(ListAPIView):
     serializer_class = TransactionSerializer
 
     def get_queryset(self):
-        try:
-            queryset = Transaction.objects.filter(bought_by__id = self.kwargs.get("id"))
-            return queryset
+        queryset = Transaction.objects.filter(bought_by__id = self.kwargs.get("id"))
+        return queryset
 
-        except Transaction.DoesNotExist:
-            return Response({'authenticated': False, "error": "Object does not exist"}, status=404)
-        
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-        
+
     
 class ProductsFromTransactions(APIView):
 

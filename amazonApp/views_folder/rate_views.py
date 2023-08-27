@@ -14,11 +14,8 @@ class CountAvgRate(ListAPIView):
     serializer_class = RateSerializer
 
     def get_queryset(self):
-        try:
-            return Rate.objects.values("rated_products").annotate(average_rate=Avg("rate"))
-
-        except Rate.DoesNotExist:
-            return Response({"error": "Object does not exist"}, status=404)
+        queryset = Rate.objects.values("rated_products").annotate(average_rate=Avg("rate"))
+        return queryset
 
 
 class RateProduct(APIView):

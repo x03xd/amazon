@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from amazonApp.views_folder import views
 from amazonApp.views_folder import auth_views
 from amazonApp.views_folder import rate_views
 from amazonApp.views_folder import edit_user_views
@@ -51,10 +51,10 @@ urlpatterns = [
     path("currency-converter/<id>", currencies_views.CurrencyConverterAPI.as_view()),
 
     #REST
-    path("categories/", views.CategoriesAPI.as_view()),
-    path("brands/<category>", views.BrandsByCategoriesAPI.as_view()),
-    path("brand/<id>", views.BrandsByIdAPI.as_view()),
-    path("recommendations/<username>/<id>/<user_id>", views.Recommendations.as_view()),
-    path("lobby-price-mod/<user_id>/<product_id>", views.LobbyPriceMod.as_view()),
+    path("categories/", views.CategoriesAPI.as_view(), name="categories"),
+    path("brands/<category>", views.BrandsByCategoriesAPI.as_view(), name="brands-by-categories"),
+    path("brand/<id>", views.BrandsByIdAPI.as_view(), name="brand-by-id"),
+    path("recommendations/<username>/<id>/<user_id>", views.Recommendations.as_view(), name="recommendations"),
+    path("lobby-price-mod/<user_id>/<product_id>", views.LobbyPriceMod.as_view(), name="lobby-price"),
 ]
 

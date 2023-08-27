@@ -6,7 +6,6 @@ from django.core.cache import cache
 from rest_framework.response import Response
 
 
-
 def provide_currency_context(user_id):
     serializer_context = {}
         
