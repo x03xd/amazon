@@ -48,7 +48,7 @@ urlpatterns = [
     path("products-from-transactions/", transactions_views.ProductsFromTransactions.as_view()),
 
     #CURRENCIES
-    path("currency-converter/<id>", currencies_views.CurrencyConverterAPI.as_view()),
+    path("currency-converter/<id>", currencies_views.CurrencyConverterAPI.as_view(), name="currency-converter"),
 
     #REST
     path("categories/", views.CategoriesAPI.as_view(), name="categories"),
