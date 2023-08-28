@@ -20,9 +20,9 @@ urlpatterns = [
     path("products/<id>/", filter_products_views.ProductsAPI.as_view()),
 
     #AUTHENTICATION
-    path("registration/", auth_views.RegisterSystem.as_view()),
-    path('logout/', auth_views.LogoutView.as_view()),
-    path("login/", auth_views.LoginAPI.as_view()),
+    path("registration/", auth_views.RegisterSystem.as_view(), name="register"),
+    path('logout/', auth_views.LogoutView.as_view(), name="logout"),
+    path("login/<data>", auth_views.LoginAPI.as_view(), name="login"),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 

@@ -74,21 +74,3 @@ class TestCurrencyConverterAPI:
         assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert response.data == {'error': 'Internal Server Error', 'detail': 'Simulated error'}
 
-        
-    '''    @patch('amazonApp.views_folder.currencies_views.User.objects.get')
-    def test_patch_404(self, mock_get, create_user, api_client):
-        mock_get.side_effect = User.DoesNotExist("Simulated error")
-        user = create_user
-
-        url = reverse('currency-converter', kwargs={'id': user.id})  
-        data = {'currency': 'USD'}
-
-        with pytest.raises(User.DoesNotExist) as excinfo:
-            response = api_client.patch(url, data, format='json')
-
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-        assert response.data == {'error': 'Object does not exist'}
-
-        # Check that the exception message is included in the test
-        assert str(excinfo.value) == 'Simulated error'
-    '''

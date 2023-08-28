@@ -15,6 +15,7 @@ def create_user():
     return user
 
 
+
 @pytest.fixture
 def create_brand(create_category):
     brand, _ = Brand.objects.get_or_create(brand_name='Default Brand', id=1, belongs_to_category=create_category)
