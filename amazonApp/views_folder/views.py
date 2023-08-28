@@ -37,13 +37,9 @@ class BrandsByCategoriesAPI(APIView):
 class BrandsByIdAPI(APIView):
 
     def get(self, request, **kwargs):
-        brand_id = self.kwargs.get("id")
-
-        if brand_id is None:
-            return Response({"error": "Brand ID is missing"}, status=404)
 
         try:
-            brand = Brand.objects.get(id = brand_id)
+            brand = Brand.objects.get(id = self.kwargs.get("id"))
             serializer = BrandsByIdSerializer(brand)
 
             return Response(serializer.data)
@@ -54,7 +50,6 @@ class BrandsByIdAPI(APIView):
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
-
 
 class Recommendations(APIView):
 
@@ -79,7 +74,6 @@ class Recommendations(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
             
 
-
 class LobbyPriceMod(APIView):
 
     def get(self, request, *args, **kwargs):
@@ -89,7 +83,6 @@ class LobbyPriceMod(APIView):
             user_id = self.kwargs.get("user_id")
 
             product = Product.objects.get(id=product_id)
-            serialized_current = ProductSerializer(product, context=provide_currency_context(user_id))
             serialized_current = ProductSerializer(product, context=provide_currency_context(user_id))
 
             return Response({"modified_price": serialized_current.data["price"]})

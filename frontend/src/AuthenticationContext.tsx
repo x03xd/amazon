@@ -81,34 +81,35 @@ export const AuthProvider = ({children}: ContextProvider) => {
 
     async function usernameFilter(e: ChangeEvent<HTMLFormElement>){
         e.preventDefault();
-
+    
         try{
-            const response = await fetch("http://127.0.0.1:8000/api/login/", {
-                method: 'POST',
+            const response = await fetch(`http://127.0.0.1:8000/api/login/${e.target.usernameorpassword.value}`, {
+                method: 'GET', 
                 credentials: 'include',
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({'username': e.target.usernameorpassword.value})
             })
             const jsonResponse = await response.json();
             setUsername(jsonResponse?.username)
-
+    
             if(jsonResponse?.authenticated){
                 navigateToPasswordInput();
                 setAlertStyle("hidden");
             }
-
+    
             else {
                 navigateBack();
                 setAlertStyle("active");
                 setAlertText("Użytkownik nie istnieje");
             }
-
+    
             e.target.usernameorpassword.value = "";
         }
-
-        catch(error){alert('An error occurred. Please try again later.');}
+    
+        catch(error){
+            alert('An error occurred. Please try again later.');
+        }
     }
 
 

@@ -1,8 +1,13 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Product, Category, User, Cart, Rate, Transaction, CartItem, Brand
+from .models import Product, Category, User, Cart, Rate, Transaction, CartItem, Brand, User
 from rest_framework import serializers
 from django.core.cache import cache
 from decimal import Decimal
+import re
+from django.contrib.auth.password_validation import validate_password
+from django.core.validators import validate_email
+from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
 
 class RateSerializer(ModelSerializer):
     average_rate = serializers.FloatField()
@@ -125,3 +130,43 @@ class BrandsByIdSerializer(ModelSerializer):
         fields = "__all__"
 
 
+class UserRegistrationSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        password = data.get('password')
+        password2 = data.get('password2')
+        email = data.get('email')
+        username = data.get('username')
+
+        if password != password2:
+            raise Exception("Passwords do not match.")
+
+        if not re.match(r'^[a-zA-Z]*$', username):
+            raise Exception("Username should contain only letters.")
+        
+        validate_email(email)
+
+        if User.objects.filter(email=email, username=username).exists():
+            raise Exception("A username with that username and email already exists")
+        
+        if User.objects.filter(username=username).exists():
+            raise Exception("A username with that username already exists")
+
+        if User.objects.filter(email=email).exists():
+            raise Exception("A username with that email already exists")
+
+        validate_password(password)
+
+        return data
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        validated_data.pop('password2')
+
+        hashed_password = make_password(password)
+        user = User.objects.create(password=hashed_password, **validated_data)
+        return user

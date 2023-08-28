@@ -34,7 +34,6 @@ class CartAPI(APIView):
 
             cart = CartItem.objects.filter(cart__owner__id = user_id).order_by('product__title')
             serializer = CartItemSerializer(cart, many=True, context=currency_context)
-
             serializer_id = list(map(lambda item: item['product'], CartItemSerializer(cart, many=True).data))
 
             prod_data = self.adding_product_by_id(serializer.data)

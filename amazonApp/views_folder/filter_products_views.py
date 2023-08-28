@@ -48,8 +48,8 @@ class ProductsAPI(APIView):
             queryset = queryset.filter(price__range=(min([p[0] for p in filters['prices']]), max([p[1] for p in filters['prices']])))
         return queryset
     
-
-    def filter_by_rating(self, rating):
+    
+    def filter_by_rating(rating):
         rates = Rate.objects.values("rated_products").annotate(average_rate=Avg("rate")).filter(average_rate__gte=rating)
         return [rate["rated_products"] for rate in rates]
 
