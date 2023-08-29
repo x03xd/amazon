@@ -6,6 +6,8 @@ from rest_framework import status
 from unittest.mock import patch
 from amazonApp.tests.fixtures_test import create_user
 from rest_framework import serializers
+from amazonApp.custom_exceptions import DuplicateUserException, DuplicateUsernameException, DuplicateEmailException
+
 
 @pytest.fixture
 def api_client():
@@ -84,9 +86,9 @@ class TestLoginAPI:
         assert response.data == {'error': {'email': [serializers.ErrorDetail(string='Enter a valid email address.', code='invalid')]}}
 
 
-
-    def test_get_500_email_exists(self, api_client):
-        User.objects.create(username='testuser2', email='testuser@gmail.com')
+    @patch('amazonApp.views_folder.auth_views.User.objects.filter')
+    def test_get_500_email_exists(self, mock_post, api_client):
+        mock_post.side_effect = DuplicateEmailException('A username with that email already exists')
         
         data = {
             'username': 'testuser',
@@ -105,9 +107,9 @@ class TestLoginAPI:
         assert response.data == {'error': 'An error occurred during user registration', 'detail': 'A username with that email already exists'}
 
 
-    def test_get_500_username_exists(self, api_client):
-        User.objects.create(username='testuser', email='testuser2@gmail.com')
-        #remove?
+    @patch('amazonApp.views_folder.auth_views.User.objects.filter')
+    def test_get_500_username_exists(self, mock_post, api_client):
+        mock_post.side_effect = DuplicateUsernameException('A username with that username already exists')
 
         data = {
             'username': 'testuser',
@@ -119,12 +121,14 @@ class TestLoginAPI:
         url = reverse('register')
         response = api_client.post(url, data, format='json')
 
+
         assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert response.data == {'error': 'An error occurred during user registration', 'detail': 'A username with that username already exists'}
 
 
-    def test_get_500_username_and_email_exists(self, api_client):
-        User.objects.create(username='testuser', email='testuser@gmail.com')
+    @patch('amazonApp.views_folder.auth_views.User.objects.filter')
+    def test_get_500_username_and_email_exists(self, mock_post, api_client):
+        mock_post.side_effect = DuplicateUserException('A username with that username and email already exists')
         
         data = {
             'username': 'testuser',

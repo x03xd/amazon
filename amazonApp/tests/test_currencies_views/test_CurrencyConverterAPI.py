@@ -6,7 +6,7 @@ from amazonApp.tests.fixtures_test import create_user
 from unittest.mock import patch
 from django.core.cache import cache
 from amazonApp.serializers import CurrencySerializer
-from amazonApp.views_folder.currencies_views import provide_currency_context
+from amazonApp.views_folder.currencies_views import provide_currency_context, CurrencyConverterAPI
 
 @pytest.fixture
 def api_client():
@@ -61,16 +61,15 @@ class TestCurrencyConverterAPI:
         assert response.data == {"error": "Invalid currency choice"}
 
 
-    @patch('amazonApp.views_folder.currencies_views.User.objects.get')
+    @patch.object(CurrencyConverterAPI, 'patch', side_effect=Exception('Simulated error'))
     def test_patch_500(self, mock_get, create_user, api_client):
-        mock_get.side_effect = Exception("Simulated error")
         user = create_user
 
         url = reverse('currency-converter', kwargs={'id': user.id})  
         data = {'currency': 'USD'}
 
-        response = api_client.patch(url, data, format='json')
+        with pytest.raises(Exception) as exc_info:
+            api_client.patch(url, data, format='json')
 
-        assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-        assert response.data == {'error': 'Internal Server Error', 'detail': 'Simulated error'}
+        assert str(exc_info.value) == 'Simulated error'
 

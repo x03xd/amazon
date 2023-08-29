@@ -8,6 +8,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
+from .custom_exceptions import DuplicateUserException, DuplicateUsernameException, DuplicateEmailException
 
 class RateSerializer(ModelSerializer):
     average_rate = serializers.FloatField()
@@ -151,13 +152,13 @@ class UserRegistrationSerializer(serializers.Serializer):
         validate_email(email)
 
         if User.objects.filter(email=email, username=username).exists():
-            raise Exception("A username with that username and email already exists")
+            raise DuplicateUserException("A username with that username and email already exists")
         
         if User.objects.filter(username=username).exists():
-            raise Exception("A username with that username already exists")
+            raise DuplicateUsernameException("A username with that username already exists")
 
         if User.objects.filter(email=email).exists():
-            raise Exception("A username with that email already exists")
+            raise DuplicateEmailException("A username with that email already exists")
 
         validate_password(password)
 

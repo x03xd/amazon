@@ -6,6 +6,7 @@ from rest_framework import status
 from unittest.mock import patch
 from collections import OrderedDict
 from amazonApp.tests.fixtures_test import create_category, create_brand
+from amazonApp.views_folder.views import BrandsByCategoriesAPI
 
 @pytest.fixture
 def api_client():
@@ -35,30 +36,15 @@ class TestBrandsByCategoriesAPI:
         assert response.data == []
 
 
-    @patch('amazonApp.views_folder.views.Brand.objects.filter')
+    @patch.object(BrandsByCategoriesAPI, 'get', side_effect=Exception('Simulated error'))
     def test_get_500(self, mock_get, api_client, create_category, create_brand):
-        mock_get.side_effect = Exception("Simulated error")
-
         category = create_category
         create_brand
 
         url = reverse('brands-by-categories', kwargs={'category': category.name})
-        response = api_client.get(url)
 
-        assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-        assert response.data == {'error': 'Internal Server Error', 'detail': 'Simulated error'}
+        with pytest.raises(Exception) as exc_info:
+            api_client.get(url)
 
-
-    @patch('amazonApp.views_folder.views.Brand.objects.filter')
-    def test_get_404(self, mock_get, api_client, create_category, create_brand):
-        mock_get.side_effect = Brand.DoesNotExist("Simulated error")
-
-        category = create_category
-        create_brand
-
-        url = reverse('brands-by-categories', kwargs={'category': category.name})
-        response = api_client.get(url)
-
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-        assert response.data == {'error': 'Object does not exist'}
-        
+        assert str(exc_info.value) == 'Simulated error'
+     

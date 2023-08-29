@@ -109,7 +109,7 @@ class ProcessAPI(APIView):
                 product = Product.objects.get(id=product_id) 
 
             except (User.DoesNotExist, Product.DoesNotExist) as e:
-                return Response({"error": "Error message", "detail": str(e)}, status=404)
+                return Response({"error": "Object does not exist"}, status=404)    
             
             total_quantity = CartItem.objects.filter(cart__owner=user).aggregate(Sum('quantity'))['quantity__sum']
             
@@ -119,7 +119,7 @@ class ProcessAPI(APIView):
                 cart = Cart.objects.get(owner__id=user_id)  
 
             except Cart.DoesNotExist:
-                return Response("Object does not exist", status=404)    
+                return Response({"error": "Object does not exist"}, status=404)     
 
             try:
                 obj = CartItem.objects.get(cart=cart, product=product)

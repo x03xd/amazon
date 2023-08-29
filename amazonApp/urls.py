@@ -38,9 +38,9 @@ urlpatterns = [
     path("access-to-change-status/<id>", edit_user_views.AccessToChangeStatus.as_view()),
 
     #CART
-    path("process/", cart_views.ProcessAPI.as_view()),
-    path("remove-item/", cart_views.RemoveItemCart.as_view()),
-    path("cart/<user_id>", cart_views.CartAPI.as_view()),
+    path("process/", cart_views.ProcessAPI.as_view(), name="process"),
+    path("remove-item/", cart_views.RemoveItemCart.as_view(), name="remove-item"),
+    path("cart/<user_id>", cart_views.CartAPI.as_view(), name="cart"),
 
     #TRANSACTIONS
     path("finalize-order/", transactions_views.FinalizeOrder.as_view()),

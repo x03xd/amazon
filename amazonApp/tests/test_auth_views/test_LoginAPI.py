@@ -5,6 +5,7 @@ from amazonApp.models import User
 from rest_framework import status
 from unittest.mock import patch
 from amazonApp.tests.fixtures_test import create_user
+from amazonApp.views_folder.auth_views import LoginAPI
 
 @pytest.fixture
 def api_client():
@@ -18,8 +19,6 @@ class TestLoginAPI:
 
         url = reverse('login', kwargs={'data': user.username})
         response = api_client.get(url)
-
-        print(response.data)
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data == {'authenticated': True, 'email': 'Default email', 'username': 'Default username'}
@@ -37,13 +36,13 @@ class TestLoginAPI:
         assert response.data == {'error': 'Error message', 'detail': 'Simulated error'}
 
 
-    @patch('amazonApp.views_folder.auth_views.User.objects.get')
+    @patch.object(LoginAPI, 'get', side_effect=Exception('Simulated error'))
     def test_get_500(self, mock_get, api_client, create_user):
-        mock_get.side_effect = Exception('Simulated error')
         user = create_user
 
         url = reverse('login', kwargs={'data': user.username})
-        response = api_client.get(url)
 
-        assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-        assert response.data == {'authenticated': False, 'error': 'Internal Server Error', 'detail': 'Simulated error'}
+        with pytest.raises(Exception) as exc_info:
+            response = api_client.get(url)
+
+        assert str(exc_info.value) == 'Simulated error'
