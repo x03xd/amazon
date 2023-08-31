@@ -42,7 +42,7 @@ class TestRecommendaions:
 
     @patch('amazonApp.views_folder.views.Product.objects.filter')
     def test_get_404(self, mock_get, api_client, create_product, create_user):
-        mock_get.side_effect = Product.DoesNotExist("Simulated error")
+        mock_get.side_effect = Product.DoesNotExist()
 
         product = create_product
         user = create_user
