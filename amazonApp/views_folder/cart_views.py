@@ -86,13 +86,14 @@ class CartAPI(APIView):
 
 class ProcessAPI(APIView):
 
-    def validate_conditions(self, quantity, product_quantity, total_quantity):
+    @staticmethod
+    def validate_conditions(quantity, product_quantity, total_quantity):
 
         if quantity > product_quantity:
             return Response("Quantity exceeds available stock")
 
-        if 10 > quantity < 1:
-                return Response("Quantity is not in range 1-10")
+        if not (1 <= quantity <= 10):
+            return Response("Quantity is not in range 1-10")
 
         if isinstance(total_quantity, int) and total_quantity + quantity > 10:
             return Response("Maximum quantity of single item exceeded")
@@ -113,7 +114,7 @@ class ProcessAPI(APIView):
             
             total_quantity = CartItem.objects.filter(cart__owner=user).aggregate(Sum('quantity'))['quantity__sum']
             
-            self.validate_conditions(quantity, product.quantity, total_quantity)
+            ProcessAPI.validate_conditions(quantity, product.quantity, total_quantity)
 
             try:
                 cart = Cart.objects.get(owner__id=user_id)  
@@ -144,17 +145,16 @@ class ProcessAPI(APIView):
 class RemoveItemCart(APIView):
 
     def post(self, request):
-  
         try:
-            username = request.data.get("username")
+            user_id = request.data.get("user_id")
             item_id = request.data.get("item_id")
 
-            cart = CartItem.objects.get(cart__owner__id = username, product__id = item_id)
+            cart = CartItem.objects.get(cart__owner__id=user_id, product__id=item_id)
             cart.delete()
 
             return Response({"done": True, "product_id": item_id})
 
-        except Product.DoesNotExistc as e:
+        except CartItem.DoesNotExist as e:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:

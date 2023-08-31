@@ -30,13 +30,13 @@ class CurrencyConverterAPI(APIView):
             if currency not in {"USD", "GBP", "PLN", "EUR"}:
                 return Response({"error": "Invalid currency choice"})
 
-            user = User.objects.get(id = self.kwargs.get("id"))
+            user = User.objects.get(id=self.kwargs.get("id"))
             user.currency = currency 
             user.save()
 
             return Response({"Valid currency choice": currency})
 
-        except User.DoesNotExist:
+        except User.DoesNotExist as e:
             return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:

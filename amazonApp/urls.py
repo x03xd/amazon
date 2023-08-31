@@ -27,9 +27,9 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     #RATE
-    path('avg-rate/', rate_views.CountAvgRate.as_view()),
-    path('rate-product/<id>/<pid>/<rate>', rate_views.RateProduct.as_view()),
-    path("delete-rate/", rate_views.DeleteRate.as_view()),
+    path('avg-rate/', rate_views.CountAvgRate.as_view(), name="avg-rate"),
+    path('rate-product/<id>/<pid>/<rate>', rate_views.RateProduct.as_view(), name='rate-product'),
+    path("delete-rate/", rate_views.DeleteRate.as_view(), name='delete-rate'),
 
     #USER_EDIT
     path("edit-username/<id>", edit_user_views.EditUsername.as_view()),

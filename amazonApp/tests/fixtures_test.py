@@ -1,5 +1,5 @@
 import pytest
-from amazonApp.models import Category, Brand, Product, User, Cart, CartItem
+from amazonApp.models import Category, Brand, Product, User, Cart, CartItem, Rate
 import decimal
 
 
@@ -37,6 +37,11 @@ def create_cartItem(create_product, create_cart):
     cartItem, _ = CartItem.objects.get_or_create(cart=create_cart, product=create_product, quantity=10, total_price=decimal.Decimal('100'))
     return cartItem
 
+
+@pytest.fixture
+def create_rate(create_product, create_user):
+    rate, _ = Rate.objects.get_or_create(rate=3, rated_by=create_user, rated_products=create_product)
+    return rate
 
 
 @pytest.fixture

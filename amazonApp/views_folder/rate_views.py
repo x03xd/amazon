@@ -18,8 +18,8 @@ class CountAvgRate(ListAPIView):
         return queryset
 
 
-class RateProduct(APIView):
 
+class RateProduct(APIView):
     def get(self, request, **kwargs):
 
         try:
@@ -29,7 +29,7 @@ class RateProduct(APIView):
             return Response(serializer.data["rate"])
 
         except Rate.DoesNotExist:
-            return JsonResponse({"error": "Object does not exist"}, status=404)
+            return Response({"error": "Object does not exist"}, status=404)
         
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -63,7 +63,6 @@ class RateProduct(APIView):
 
             return Response({"status": True})
     
-
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
@@ -77,6 +76,8 @@ class DeleteRate(APIView):
 
             rate = Rate.objects.get(rated_by__id = user_id, rated_products__id = product_id)
             rate.delete()
+
+            return Response('The rate has been restarted')
 
         except Rate.DoesNotExist:
             return Response({"error": "Object does not exist"}, status=404)

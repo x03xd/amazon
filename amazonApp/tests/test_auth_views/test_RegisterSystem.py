@@ -86,49 +86,15 @@ class TestLoginAPI:
         assert response.data == {'error': {'email': [serializers.ErrorDetail(string='Enter a valid email address.', code='invalid')]}}
 
 
+
+    @pytest.mark.parametrize('exception, detail', [
+        (DuplicateEmailException('A username with that email already exists'), 'A username with that email already exists'),
+        (DuplicateUsernameException('A username with that username already exists'), 'A username with that username already exists'),
+        (DuplicateUserException('A username with that username and email already exists'), 'A username with that username and email already exists')
+    ])
     @patch('amazonApp.views_folder.auth_views.User.objects.filter')
-    def test_get_500_email_exists(self, mock_post, api_client):
-        mock_post.side_effect = DuplicateEmailException('A username with that email already exists')
-        
-        data = {
-            'username': 'testuser',
-            'email': 'testuser@gmail.com',
-            'password': 'StrongPassword123',  
-            'password2': 'StrongPassword123'
-        }
-
-        url = reverse('register')
-        response = api_client.post(url, data, format='json')
-
-        print(response.data)
-        print(response.status_code)
-
-        assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-        assert response.data == {'error': 'An error occurred during user registration', 'detail': 'A username with that email already exists'}
-
-
-    @patch('amazonApp.views_folder.auth_views.User.objects.filter')
-    def test_get_500_username_exists(self, mock_post, api_client):
-        mock_post.side_effect = DuplicateUsernameException('A username with that username already exists')
-
-        data = {
-            'username': 'testuser',
-            'email': 'testuser@gmail.com',
-            'password': 'StrongPassword123',  
-            'password2': 'StrongPassword123'
-        }
-
-        url = reverse('register')
-        response = api_client.post(url, data, format='json')
-
-
-        assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-        assert response.data == {'error': 'An error occurred during user registration', 'detail': 'A username with that username already exists'}
-
-
-    @patch('amazonApp.views_folder.auth_views.User.objects.filter')
-    def test_get_500_username_and_email_exists(self, mock_post, api_client):
-        mock_post.side_effect = DuplicateUserException('A username with that username and email already exists')
+    def test_get_500_user_exists(self, mock_post, exception, detail, api_client):
+        mock_post.side_effect = exception
         
         data = {
             'username': 'testuser',
@@ -141,9 +107,6 @@ class TestLoginAPI:
         response = api_client.post(url, data, format='json')
 
         assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-        assert response.data == {'error': 'An error occurred during user registration', 'detail': 'A username with that username and email already exists'}
-
-
-    
+        assert response.data == {'error': 'An error occurred during user registration', 'detail': detail}
 
 

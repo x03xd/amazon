@@ -7,6 +7,7 @@ from unittest.mock import patch
 from django.core.cache import cache
 from amazonApp.serializers import CurrencySerializer
 from amazonApp.views_folder.currencies_views import provide_currency_context, CurrencyConverterAPI
+from amazonApp.models import User
 
 @pytest.fixture
 def api_client():
@@ -73,3 +74,16 @@ class TestCurrencyConverterAPI:
 
         assert str(exc_info.value) == 'Simulated error'
 
+
+    @patch('amazonApp.views_folder.currencies_views.User.objects.get')
+    def test_patch_404(self, mock_get, api_client, create_user):
+        mock_get.side_effect = User.DoesNotExist('Simulating')
+        user = create_user
+
+        url = reverse('currency-converter', kwargs={'id': user.id})  
+        data = {'currency': 'USD'}
+
+        response = api_client.patch(url, data, format='json')
+ 
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.data == {'error': 'Error message', 'detail': 'Simulating'}

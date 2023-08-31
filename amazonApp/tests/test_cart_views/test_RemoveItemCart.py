@@ -1,87 +1,62 @@
 import pytest
 from rest_framework.test import APIClient
 from django.urls import reverse
-from amazonApp.models import Category, Brand, User, Cart, CartItem, Product
+from amazonApp.models import User, CartItem, Product
 from rest_framework import status
 from unittest.mock import patch
-from collections import OrderedDict
-from amazonApp.tests.fixtures_test import create_cartItem, create_product, create_cart, create_category, create_user, create_brand
-from amazonApp.views_folder.cart_views import ProcessAPI, RemoveItemCart
+from amazonApp.tests.fixtures_test import create_user, create_cartItem, create_product, create_cart, create_category, create_brand
+from amazonApp.views_folder.cart_views import CartAPI, RemoveItemCart
 
 @pytest.fixture
 def api_client():
     return APIClient()
 
 @pytest.mark.django_db
-class TestProcessAPI:
+class TestRemoveItemCart:
 
-    def test_post_200(self, create_cartItem, create_product, create_user, create_cart, api_client):
-        create_cartItem
-        product = create_product
+    def test_post_200(self, api_client, create_cartItem, create_user, create_product):
+        cartItem = create_cartItem
         user = create_user
-        create_cart
+        product = create_product
 
-        url = reverse('process')
-        data = {'product_id': product.id, 'user_id': user.id, 'quantity': 10}
+        url = reverse('remove-item')
 
+        data = {'user_id': user.id, 'item_id': product.id}
         response = api_client.post(url, data, format='json')
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data == {"status": True}
+        assert response.data == {"done": True, "product_id": product.id}
+
 
     
-    @patch('amazonApp.views_folder.cart_views.User.objects.get')
-    def test_post_404_no_user(self, mock_get, create_cartItem, create_product, create_user, create_cart, api_client):
-        mock_get.side_effect = User.DoesNotExist('Simulated error')
-
-        create_cartItem
-        product = create_product
+    @patch.object(RemoveItemCart, 'post', side_effect=Exception('Simulated error'))
+    def test_post_500(self, mock_post, api_client, create_cartItem, create_user, create_product):
+        cartItem = create_cartItem
         user = create_user
-        create_cart
-
-        url = reverse('process')
-        data = {'product_id': product.id, 'user_id': user.id, 'quantity': 10}
-
-        response = api_client.post(url, data, format='json')
-
-        print(response.data)
-        print(response.status_code)
-
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-        assert response.data == {'error': 'Object does not exist'}
-
-
-    @patch('amazonApp.views_folder.cart_views.Product.objects.get')
-    def test_post_404_no_product(self, mock_get, create_cartItem, create_product, create_user, create_cart, api_client):
-        mock_get.side_effect = Product.DoesNotExist('Simulated error')
-
-        create_cartItem
         product = create_product
-        user = create_user
-        create_cart
 
-        url = reverse('process')
-        data = {'product_id': product.id, 'user_id': user.id, 'quantity': 10}
+        url = reverse('remove-item')
 
-        response = api_client.post(url, data, format='json')
-
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-        assert response.data == {'error': 'Object does not exist'}
-
-
-
-    @patch.object(ProcessAPI, 'post', side_effect=Exception('Simulated error'))
-    def test_post_500(self, mock_post, create_cartItem, create_product, create_user, create_cart, api_client):
-
-        create_cartItem
-        product = create_product
-        user = create_user
-        create_cart
-
-        url = reverse('process')
-        data = {'product_id': product.id, 'user_id': user.id, 'quantity': 10}
+        data = {'user_id': user.id, 'item_id': product.id}
 
         with pytest.raises(Exception) as exc_info:
-            api_client.post(url, data, format='json')
+           api_client.post(url, data, format='json')
 
-        assert str(exc_info.value) == 'Simulated error'
+        assert str(exc_info.value) == "Simulated error"
+
+
+    @patch('amazonApp.views_folder.cart_views.CartItem.objects.get')
+    def test_post_404(self, mock_get, api_client, create_cartItem, create_user, create_product):
+        mock_get.side_effect = CartItem.DoesNotExist('Simulated error')
+
+        cartItem = create_cartItem
+        user = create_user
+        product = create_product
+
+        url = reverse('remove-item')
+
+        data = {'user_id': user.id, 'item_id': product.id}
+        response = api_client.post(url, data, format='json')
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+

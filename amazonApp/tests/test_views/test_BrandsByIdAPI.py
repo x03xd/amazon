@@ -34,7 +34,6 @@ class TestBrandsByIdAPI:
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
-
     
     @patch.object(BrandsByIdAPI, 'get', side_effect=Exception("Simulated error"))
     def test_get_500(self, mock_get, api_client, create_brand):

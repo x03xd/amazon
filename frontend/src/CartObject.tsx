@@ -43,9 +43,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
     useEffect(() => {
         if(item.product_data.quantity < selectedValue) isPossibleCheck(item.product);
         else removeIsPossibleCheck(item.product);
-  
     }, [selectedValue])
-
 
     const removeProduct = (index_of_item: number) => {
         try{
@@ -55,7 +53,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({"item_id": index_of_item, "username": username?.user_id})
+                body: JSON.stringify({"item_id": index_of_item, "user_id": username?.user_id})
             })
             .then(response => response.json())
             .then(result => (setData(result)))  
@@ -72,7 +70,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({"product_id": item.product,"quantity": selectedValue})
+                body: JSON.stringify({"product_id": item.product, "quantity": selectedValue})
             })
             .then(response => response.json())
             .then(result => (prev(selectedValue, item.product)))
