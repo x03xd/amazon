@@ -83,7 +83,7 @@ const Transactions: React.FC = () => {
                             <span className = "edit-profile-container-title">Transakcje</span>
 
                             {
-                                transactions !== null ? (
+                                transactions != null ? (
                                     transactions.length > 0 ? (
                                     <>
                                         <img
@@ -113,18 +113,19 @@ const Transactions: React.FC = () => {
                                             />
                                             ))
                                         ) : (
-                                            <p>No products available.</p>
+                                            <></>
                                         )}
                                         </div>
                                     </>
+
                                     ) : (
                                     <div className="no-transactions-info-container">
                                         <span className="no-transactions-info">Brak transakcji</span>
                                     </div>
                                     )
-                                ) : (
-                                    <></>
-                                )
+                                ) : 
+
+                                <></>
                             }
 
                         </div>  
