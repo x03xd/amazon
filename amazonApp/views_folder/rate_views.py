@@ -3,7 +3,6 @@ from amazonApp.models import Product, Rate, User
 from amazonApp.serializers import RateSerializer, GetterRateSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.http.response import JsonResponse
 from rest_framework.generics import ListAPIView
 from django.db.models import Avg
 from rest_framework.response import Response
@@ -16,6 +15,7 @@ class CountAvgRate(ListAPIView):
     def get_queryset(self):
         queryset = Rate.objects.values("rated_products").annotate(average_rate=Avg("rate"))
         return queryset
+    
 
 
 

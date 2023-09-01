@@ -27,6 +27,9 @@ import './css_modules/EditProfile.css';
 import './css_modules/SingleTransaction.css';
 import './css_modules/ProductCard.css';
 import './css_modules/Recommendation.css';
+import './css_modules/Opinions.css';
+import './css_modules/SingleLobbyRate.css';
+
 
 const App: React.FC = () => {
 

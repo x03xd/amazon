@@ -1,0 +1,12 @@
+
+
+.lobby-opinions {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+}
+
+
+
+.opinion-reviewed_by-username {
+    font-size: 1.4rem !important;
+}

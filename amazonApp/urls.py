@@ -8,6 +8,7 @@ from amazonApp.views_folder import cart_views
 from amazonApp.views_folder import currencies_views
 from amazonApp.views_folder import transactions_views
 from amazonApp.views_folder import filter_products_views
+from amazonApp.views_folder import opinions_views
 
 from amazonApp.views_folder.auth_views import MyTokenObtainPairView
 from rest_framework_simplejwt.views import (
@@ -30,6 +31,9 @@ urlpatterns = [
     path('avg-rate/', rate_views.CountAvgRate.as_view(), name="avg-rate"),
     path('rate-product/<id>/<pid>/<rate>', rate_views.RateProduct.as_view(), name='rate-product'),
     path("delete-rate/", rate_views.DeleteRate.as_view(), name='delete-rate'),
+
+    #OPINION
+    path('opinions/<product_id>', opinions_views.DisplayOpinions.as_view(), name='opinions'),
 
     #USER_EDIT
     path("edit-username/<id>", edit_user_views.EditUsername.as_view()),

@@ -41,7 +41,6 @@ const Rating: React.FC = () => {
         window.location.href = updatedUrl;
     }
 
-
     return(
         <>
             {ratingLevels.map((row, index) => {

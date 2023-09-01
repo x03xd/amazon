@@ -6,6 +6,7 @@ import AuthContext from "./AuthenticationContext";
 import React from 'react';
 import getCookie from './getCookie'
 import Recommendations from './Recommendations';
+import Opinions from './Opinions';
 
 const Lobby: React.FC = () => {
     const [selectedValue, setSelectedValue] = useState<number>(1);
@@ -84,15 +85,14 @@ const Lobby: React.FC = () => {
 
             <div className = "lobby-content-gallery mt-5">
                 <div>
-                    <img src = {location.state.image} alt = "product" loading = "lazy" className = "p-5" height = "450" width = "600" />
+                    <img src = {location.state?.image} alt = "product" loading = "lazy" className = "p-5" height = "450" width = "600" />
                 </div>
 
                 <div className = "mt-5">
-                    <span className = "mt-p-5">{location.state.desc}</span> <br/>
+                    <span className = "mt-p-5">{location.state?.desc}</span> <br/>
                     <span>Marka: {brand}</span>
                 </div>
             </div>
-
 
             <div className = "mt-5">
                 <div className = "lobby-content-sidebar">
@@ -142,7 +142,7 @@ const Lobby: React.FC = () => {
                         </form>
 
                         <form method = "POST">
-                            {selectedValue <= location.state.quantity
+                            {selectedValue <= location.state?.quantity
                                 ?
                                 <input onClick = {() => finalizeOrderLobby()} className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
                                 :
@@ -166,6 +166,10 @@ const Lobby: React.FC = () => {
                     </div>
 
                 </div>
+            </div>
+
+            <div>
+                <Opinions product_id = {location.state.id_product} />
             </div>
 
             <div className = "recommendation-bar">
