@@ -41,7 +41,6 @@ const Rating: React.FC = () => {
         window.location.href = updatedUrl;
     }
 
-
     return(
         <>
             {ratingLevels.map((row, index) => {
@@ -56,7 +55,7 @@ const Rating: React.FC = () => {
 
                 return(
                     <div key = {index} className = "star-rating-container mt-1">
-                        {ratingStars.map((star: string[], key) => {        
+                        {ratingStars.map((_: string[], key) => {        
                     
                             return(
                                 <div onClick = {() => {ratingFilter(row[1]["key"])}} key = {key} className = {`${ratingStars[key][1]} cursor-finger`}>

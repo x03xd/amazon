@@ -32,7 +32,7 @@ const ProductsWithRatings: React.FC<ProductsWithRatingsProps> = ({ products }) =
         aLoop:
         for (let item of products) {
             for (let rate of averageRate) {
-                if (Number(rate["rated_products"]) === item["id"]){
+                if (Number(rate.rated_products) === item.id){
                     setProductsWithRatings(prevProducts => [
                         ...prevProducts,
                         <ProductCard key={item.id} item={item} rate={rate.average_rate} />

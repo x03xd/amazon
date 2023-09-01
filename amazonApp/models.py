@@ -74,6 +74,19 @@ class Rate(models.Model):
 
     def __str__(self):
         return f"{self.rated_by} has rated {self.rated_products} with {self.rate} rate"
+    
+
+
+class Opinion(models.Model):
+    rate = models.OneToOneField(Rate, on_delete=models.CASCADE)
+    title = models.CharField(max_length=30)
+    text = models.TextField(max_length=1200)
+    reviewed_product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    reviewed_date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Cart(models.Model):

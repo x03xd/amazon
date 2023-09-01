@@ -18,14 +18,14 @@ def background_task():
     }
 
     try:
-        response = requests.get(API_URL, params=params)
+        '''response = requests.get(API_URL, params=params)
         response.raise_for_status() 
 
         data = response.json()
         if "rates" in data:
             return data["rates"]
-        else:
-            return {}  
+        else:'''
+        return {}  
 
     except requests.exceptions.RequestException as e:
         return {}

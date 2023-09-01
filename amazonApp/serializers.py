@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Product, Category, User, Cart, Rate, Transaction, CartItem, Brand, User
+from .models import Product, Category, User, Cart, Rate, Transaction, CartItem, Brand, User, Opinion
 from rest_framework import serializers
 from django.core.cache import cache
 from decimal import Decimal
@@ -10,15 +10,26 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from .custom_exceptions import DuplicateUserException, DuplicateUsernameException, DuplicateEmailException
 
-class RateSerializer(ModelSerializer):
+
+class RateSerializer(serializers.ModelSerializer):
     average_rate = serializers.FloatField()
-    rated_products = serializers.CharField() 
+    rated_products = serializers.CharField()
+    rate_count = serializers.IntegerField()
 
     class Meta:
         model = Rate
-        fields = ("rated_products", "average_rate")
-        
+        fields = ("rated_products", "average_rate", "rate_count")
 
+
+
+class ProductRateSerializer(ModelSerializer):
+
+    class Meta:
+        model = Rate
+        fields = ('rate',)
+
+
+    
 class GetterRateSerializer(ModelSerializer):
 
     class Meta:
@@ -38,6 +49,23 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"
+
+
+class UserUsernameSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('username',)
+
+
+class OpinionSerializer(serializers.ModelSerializer):
+    reviewed_by = UserUsernameSerializer()
+    rate = GetterRateSerializer()
+
+    class Meta:
+        model = Opinion
+        fields = "__all__"
+
         
 
 class CategorySerializer(ModelSerializer):
