@@ -20,7 +20,7 @@ const ProductsWithRatings: React.FC<ProductsWithRatingsProps> = ({ products }) =
         try {
             fetch(`http://127.0.0.1:8000/api/avg-rate`)
             .then(response => response.json())
-            .then(result => (setAverageRate(result), console.log(result)));
+            .then(result => setAverageRate(result));
         }
 
         catch(error){

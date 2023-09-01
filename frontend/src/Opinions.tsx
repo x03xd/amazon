@@ -46,7 +46,6 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
     const selectPage = (num: number) => {
         if(opinions?.length !== 5 && num > 0) return null;
         if(pages + num >= 0) {setPages(current_page => current_page + num)}
-        console.log(pages)
     }
 
     return(

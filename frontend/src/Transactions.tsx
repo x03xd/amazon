@@ -26,7 +26,7 @@ export interface Products {
 
 const Transactions: React.FC = () => {
 
-    const [transactions, setTransactions] = useState<TransactionsAPI[]>();
+    const [transactions, setTransactions] = useState<TransactionsAPI[] | null>(null);
     const [products, setProducts] = useState<[number, ProductsInterface, string][]>();
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -82,31 +82,49 @@ const Transactions: React.FC = () => {
                         <div className = "edit-profile-container-main">
                             <span className = "edit-profile-container-title">Transakcje</span>
 
-                           {
-                            transactions && transactions.length > 0
-                            ?
-                                <>
-                                    <img onClick = {() => selectPage(-5)} className = "mb-3 ms-3" width = "32" src = {leftArrow} alt = "left-arrow" loading = "lazy" />
-                                    <img onClick = {() => selectPage(5)} className = "mb-3 ms-3" width = "32" src = {rightArrow} alt = "left-arrow" loading = "lazy" />
-                                        
-                                    <div className = "mt-3">
+                            {
+                                transactions !== null ? (
+                                    transactions.length > 0 ? (
+                                    <>
+                                        <img
+                                        onClick={() => selectPage(-5)}
+                                        className="mb-3 ms-3"
+                                        width="32"
+                                        src={leftArrow}
+                                        alt="left-arrow"
+                                        loading="lazy"
+                                        />
+                                        <img
+                                        onClick={() => selectPage(5)}
+                                        className="mb-3 ms-3"
+                                        width="32"
+                                        src={rightArrow}
+                                        alt="left-arrow"
+                                        loading="lazy"
+                                        />
+
+                                        <div className="mt-3">
                                         {Array.isArray(products) ? (
                                             products.map((item, index: number) => (
-                                                <SingleTransaction
-                                                    transaction={item}
-                                                    key={index}
-                                                    product_id={item[1]?.id}
-                                                />
+                                            <SingleTransaction
+                                                transaction={item}
+                                                key={index}
+                                                product_id={item[1]?.id}
+                                            />
                                             ))
                                         ) : (
                                             <p>No products available.</p>
-                                        )} 
+                                        )}
+                                        </div>
+                                    </>
+                                    ) : (
+                                    <div className="no-transactions-info-container">
+                                        <span className="no-transactions-info">Brak transakcji</span>
                                     </div>
-                                </>  
-                            :
-                                <div className = "no-transactions-info-container">            
-                                    <span className = "no-transactions-info">Brak transakcji</span>
-                                </div>
+                                    )
+                                ) : (
+                                    <></>
+                                )
                             }
 
                         </div>  

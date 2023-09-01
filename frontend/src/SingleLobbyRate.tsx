@@ -34,7 +34,6 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
         catch(error){ alert("Opinions cannot be displayed"); }
     }, [])
 
-    console.log(rateDict, rateCount)
 
     return(
         <div className = "single-lobby-rate">  
@@ -52,11 +51,11 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
 
             <div>
                 <div className="rate-bars-container mt-3">
-                    {rateDict.map((rate, index) => {
+                    {rateDict.map((rate: RateDict, index: number) => {
                     const percentage = (rate.frequency / rateCount) * 100;
 
                     return (
-                        <div className = "rate-bar-flex">
+                        <div key = {index} className = "rate-bar-flex">
                             <div>Ocena {5-index}</div>
                             <div key={index} className="rate-bar" style={{width: `${percentage}%`, backgroundColor: 'orange'}}>
                                 {percentage.toFixed(2)}%
