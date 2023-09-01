@@ -60,7 +60,6 @@ const CountingRate: React.FC<CountingRateProps> = ({rate}) => {
             }
         }
 
-        else setRateRange(10)
 
     }, [])
 

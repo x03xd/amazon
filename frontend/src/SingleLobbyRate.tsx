@@ -7,7 +7,8 @@ interface SingleLobbyRateProps {
 }
 
 const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
-    const [rate, setRate] = useState<number | null>(null);
+    const [rate, setRate] = useState<any>();
+    const [singleRate, setSingleRate] = useState<any>();
 
     useEffect(() => {
         try{
@@ -18,6 +19,13 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
         catch(error){ alert("Opinions cannot be displayed"); }
     }, [])
 
+    useEffect(() => {
+        const stringified_product_id = product_id.toString();
+        const productWithRate = rate.find((item: any) => item.rated_products === stringified_product_id);
+
+        setSingleRate(productWithRate?.average_rate);
+    }, [rate])
+
     return(
         <div className = "single-lobby-rate">  
             <div>
@@ -25,7 +33,7 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
             </div>
 
             <div className = "star-rating-container stars-bigger">
-                <CountingRate rate = {rate} />
+                <CountingRate rate = {singleRate} />
             </div>
 
             <div></div>
