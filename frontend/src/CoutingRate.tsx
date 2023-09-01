@@ -11,7 +11,7 @@ interface CountingRateProps {
 
 const CountingRate: React.FC<CountingRateProps> = ({rate}) => {
 
-    const [rateRange, setRateRange] = useState<number>(0);
+    const [rateRange, setRateRange] = useState<number | null>(null);
 
     useEffect(() => {
         if (rate !== null) {
@@ -60,13 +60,23 @@ const CountingRate: React.FC<CountingRateProps> = ({rate}) => {
             }
         }
 
+        else{ 
+            setRateRange(10);
+        }
 
-    }, [])
+    }, [rate])
 
 
     return(
         <>
-            {starStyling[rateRange].map((item: StarStyling, index: number) => (<div key = {index} className = {item.style}><FontAwesomeIcon icon = {item.icon} className = "star-rating-icon-small" /></div>) )}
+            {
+                rateRange !== null
+                    ?
+                starStyling[rateRange].map((item: StarStyling, index: number) => (<div key = {index} className = {item.style}><FontAwesomeIcon icon = {item.icon} className = "star-rating-icon-small" /></div>) )
+                    :
+                <></>
+            }
+            
         </>
     );
 

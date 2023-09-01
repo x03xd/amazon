@@ -168,7 +168,7 @@ const Lobby: React.FC = () => {
                 </div>
             </div>
 
-            <div>
+            <div className = "opinions-bar">
                 <Opinions product_id = {location.state.id_product} />
             </div>
 

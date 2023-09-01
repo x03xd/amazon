@@ -1,22 +1,51 @@
 
 from amazonApp.models import Product, Rate, User
-from amazonApp.serializers import RateSerializer, GetterRateSerializer
+from amazonApp.serializers import RateSerializer, GetterRateSerializer, ProductRateSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from django.db.models import Avg
 from rest_framework.response import Response
-
-
+from django.db.models import Count
+from collections import defaultdict
 
 class CountAvgRate(ListAPIView):
     serializer_class = RateSerializer
 
-    def get_queryset(self):
-        queryset = Rate.objects.values("rated_products").annotate(average_rate=Avg("rate"))
-        return queryset
-    
+    def get_queryset(self, **kwargs):
+        product_id = self.kwargs.get('product_id')
 
+        queryset = Rate.objects.values("rated_products").annotate(average_rate=Avg("rate"), rate_count=Count("rate"))
+
+        if product_id:
+            queryset = queryset.filter(rated_products=product_id)
+
+        return queryset
+
+
+
+class ProductRateCounter(APIView):
+    
+    def get(self, request, *args, **kwargs):
+        product_id = self.kwargs.get('product_id')
+
+        result = Rate.objects.filter(rated_products__id=product_id)
+        serialized_result = ProductRateSerializer(result, many=True)
+
+        rate_frequencies = defaultdict(int)
+
+        for data in serialized_result.data:
+            rate = data['rate']
+            rate_frequencies[rate] += 1
+
+        for rate in range(1, 6):
+            if rate not in rate_frequencies:
+                rate_frequencies[rate] = 0
+
+        rate_list = [{'rate': rate, 'frequency': frequency} for rate, frequency in rate_frequencies.items()]
+        sorted_rate_list = sorted(rate_list, key=lambda x: x['rate'], reverse=True)
+
+        return Response(sorted_rate_list)
 
 
 class RateProduct(APIView):

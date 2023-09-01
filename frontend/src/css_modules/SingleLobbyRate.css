@@ -2,7 +2,24 @@
     font-size: 1.8rem !important;
 }
 
+.single-lobby-rate span {
+    font-size: 1.2rem !important;
+    color: gray !important;
+}
 
-div.stars-bigger {
-    font-size: 2rem !important;
+
+
+.rate-bars-container {
+    width: 80%;
+}
+
+
+.rate-bar-flex:not(:first-child) {
+    margin-top: 1rem; 
+}
+
+
+.rate-bar {
+    background: gray;
+    border-radius: 0.2rem;
 }

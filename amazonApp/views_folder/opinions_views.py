@@ -12,5 +12,10 @@ class DisplayOpinions(ListAPIView):
     serializer_class = OpinionSerializer
 
     def get_queryset(self):
-        queryset = Opinion.objects.filter(reviewed_product=self.kwargs.get('product_id'))
-        return queryset
+        product_id = self.kwargs.get('product_id')
+        page = self.kwargs.get('page')
+
+        page = int(page)
+
+        queryset = Opinion.objects.filter(reviewed_product=product_id)
+        return queryset[page:page+5]
