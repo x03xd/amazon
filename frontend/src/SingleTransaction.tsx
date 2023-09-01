@@ -19,14 +19,12 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
     const [rate, setRate] = useState<number | undefined>()
 
     useEffect(() => {
-
         try{
             fetch(`http://127.0.0.1:8000/api/rate-product/${username?.user_id}/${product_id}/${rate}`)
             .then(response => response.json())
             .then(result => setRate(result));
         }
         catch(error){}
-
     }, [])
 
 
@@ -42,14 +40,11 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
             .then(response => response.json())
             .then(result => (setRate(result), window.location.reload()))
         }
-        
-
         catch(error){alert('An error occurred. Please try again later.');}
     }
 
 
     const deleteRate = () => {
-
         try{
             fetch(`http://127.0.0.1:8000/api/delete-rate/`, {
                 method: 'POST',
@@ -60,7 +55,6 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
             })
             window.location.reload()
         }
-
         catch(error){alert('An error occurred. Please try again later.');}
     }
 
@@ -83,7 +77,7 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, prod
                         
                         <div className = "single-transaction-container">
                             <span onClick = {deleteRate}>reset</span>
-                            {ratingStars.map((star, key) => {        
+                            {ratingStars.map((_, key: number) => {        
                                 return(
                                     <div onClick = {() => {productRate(key+1)}} key = {key} className = {`cursor-finger ${key+1 <= (rate as number) ? "yellow-filled" : "lightgrey-empty"}`}>
                                         <FontAwesomeIcon icon = {faStar} className = "star-rating-icon" />

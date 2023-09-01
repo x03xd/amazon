@@ -53,15 +53,14 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
                 <div className="rate-bars-container mt-3">
                     {rateDict.map((rate: RateDict, index: number) => {
                     const percentage = (rate.frequency / rateCount) * 100;
-
-                    return (
-                        <div key = {index} className = "rate-bar-flex">
-                            <div>Ocena {5-index}</div>
-                            <div key={index} className="rate-bar" style={{width: `${percentage}%`, backgroundColor: 'orange'}}>
-                                {percentage.toFixed(2)}%
+                        return (
+                            <div key = {index} className = "rate-bar-flex">
+                                <div>Ocena {5-index}</div>
+                                <div key={index} className="rate-bar" style={{width: `${percentage}%`, backgroundColor: 'orange'}}>
+                                    {percentage.toFixed(2)}%
+                                </div>
                             </div>
-                        </div>
-                    );
+                        );
                     })}
                     </div>
 

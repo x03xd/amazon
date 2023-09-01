@@ -7,7 +7,6 @@
     padding: 2rem;
 }
 
-
 .opinion-date {
     color: gray !important;
     font-size: 1.2rem !important;
@@ -26,6 +25,10 @@
     font-size: 1rem !important;
     font-weight: 600;
     color: var(--dark-orange) !important;
+}
+
+.opinion:first-child {
+    margin-top: 1.5rem; 
 }
 
 .opinion:not(:first-child) {
@@ -56,4 +59,11 @@
 
 .opinion-text {
     word-wrap: break-word; 
+}
+
+
+.opinion-user-and-avatar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
 }
