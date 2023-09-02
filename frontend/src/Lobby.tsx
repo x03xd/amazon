@@ -171,7 +171,7 @@ const Lobby: React.FC = () => {
             {username?.user_id !== undefined
                 ?
                     <div className = "opinions-bar">
-                        <Opinions product_id = {location.state.id_product} user_id = {username?.user_id} />
+                        <Opinions product_id = {location.state?.id_product} user_id = {username?.user_id} />
                     </div>
                 :
                 <></>
