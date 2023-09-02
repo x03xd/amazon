@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 import requests
+from rest_framework.response import Response
 from django.conf import settings
 
 

@@ -48,4 +48,4 @@ class CreateOpinion(APIView):
             reviewed_by = user,
         )
 
-        return Response({"status": True, "detail": text})
+        return Response({"status": True, "detail": "The opinion has been created"})
