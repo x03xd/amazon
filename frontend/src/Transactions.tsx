@@ -33,7 +33,6 @@ const Transactions: React.FC = () => {
     const [pages, setPages] = useState<number>(0);
     const {username} = useContext(AuthContext);
 
-
     useEffect(() => {
         try{
             fetch(`http://127.0.0.1:8000/api/transactions/${username?.user_id}`)
@@ -88,15 +87,16 @@ const Transactions: React.FC = () => {
                                     <>
                                         <img
                                         onClick={() => selectPage(-5)}
-                                        className="mb-3 ms-3"
+                                        className="mb-3 ms-3 cursor-finger"
                                         width="32"
                                         src={leftArrow}
                                         alt="left-arrow"
                                         loading="lazy"
+                                        
                                         />
                                         <img
                                         onClick={() => selectPage(5)}
-                                        className="mb-3 ms-3"
+                                        className="mb-3 ms-3 cursor-finger"
                                         width="32"
                                         src={rightArrow}
                                         alt="left-arrow"

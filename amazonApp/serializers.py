@@ -54,7 +54,7 @@ class UserUsernameSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ('username', 'id')
 
 
 class OpinionSerializer(serializers.ModelSerializer):

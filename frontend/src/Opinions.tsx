@@ -4,6 +4,7 @@ import CountingRate from './CoutingRate';
 import leftArrow from './images/left-arrow.png';
 import user from './images/user.png'
 import rightArrow from './images/right-arrow.png';
+import deletebutton from './images/deletebutton.png'
 
 interface OpinionsProps {
     product_id: number;
@@ -12,6 +13,7 @@ interface OpinionsProps {
 
 interface Username {
     username: string;
+    id: number;
 }
 
 interface Rate {
@@ -75,6 +77,30 @@ const Rating: React.FC<OpinionsProps> = ({ product_id, user_id }) => {
         catch(error){alert(error);}
     }
 
+    async function removeOpinion(opinion_number: number){
+        try{
+            const response = await fetch(`http://127.0.0.1:8000/api/opinion-remove/${opinion_number}`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            const responseJSON = await response.json()
+            console.log(responseJSON)
+
+            if(responseJSON?.status){
+                window.location.reload()
+            }
+    
+            else {
+                alert(responseJSON?.detail)
+            }
+        }
+        catch(error){alert(error);}
+    }
+
     const selectPage = (num: number) => {
         if(opinions?.length !== 5 && num > 0) return null;
         if(pages + num >= 0) {setPages(current_page => current_page + num)}
@@ -90,8 +116,8 @@ const Rating: React.FC<OpinionsProps> = ({ product_id, user_id }) => {
             {(opinions !== null) ?
                 opinions.length > 0 ?
                 (<div className = "mx">
-                    <img onClick = {() => selectPage(-5)} className = "mb-3 ms-3" width = "32" src = {leftArrow} alt = "left-arrow" loading = "lazy" />
-                    <img onClick = {() => selectPage(5)} className = "mb-3 ms-3" width = "32" src = {rightArrow} alt = "left-arrow" loading = "lazy" />                      
+                    <img onClick = {() => selectPage(-5)} className = "mb-3 ms-3 cursor-finger" width = "32" src = {leftArrow} alt = "left-arrow" loading = "lazy" />
+                    <img onClick = {() => selectPage(5)} className = "mb-3 ms-3 cursor-finger" width = "32" src = {rightArrow} alt = "left-arrow" loading = "lazy" />                      
                 </div>)
 
                 :
@@ -110,6 +136,9 @@ const Rating: React.FC<OpinionsProps> = ({ product_id, user_id }) => {
                             <div className = "opinion-user-and-avatar">
                                 <img src = {user} alt = "avatar" loading = "lazy" />
                                 <span className = "opinion-reviewed-by-username">{opinion.reviewed_by.username}</span>
+                                {
+                                    user_id === opinion.reviewed_by.id ? <img className = "cursor-finger" src = {deletebutton} loading = "lazy" alt = "remove" onClick = {() => {removeOpinion(opinion.id)}} />: <></>
+                                }
                             </div>
                         
                             <div className = "star-rating-container mt-3">

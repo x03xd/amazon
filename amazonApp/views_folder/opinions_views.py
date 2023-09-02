@@ -49,3 +49,21 @@ class CreateOpinion(APIView):
         )
 
         return Response({"status": True, "detail": "The opinion has been created"})
+    
+
+class RemoveOpinion(APIView):
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            opinion_id = self.kwargs.get("opinion_id")
+
+            opinion = Opinion.objects.get(id=opinion_id)
+            opinion.delete()
+            
+            return Response({"status": True, "detail": "The opinion has been removed"})
+
+        except Opinion.DoesNotExist as e:
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)

@@ -37,6 +37,7 @@ urlpatterns = [
     #OPINION
     path('opinions/<product_id>/<page>', opinions_views.DisplayOpinions.as_view(), name='opinions'),
     path('opinion-create/<user_id>/<product_id>', opinions_views.CreateOpinion.as_view(), name='opinion-create'),
+    path('opinion-remove/<opinion_id>', opinions_views.RemoveOpinion.as_view(), name='opinion-remove'),
 
     #USER_EDIT
     path("edit-username/<id>", edit_user_views.EditUsername.as_view()),
