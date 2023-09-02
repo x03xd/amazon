@@ -24,7 +24,6 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
 
     const [items, setItems] = useState<boolean[]>(booleanArray);
     
-    //bylo let
     const uniqueFilteredBrands2 = [...new Set(filteredBrands2)];
     const uniqueFilteredPrices2 = [...new Set(filteredPrices2)];
 
@@ -36,7 +35,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
     }, [booleanArray, arrayProp])
 
     useEffect(() => {
-        items.map((item: boolean, index: number) => {
+        items.map((_: boolean, index: number) => {
             const savedData = localStorage.getItem(nut + index);
             if (savedData) {
                 const temp = JSON.parse(savedData);
@@ -47,11 +46,9 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
         });
     }, [items]);
     
- 
     function isPriceRange(value: Brands | PriceLimits): value is PriceLimits {
         return value !== undefined && (value as PriceLimits).item !== undefined;
     }
-      
 
     /* TRIGGERUJE SIE PO ZMIANIE CHECKBOXA I*/
 
@@ -105,13 +102,11 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
             window.location.href = updatedUrl;
 
         }
-
     },[filteredBrands2, filteredPrices2])
-
 
     function handleResult(position: number){
         setLoading(true);
-        items.map((item : boolean, index : number) => {
+        items.map((_ : boolean, index : number) => {
             if(index === position) {
                 if(!items[index]) {
                     items[index] = true;

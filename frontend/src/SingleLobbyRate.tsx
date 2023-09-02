@@ -42,7 +42,7 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
             </div>
 
             <div className = "star-rating-container stars-bigger">
-                <CountingRate rate = {rate} />
+                <CountingRate rate = {rate} style = "plus-size-start" />
             </div>
 
             <div>

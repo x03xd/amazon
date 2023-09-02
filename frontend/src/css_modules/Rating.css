@@ -17,3 +17,7 @@ div.yellow-filled svg path {
     color: orange !important;
 }
 
+div.yellow-filled svg path {
+    width: 12rem !important;
+}
+

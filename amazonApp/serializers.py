@@ -1,7 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from .models import Product, Category, User, Cart, Rate, Transaction, CartItem, Brand, User, Opinion
 from rest_framework import serializers
-from django.core.cache import cache
 from decimal import Decimal
 import re
 from django.contrib.auth.password_validation import validate_password

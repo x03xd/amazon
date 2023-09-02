@@ -6,10 +6,12 @@ import { starStyling, StarStyling } from './static_ts_files/starStyling';
 
 interface CountingRateProps {
     rate: number | null;
+    style: string;
 }
 
 
-const CountingRate: React.FC<CountingRateProps> = ({rate}) => {
+const CountingRate: React.FC<CountingRateProps> = ({rate, style}) => {
+
 
     const [rateRange, setRateRange] = useState<number | null>(null);
 

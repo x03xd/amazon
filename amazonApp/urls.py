@@ -18,7 +18,7 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     #PRODUCTS FILTER
-    path("products/<id>/", filter_products_views.ProductsAPI.as_view()),
+    path("products/<id>/<currency>/", filter_products_views.ProductsAPI.as_view()),
 
     #AUTHENTICATION
     path("registration/", auth_views.RegisterSystem.as_view(), name="register"),

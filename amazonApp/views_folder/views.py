@@ -6,7 +6,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from django.db.models import Count
 from amazonApp.views_folder.currencies_views import provide_currency_context
-
+from django.core.cache import cache
 
 
 class CategoriesAPI(ListAPIView):
@@ -60,6 +60,7 @@ class Recommendations(APIView):
             products_id = self.kwargs.get("id")
             products_id = [int(item) for item in products_id.split(", ")]
             user_id = self.kwargs.get("user_id")
+            
 
             recommended = Product.objects.filter(bought_by_rec__username=username).exclude(id__in=products_id)
             recommended = recommended.annotate(freq=Count('bought_by_rec')).order_by('-freq')

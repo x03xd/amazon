@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from django.db.models import Avg
 from rest_framework.response import Response
 from amazonApp.views_folder.currencies_views import provide_currency_context
+from django.core.cache import cache
+
 
 class ProductsAPI(APIView):
 
@@ -15,6 +17,11 @@ class ProductsAPI(APIView):
         u = self.request.query_params.get('u')
 
         filters = {}
+
+        currency = self.kwargs.get("currency")
+        ratio = cache.get("exchange_rates")
+        print(currency)
+        print(ratio)
 
         if r is not None:
             filters['rating'] = float(r)
@@ -40,12 +47,18 @@ class ProductsAPI(APIView):
 
 
     def apply_filters(self, queryset, filters):
+
         if "rating" in filters:
             queryset = queryset.filter(id__in=self.filter_by_rating(filters['rating']))
+
         if "brands" in filters:
             queryset = queryset.filter(brand__brand_name__in=filters['brands'])
+
         if "prices" in filters:
-            queryset = queryset.filter(price__range=(min([p[0] for p in filters['prices']]), max([p[1] for p in filters['prices']])))
+            currency = self.kwargs.get("currency")
+            ratio = cache.get("exchange_rates")[currency] if cache.get("exchange_rates") else 1
+            queryset = queryset.filter(price__range=(min([p[0]*ratio for p in filters['prices']]), max([p[1]*ratio for p in filters['prices']])))
+
         return queryset
     
     

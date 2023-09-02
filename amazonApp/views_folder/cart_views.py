@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from django.db.models import  Sum
 from decimal import Decimal
 from rest_framework.response import Response
-from .views import provide_currency_context
+from amazonApp.views_folder.currencies_views import provide_currency_context
+
 
 
 class CartAPI(APIView):

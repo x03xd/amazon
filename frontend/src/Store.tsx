@@ -60,8 +60,8 @@ const Store: React.FC = () => {
             .then(response => response.json())
             .then(result => setBrands(result));
 
-            
-            fetch(`http://127.0.0.1:8000/api/products/${username?.user_id}/${queryLinkPart}`)
+            console.log()
+            fetch(`http://127.0.0.1:8000/api/products/${username?.user_id}/${username?.currency}/${queryLinkPart}`)
             .then(response => response.json())
             .then(result => setProducts(result));
         }
@@ -105,7 +105,7 @@ const Store: React.FC = () => {
                 break;
 
             case "u":
-                prices.map((item: PriceLimits, index: number) => {
+                prices.map((_: PriceLimits, index: number) => {
 
                     const storage = JSON.parse(localStorage.getItem("u" + index) || "");
                     const checkStorage = storage ? storage.value : "";
