@@ -82,7 +82,7 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
                             </div>
                         
                             <div className = "star-rating-container mt-3">
-                                <CountingRate rate = {opinion.rate.rate} style = "" />
+                                <CountingRate rate = {opinion?.rate?.rate} />
                                 <span className = "opinion-title">{opinion.title}</span>
                             </div>
                                 

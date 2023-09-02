@@ -78,7 +78,7 @@ class Rate(models.Model):
 
 
 class Opinion(models.Model):
-    rate = models.OneToOneField(Rate, on_delete=models.CASCADE)
+    rate = models.OneToOneField(Rate, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=30)
     text = models.TextField(max_length=1200)
     reviewed_product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)

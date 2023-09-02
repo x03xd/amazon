@@ -47,7 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, rate }) => {
             </div>
 
             <div className = "star-rating-container p-3">
-                <CountingRate rate = {rate} style = "" />
+                <CountingRate rate = {rate} />
             </div>
 
             <div className = "ps-3 pb-3">
