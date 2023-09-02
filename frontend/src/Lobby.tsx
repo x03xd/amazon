@@ -178,7 +178,7 @@ const Lobby: React.FC = () => {
             }
 
             <div className = "recommendation-bar">
-                <Recommendations products_id = {[location.state.id_product.toString()]} />
+                <Recommendations products_id = {[location.state?.id_product.toString()]} />
             </div>
         </div>
     );
