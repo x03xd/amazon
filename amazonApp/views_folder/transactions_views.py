@@ -94,11 +94,11 @@ class FinalizeOrder(APIView):
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
         
-from django.core.cache import cache
+
 class TransactionsAPI(ListAPIView):
     serializer_class = TransactionSerializer
 
-    def get_queryset(self, request):
+    def get_queryset(self):
         queryset = Transaction.objects.filter(bought_by__id=self.kwargs.get("id"))
         return queryset
 

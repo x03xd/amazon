@@ -14,7 +14,7 @@ def provide_currency_context(user_id):
         serialized_currency = CurrencySerializer(user)
         cache_dict = cache.get("exchange_rates")
 
-        preferred_curr = cache_dict.get(serialized_currency.data["currency"])
+        preferred_curr = cache_dict.get(serialized_currency.data["currency"]) if cache_dict else 1
         serializer_context['user_preferred_currency'] = preferred_curr
 
     return serializer_context
