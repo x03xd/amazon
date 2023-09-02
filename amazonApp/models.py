@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.validators import RegexValidator
+from datetime import timedelta
 
 date = datetime.now()
 
@@ -37,9 +38,18 @@ class User(AbstractUser):
     username = models.CharField(max_length=20, unique=True, validators=[RegexValidator(r'^[a-zA-Z]*$', 'Only letters are allowed.')], db_index=True)
     email = models.EmailField(max_length=30, unique=True)
     currency = models.CharField(max_length=3, null=True, default = "EUR", choices=CURRENCY_CHOICES)
-    username_change_allowed = models.DateField(null=True)
-    email_change_allowed = models.DateField(null=True)
-    password_change_allowed = models.DateField(null=True)
+    username_change_allowed = models.DateField(
+        null=True,
+        default=(datetime.now() + timedelta(days=30)).date()
+    )
+    email_change_allowed = models.DateField(
+        null=True,
+        default=(datetime.now() + timedelta(days=30)).date()
+    )
+    password_change_allowed = models.DateField(
+        null=True,
+        default=(datetime.now() + timedelta(days=30)).date()
+    )
     groups = models.ManyToManyField(Group, related_name='amazon_users', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='amazon_users', blank=True)
 
@@ -81,8 +91,8 @@ class Opinion(models.Model):
     rate = models.OneToOneField(Rate, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=30)
     text = models.TextField(max_length=1200)
-    reviewed_product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-    reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    reviewed_product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, db_index=True)
+    reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, db_index=True)
     reviewed_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -118,16 +128,6 @@ def create_one_to_one(sender, instance, created, **kwargs):
     if created:
         one_to_one = Cart.objects.create(test_name=f"{instance}'s cart", owner = instance)
         instance.one_to_one = one_to_one
-        instance.save()
-
-
-
-@receiver(post_save, sender=User)
-def create_one_to_one(sender, instance, created, **kwargs):
-    if created:
-        instance.username_change_allowed = date.date()
-        instance.email_change_allowed = date.date()
-        instance.password_change_allowed = date.date()
         instance.save()
 
 
