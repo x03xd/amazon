@@ -3,7 +3,6 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import React, {useState} from 'react';
 import Modal from './Modal';
-import MiniNavbar from './MiniNavbar';
 import  './css_modules/TagsStyling.css';
 import  './css_modules/AuthLayout.css';
 import  './css_modules/App.css';
@@ -22,7 +21,6 @@ import './css_modules/Rating.css';
 import './css_modules/NarrowGrid.css'
 import './css_modules/MyAccount.css';
 import './css_modules/MyAccountCard.css';
-import './css_modules/MiniNavbar.css';
 import './css_modules/EditProfile.css';
 import './css_modules/SingleTransaction.css';
 import './css_modules/ProductCard.css';
@@ -32,10 +30,6 @@ import './css_modules/SingleLobbyRate.css';
 
 
 const App: React.FC = () => {
-
-    const location = useLocation();
-    const path = location.pathname.slice(-1) === "/" ? location.pathname.slice(0, -1) : location.pathname;
-    const paths = ["/account", "/account/edit-profile"]
 
     const [overlayStyle, setOverlay] = useState<string>("");
     const [loginModalStyle, setLoginModal] = useState<string>("");
@@ -58,8 +52,6 @@ const App: React.FC = () => {
                 <div className = {`navbar ${unclick}`}>
 
                     <Navbar dropStyle = {overlayStyle} unclick = {unclick} overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} unclickableNavbarChild = {unclickableNavbar}/>
-                    { paths.map((link, index) => link === path ? <MiniNavbar key = {index} /> : null) }
-                    
                     <Modal className = {loginModalStyle} modalOFF = {loginModalStyler} overlayOFF = {overlayStyler} navbarStatus = {unclickableNavbar} />
                 </div>
 
