@@ -1,6 +1,6 @@
 .lobby-opinions {
     display: grid;
-    grid-template-columns: 15% 60% 25%;
+    grid-template-columns: 20% 60% 20%;
     background: #faf9f9;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.3);
@@ -66,4 +66,19 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
+}
+
+
+#user_comment {
+    resize: none;
+    width: 100% !important;
+    height: 10rem !important;
+}
+
+#user_comment-title {
+    width: 100% !important;
+}
+
+#submit-comment {
+    
 }

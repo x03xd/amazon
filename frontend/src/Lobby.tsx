@@ -167,10 +167,15 @@ const Lobby: React.FC = () => {
 
                 </div>
             </div>
-
-            <div className = "opinions-bar">
-                <Opinions product_id = {location.state.id_product} />
-            </div>
+            
+            {username?.user_id !== undefined
+                ?
+                    <div className = "opinions-bar">
+                        <Opinions product_id = {location.state.id_product} user_id = {username?.user_id} />
+                    </div>
+                :
+                <></>
+            }
 
             <div className = "recommendation-bar">
                 <Recommendations products_id = {[location.state.id_product.toString()]} />

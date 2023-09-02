@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import SingleLobbyRate from './SingleLobbyRate'
 import CountingRate from './CoutingRate';
 import leftArrow from './images/left-arrow.png';
@@ -7,6 +7,7 @@ import rightArrow from './images/right-arrow.png';
 
 interface OpinionsProps {
     product_id: number;
+    user_id: number;
 }
 
 interface Username {
@@ -30,10 +31,13 @@ interface Opinion {
     reviewed_by: Username;
 }
 
-const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
+const Rating: React.FC<OpinionsProps> = ({ product_id, user_id }) => {
 
     const [opinions, setOpinions] = useState<Opinion[] | null>(null);
     const [pages, setPages] = useState<number>(0);
+
+    const textAreaValue = useRef<HTMLTextAreaElement | null>(null);
+    const inputTitleValue = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         try{
@@ -43,6 +47,33 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
         }
         catch(error){ alert("Opinions cannot be displayed"); }
     }, [pages])
+
+
+    async function sendOpinion(e: React.FormEvent<HTMLFormElement>){
+        e.preventDefault();
+       
+        try{
+            const response = await fetch(`http://127.0.0.1:8000/api/opinion-create/${user_id}/${product_id}`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify({"text": textAreaValue.current?.value, "title": inputTitleValue.current?.value})
+            })
+            const responseJSON = await response.json()
+            console.log(responseJSON)
+
+            if(responseJSON?.status){
+                window.location.reload()
+            }
+    
+            else {
+                alert(responseJSON?.detail)
+            }
+        }
+        catch(error){alert(error);}
+    }
 
     const selectPage = (num: number) => {
         if(opinions?.length !== 5 && num > 0) return null;
@@ -99,6 +130,17 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
                     : <></>
                     }
                 </div>
+
+                <div className = "lobby-opinions-comment mt-5">
+                    <div className = "lobby-opinions-comment-input">
+                        <form onSubmit = {sendOpinion}>
+                            <input className = "text-input" placeholder = "Tytuł..." id="user_comment-title" type = "text" ref = {inputTitleValue} />
+                            <textarea className = "text-input" id="user_comment" name="user_comment" ref = {textAreaValue}></textarea>
+                            <button className = "login-button mt-3" type="submit">Wyślij</button>
+                        </form>
+                    </div>
+                </div>
+
             </div>
 
             <div>

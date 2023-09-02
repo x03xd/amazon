@@ -50,7 +50,6 @@ const App: React.FC = () => {
     return (
         <div className = "main-container">
                 <div className = {`navbar ${unclick}`}>
-
                     <Navbar dropStyle = {overlayStyle} unclick = {unclick} overlayStyle = {overlayStyler} loginModalStyle = {loginModalStyler} unclickableNavbarChild = {unclickableNavbar}/>
                     <Modal className = {loginModalStyle} modalOFF = {loginModalStyler} overlayOFF = {overlayStyler} navbarStatus = {unclickableNavbar} />
                 </div>

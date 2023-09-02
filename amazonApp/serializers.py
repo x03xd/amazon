@@ -87,7 +87,6 @@ class CartSerializer(ModelSerializer):
         fields = ["products"]
 
 
-
 class ProductSerializer(ModelSerializer):
 
     class Meta:

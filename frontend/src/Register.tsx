@@ -52,7 +52,6 @@ const Register: React.FC = () => {
 
         }
         catch(error){alert('An error occurred. Please try again later.');}
-
     }
 
 
