@@ -16,7 +16,6 @@ interface Nums {
 const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
 
     const {username} = React.useContext(AuthContext);
-    const navigate = useNavigate();
 
     const finalizeOrder = async () => {
 
@@ -27,7 +26,7 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
                     headers:{
                         'Content-Type':'application/json'
                     },
-                    body:JSON.stringify({"location": "cart", "user": username?.user_id})
+                    body:JSON.stringify({"location": "cart", "user": username?.user_id, "currency": username?.currency})
                 })
                 const responseJSON = await response.json()
 
@@ -39,7 +38,6 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
             catch(error){alert('An error occurred. Please try again later.');}
         }
     }
-
 
     return(
         <div className = "cart-finalizing-container bg-light shadow">

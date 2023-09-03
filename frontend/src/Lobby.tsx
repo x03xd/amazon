@@ -49,7 +49,11 @@ const Lobby: React.FC = () => {
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({"location": "lobby", "product_id": location.state.id_product, "quantity": selectedValue, "user": username?.user_id})
+                body:JSON.stringify(
+                    {"location": "lobby", "product_id": location.state.id_product, "quantity": selectedValue,
+                        "user": username?.user_id, "currency": username?.currency
+                    }
+                )
             })
             const responseJSON = await response.json()
             console.log(responseJSON)
@@ -58,8 +62,7 @@ const Lobby: React.FC = () => {
 				window.location.href = responseJSON.link
 			}
         }
-
-        catch(error){alert('An error occurred. Please try again later.');}
+        catch(error){console.log(error);}
     }
 
     async function addToCard(e: React.MouseEvent<HTMLInputElement>){

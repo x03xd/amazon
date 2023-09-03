@@ -67,6 +67,6 @@ urlpatterns = [
 
     #PAYMENTS
     path("payment-creation/", payments_views.StripeCheckout.as_view(), name="payment"),
-
+    path('stripe-webhook/', payments_views.stripe_webhook, name='stripe-webhook'),
 ]
 

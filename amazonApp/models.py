@@ -85,7 +85,6 @@ class Rate(models.Model):
         return f"{self.rated_by} has rated {self.rated_products} with {self.rate} rate"
     
 
-
 class Opinion(models.Model):
     rate = models.OneToOneField(Rate, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=30)
