@@ -25,7 +25,7 @@ def background_task():
         if "rates" in data:
             return data["rates"]
         else:
-        return {}  
+            return {}  
 
     except requests.exceptions.RequestException as e:
         return {}
