@@ -65,7 +65,7 @@ class OpinionSerializer(serializers.ModelSerializer):
         model = Opinion
         fields = "__all__"
 
-        
+
 
 class CategorySerializer(ModelSerializer):
     class Meta:
@@ -155,6 +155,25 @@ class BrandsByIdSerializer(ModelSerializer):
     class Meta:
         model = Brand
         fields = "__all__"
+
+
+
+class CartItemProductsSerializer(ModelSerializer):
+    product = ProductSerializer()
+
+    class Meta:
+        model = CartItem
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        context = self.context
+        representation = super().to_representation(instance)
+
+        if context:
+            exchange_rate = context.get("user_preferred_currency") if context["user_preferred_currency"] != None else 1
+            representation["total_price"] = round(Decimal(representation["total_price"]) * Decimal(exchange_rate), 2)
+            
+        return representation
 
 
 class UserRegistrationSerializer(serializers.Serializer):

@@ -16,31 +16,28 @@ interface Nums {
 const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
 
     const {username} = React.useContext(AuthContext);
-    const navigate = useNavigate();
 
     const finalizeOrder = async () => {
 
         if(buyButton && buyButton?.size === undefined){
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
+                const response = await fetch(`http://127.0.0.1:8000/api/payment-creation/`, {
                     method:'POST',
                     headers:{
                         'Content-Type':'application/json'
                     },
-                    body:JSON.stringify({"location": "cart", "user": username?.user_id})
+                    body:JSON.stringify({"location": "cart", "user": username?.user_id, "currency": username?.currency})
                 })
                 const responseJSON = await response.json()
 
-                if(responseJSON?.status) navigate("/")
-
-                else alert(responseJSON)
-
+                if(responseJSON.link){
+                    window.location.href = responseJSON.link
+                }
             }
-
+            
             catch(error){alert('An error occurred. Please try again later.');}
         }
     }
-
 
     return(
         <div className = "cart-finalizing-container bg-light shadow">

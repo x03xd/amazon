@@ -148,8 +148,13 @@ AUTH_USER_MODEL = 'amazonApp.User'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-
 REST_FRAMEWORK = {
+
+    
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+  
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -212,3 +217,13 @@ CELERY_BEAT_SCHEDULE = {
 
 FIXER_API_URL = "http://data.fixer.io/api/latest"
 FIXER_API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
+
+STRIPE_SECRET_KEY = 'sk_test_51NlxoXLItapzlYRNHP9yqTcsagF76UbviJU6eVYidHmBoxpg7Pmm1oVWU2IjG02grnGlcdDlYQd6gY7YPTPFXvnb00bpNUzjwl'
+STRIPE_ENDPOINT_SECRET = 'whsec_80e89d7b3f021a1320d0576c70992c0260de3f8e7dd3e302c14943dc2377d206'
+
+
+'''STRIPE_PUBLIC_KEY = ''
+STRIPE_WEBHOOK_SERCRET = ''
+'''
+
+SITE_URL = "http://localhost:3000"

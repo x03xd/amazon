@@ -57,7 +57,6 @@ class User(AbstractUser):
         return self.username
 
 
-
 class Product(models.Model):
     title = models.CharField(max_length=140, db_index=True)
     description = models.CharField(max_length=1200)
@@ -85,7 +84,6 @@ class Rate(models.Model):
     def __str__(self):
         return f"{self.rated_by} has rated {self.rated_products} with {self.rate} rate"
     
-
 
 class Opinion(models.Model):
     rate = models.OneToOneField(Rate, on_delete=models.CASCADE, null=True, blank=True)
@@ -129,7 +127,6 @@ def create_one_to_one(sender, instance, created, **kwargs):
         one_to_one = Cart.objects.create(test_name=f"{instance}'s cart", owner = instance)
         instance.one_to_one = one_to_one
         instance.save()
-
 
 
 @receiver(post_save, sender=Product)

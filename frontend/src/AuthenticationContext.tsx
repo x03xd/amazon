@@ -130,7 +130,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
 
             if(response.status === 200){
                 const decodedCurrency: UserData = jwt_decode(data.access)
-                console.log(decodedCurrency)
+                //console.log(decodedCurrency)
 
                 document.cookie = `username=${JSON.stringify(data.access)}`
                 document.cookie = `currency=${decodedCurrency["currency"]}`;

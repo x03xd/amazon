@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from amazonApp.views_folder.currencies_views import provide_currency_context
 
 
-
 class CartAPI(APIView):
 
     def adding_product_by_id(self, cart_item_serializer):
@@ -27,9 +26,9 @@ class CartAPI(APIView):
         
         return product_data_list
                 
-        
     def get(self, request, *args, **kwargs):
         try:
+
             user_id = self.kwargs.get("user_id")
             currency_context = provide_currency_context(user_id)
 

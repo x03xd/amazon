@@ -9,6 +9,7 @@ from amazonApp.views_folder import currencies_views
 from amazonApp.views_folder import transactions_views
 from amazonApp.views_folder import filter_products_views
 from amazonApp.views_folder import opinions_views
+from amazonApp.views_folder import payments_views
 
 from amazonApp.views_folder.auth_views import MyTokenObtainPairView
 from rest_framework_simplejwt.views import (
@@ -51,7 +52,6 @@ urlpatterns = [
     path("cart/<user_id>", cart_views.CartAPI.as_view(), name="cart"),
 
     #TRANSACTIONS
-    path("finalize-order/", transactions_views.FinalizeOrder.as_view()),
     path("transactions/<id>", transactions_views.TransactionsAPI.as_view()),
     path("products-from-transactions/", transactions_views.ProductsFromTransactions.as_view()),
 
@@ -64,5 +64,9 @@ urlpatterns = [
     path("brand/<id>", views.BrandsByIdAPI.as_view(), name="brand-by-id"),
     path("recommendations/<username>/<id>/<user_id>", views.Recommendations.as_view(), name="recommendations"),
     path("lobby-price-mod/<user_id>/<product_id>", views.LobbyPriceMod.as_view(), name="lobby-price"),
+
+    #PAYMENTS
+    path("payment-creation/", payments_views.StripeCheckout.as_view(), name="payment"),
+    path('stripe-webhook/', payments_views.stripe_webhook, name='stripe-webhook'),
 ]
 
