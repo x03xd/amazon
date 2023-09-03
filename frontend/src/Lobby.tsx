@@ -29,6 +29,7 @@ const Lobby: React.FC = () => {
         }
         catch(error){alert(error);}
     }, [])
+    
 
     useEffect(() => {
     }, [selectedValue])
@@ -43,17 +44,19 @@ const Lobby: React.FC = () => {
 
     const finalizeOrderLobby = async () => {
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/payment-creation/`, {
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({"location": "lobby", "product_id": [location.state.id_product], "quantity": selectedValue, "user": username?.user_id})
+                body:JSON.stringify({"location": "lobby", "product_id": location.state.id_product, "quantity": selectedValue, "user": username?.user_id})
             })
             const responseJSON = await response.json()
+            console.log(responseJSON)
 
-            if(responseJSON?.status) alert(`Pomyślnie kupiono ${location.state.title}`)
-            else alert(responseJSON)
+            if(responseJSON.link){
+				window.location.href = responseJSON.link
+			}
         }
 
         catch(error){alert('An error occurred. Please try again later.');}

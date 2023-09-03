@@ -1,99 +1,11 @@
-from amazonApp.models import Product, User, Transaction, CartItem, Cart
-from amazonApp.serializers import ProductSerializer, TransactionSerializer, CartItemSerializer
+from amazonApp.models import Product, Transaction
+from amazonApp.serializers import ProductSerializer, TransactionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from datetime import datetime
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 
-class FinalizeOrder(APIView):
 
-    def handle_lobby(self, product_id, quantity):
-        try:
-            bought = product_id * int(quantity)
-            product = Product.objects.get(id=product_id[0])
-
-            if product.quantity >= int(quantity):
-                product.quantity -= int(quantity)
-                product.save()
-
-                return bought
-            
-            else:
-                return Response("User's input greater than product's quantity")
-                    
-        except Cart.DoesNotExist:
-            return Response({"error": "Object does not exist"}, status=404)    
-
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-
-
-    def handle_cart(self, user):
-        try:
-            cart_items = CartItem.objects.filter(cart__owner=user)
-            serializer = CartItemSerializer(cart_items, many=True)
-            bought = []
-
-            for record in serializer.data:
-                product = Product.objects.get(id=record["product"])
-
-                if product.quantity >= record["quantity"]:
-                    bought += [record["product"]] * record["quantity"]
-                    product.quantity -= record["quantity"]
-                else:
-                    return Response("User's input greater than product's quantity")
-                        
-                product.save()
-                        
-            cart_items.delete()
-            return bought
-
-             
-        except (CartItem.DoesNotExist, Product.DoesNotExist):
-            return Response({"error": "Object does not exist"}, status=404)    
-
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-
-
-    def post(self, request):
-        try:
-            user = request.data.get("user")
-            location = request.data.get("location")
-            product_id = request.data.get("product_id")
-            quantity = request.data.get("quantity")
-
-            try:
-                user = User.objects.get(id = user)
-                
-            except User.DoesNotExist:
-                return Response("Object does not exist", status=404) 
-
-            if location == "cart":
-                bought = self.handle_cart(user)
-    
-            elif location == "lobby":
-                bought = self.handle_lobby(product_id, quantity)
-
-            else:
-                raise Exception("Given paramteter is wrong.") 
-                
-            Transaction.objects.create(
-                bought_by = user,
-                bought_products = bought,
-                date = datetime.now().date()
-            )
-
-            return Response({"status": True})
-                
-
-        except Cart.DoesNotExist:
-            return Response({"error": "Object does not exist"}, status=404)    
-
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-        
 
 class TransactionsAPI(ListAPIView):
     serializer_class = TransactionSerializer
