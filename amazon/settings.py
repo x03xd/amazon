@@ -211,7 +211,7 @@ LOGIN_URL = 'token_obtain_pair'
 CELERY_BEAT_SCHEDULE = {
     'update-exchange-rates': {
         'task': 'amazonApp.tasks.background_task',  
-        'schedule': 7 * 24 * 3600,  
+        'schedule': 24 * 3600,  
     },
 }
 
@@ -220,10 +220,5 @@ FIXER_API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
 
 STRIPE_SECRET_KEY = 'sk_test_51NlxoXLItapzlYRNHP9yqTcsagF76UbviJU6eVYidHmBoxpg7Pmm1oVWU2IjG02grnGlcdDlYQd6gY7YPTPFXvnb00bpNUzjwl'
 STRIPE_ENDPOINT_SECRET = 'whsec_80e89d7b3f021a1320d0576c70992c0260de3f8e7dd3e302c14943dc2377d206'
-
-
-'''STRIPE_PUBLIC_KEY = ''
-STRIPE_WEBHOOK_SERCRET = ''
-'''
 
 SITE_URL = "http://localhost:3000"
