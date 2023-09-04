@@ -11,7 +11,6 @@ interface CountingRateProps {
 
 const CountingRate: React.FC<CountingRateProps> = ({rate}) => {
 
-
     const [rateRange, setRateRange] = useState<number | null>(null);
 
     useEffect(() => {
@@ -64,9 +63,7 @@ const CountingRate: React.FC<CountingRateProps> = ({rate}) => {
         else{ 
             setRateRange(10);
         }
-
     }, [rate])
-
 
     return(
         <>

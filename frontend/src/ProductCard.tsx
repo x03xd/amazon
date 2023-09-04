@@ -1,7 +1,9 @@
 import {useNavigate} from 'react-router-dom';
-import React from 'react';
+import React, { useContext } from 'react';
 import getCookie from './getCookie'
 import CountingRate from './CoutingRate';
+import AuthContext from "./AuthenticationContext";
+
 
 interface ProductCardProps {
     item: {
@@ -20,6 +22,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ item, rate }) => {
 
     const navigate = useNavigate();
+    const {authToken} = useContext(AuthContext);
 
     function handleClick(){
         let slug = item.description.toLowerCase().trim()
@@ -27,11 +30,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, rate }) => {
         .replace(/[\s_-]+/g, '-')
         .replace(/^-+|-+$/g, '')
 
-        navigate(`/l/${slug}`, {state: {title: item.title, id_product: item.id, image: item.image, desc: item.description, price: item.price,
-        quantity: item.quantity, brand: item.brand, slug: slug}})
-        window.location.reload()
-    }
+        if(authToken){
+            navigate(`/l/${slug}`, {state: {title: item.title, id_product: item.id, image: item.image, desc: item.description, price: item.price,
+            quantity: item.quantity, brand: item.brand, slug: slug}})
+            window.location.reload()
+        }
 
+        else {
+            navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
+        }
+    }
+    
     return(
         <div className = "product-card-content">
             <div className = "product-card-image-container">

@@ -44,7 +44,6 @@ const Transactions: React.FC = () => {
 
     
     useEffect(() => {
-
         if(!loading){
             try{
                 fetch(`http://127.0.0.1:8000/api/products-from-transactions/`, {
@@ -60,7 +59,6 @@ const Transactions: React.FC = () => {
 
             catch(error){alert('An error occurred. Please try again later.');}
         }
-
         setLoading(false);
     }, [transactions])
 
@@ -142,8 +140,6 @@ const Transactions: React.FC = () => {
     )
 
 }
-
-
 
 export default Transactions;
 

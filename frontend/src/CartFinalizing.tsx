@@ -1,4 +1,3 @@
-import {useNavigate} from 'react-router-dom';
 import AuthContext from "./AuthenticationContext";
 import React from 'react';
 import getCookie from './getCookie'

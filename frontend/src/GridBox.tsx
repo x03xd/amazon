@@ -28,7 +28,7 @@ const GridBox: React.FC<GridBoxProps> = ({ className, boxTitle, list }) => {
                 </div>
 
                 <div className = "home-footer-card">
-                    <a className = "standard-a">Zobacz więcej</a>
+                    <a href = "#" className = "standard-a">Zobacz więcej</a>
                 </div>
             </div>
 

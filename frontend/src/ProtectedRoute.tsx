@@ -12,7 +12,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({element}) => {
 
       const location = useLocation();
       const isAuthRoute = ['/login', '/login/', '/registration', '/registration/', '/login2', '/login2/'].some(route => location.pathname.includes(route));
-   
 
       if (!authToken && !isAuthRoute) {
             const stateData = {
