@@ -17,11 +17,11 @@ https://github.com/stripe/stripe-cli/releases/tag/v1.17.2
 I WYPAKOWAC
 
 2. WPISAC W KONSOLĘ
-> stripe login 
+stripe login 
 I POSTĄPIĆ ZGODNIE Z INSTRUKCJĄ
 
 3. WPISAC W KONSOLĘ
-> stripe listen --forward-to http://127.0.0.1:8000/stripe-webhook
+stripe listen --forward-to http://127.0.0.1:8000/stripe-webhook
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
