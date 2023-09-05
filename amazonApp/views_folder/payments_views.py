@@ -2,47 +2,50 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import decimal
 from amazonApp.models import Product, Transaction, User, Product, CartItem
-import stripe
 from datetime import datetime
 from amazonApp.serializers import CartItemProductsSerializer, CartItemSerializer, ProductSerializer
 from django.views.decorators.csrf import csrf_exempt
-stripe.api_key = settings.STRIPE_SECRET_KEY
-from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.core.cache import cache
-
-
 from decimal import Decimal
-from django.core.cache import cache
-from django.conf import settings
-from django.http import HttpResponse
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 import stripe
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class StripeCheckout(APIView):
     def __init__(self):
         super().__init__()
         self.user_id = None
         self.location = None
-        self.currency = None
         self.quantity = None
         self.product_id = None
+        self.currency = "EUR"
         self.ratio = 1
+
+    def parse_request_data(self, data):
+        self.user_id = data.get("user")
+        self.location = data.get("location")
+        self.product_id = data.get("product_id", None)
+        self.quantity = data.get("quantity", None)
+        self.currency = data.get("currency")
+
+        cache_dict = cache.get("exchange_rates")
+        if cache_dict:
+            self.ratio = cache_dict.get(self.currency)
+
+        self.request.session['user_id'] = self.user_id
+        self.request.session['product_id'] = self.product_id
+        self.request.session['quantity'] = self.quantity
+        self.request.session['location'] = self.location
+
 
     def post(self, request, *args, **kwargs):
         try:
             self.parse_request_data(request.data)
-            self.request.session['user_id'] = self.user_id
-
-            cache_dict = cache.get("exchange_rates")
-            self.ratio = cache_dict.get(self.currency, 1)
-
             result = self.core()
+
             checkout_session = self.create_checkout_session(result)
 
             return Response({'link': checkout_session.url})
@@ -54,30 +57,27 @@ class StripeCheckout(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-    def parse_request_data(self, data):
-        self.user_id = data.get("user")
-        self.location = data.get("location")
-        self.product_id = data.get("product_id")
-        self.quantity = data.get("quantity")
-        self.currency = data.get("currency")
 
     def create_checkout_session(self, line_items):
         return stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=line_items,
-            metadata={'user_id': self.user_id, 'location': self.location},
+            metadata={'user_id': self.user_id, 'product_id': self.product_id, 'quantity': self.quantity, 'location': self.location},
             mode='payment',
             success_url=settings.SITE_URL + '/',
             cancel_url=settings.SITE_URL + '/',
         )
 
+
     def core(self):
         if self.location == "cart":
             return self.handle_cart()
-        elif self.location == "lobby":
+        
+        if self.location == "lobby":
             return self.handle_lobby()
-        else:
-            raise Exception("Given parameter is wrong.")
+        
+        raise Exception("Given parameter is wrong.")
+
 
     def handle_cart(self):
         try:
@@ -96,7 +96,8 @@ class StripeCheckout(APIView):
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-
+        
+        
     def handle_lobby(self):
         try:
             product = Product.objects.get(id=self.product_id)
@@ -114,7 +115,9 @@ class StripeCheckout(APIView):
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
+
     def fill_data(self, price, title, quantity):
+        print(price, self.ratio)
         data = {
             'price_data': {
                 'currency': self.currency.lower(),
@@ -152,25 +155,42 @@ def stripe_webhook(request):
     return HttpResponse(status=200)
 
 
+
 def handle_checkout_session_completed(event):
     intent = event.data.object
     user_id = intent.metadata.get('user_id', None)  
+    product_id = intent.metadata.get('product_id', None)  
+    quantity = intent.metadata.get('quantity', None)
+    location = intent.metadata.get('location', None)
 
-    if user_id:
-        try:
-            user = User.objects.get(id=user_id)
+    user_id = int(user_id)
+    product_id = int(product_id) if product_id else None
+    quantity = int(quantity) if quantity else None
+    bought = []
+    
+    try:
+        user = User.objects.get(id=user_id)
+
+        if location == "lobby":
+            product = Product.objects.get(id=product_id)
+
+            if product.quantity >= quantity:
+                bought.extend([product.id] * quantity)
+                product.quantity -= quantity
+                product.save()
+
+        elif location == "cart":
             cart_items = CartItem.objects.filter(cart__owner=user)
             serializer = CartItemSerializer(cart_items, many=True)
-            bought = []
 
             for record in serializer.data:
                 product = Product.objects.get(id=record["product"])
 
                 if product.quantity >= record["quantity"]:
-                    bought += [record["product"]] * record["quantity"]
+                    bought.extend([record["product"]] * record["quantity"])
                 else:
-                    return Response("User's input greater than product's quantity")
-
+                    return
+                
             for record in serializer.data:
                 product = Product.objects.get(id=record["product"])
                 product.quantity -= record["quantity"]
@@ -178,13 +198,14 @@ def handle_checkout_session_completed(event):
 
             cart_items.delete()
 
-            Transaction.objects.create(
-                bought_by=user,
-                bought_products=bought,
-                date=datetime.now().date()
-            )
+        Transaction.objects.create(
+            bought_by=user,
+            bought_products=bought,
+            date=datetime.now().date()
+        )
 
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-        
-    print("Checkout completed", user_id)
+    except:
+        return Exception("Failed")
+
+
+

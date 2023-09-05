@@ -17,12 +17,7 @@ class ProductsAPI(APIView):
         u = self.request.query_params.get('u')
 
         filters = {}
-
-        currency = self.kwargs.get("currency")
-        ratio = cache.get("exchange_rates")
-        print(currency)
-        print(ratio)
-
+        
         if r is not None:
             filters['rating'] = float(r)
         

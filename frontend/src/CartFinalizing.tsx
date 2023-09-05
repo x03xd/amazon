@@ -25,7 +25,7 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
                     headers:{
                         'Content-Type':'application/json'
                     },
-                    body:JSON.stringify({"location": "cart", "user": username?.user_id, "currency": username?.currency})
+                    body:JSON.stringify({"location": "cart", "user": username?.user_id, "currency": getCookie("currency")})
                 })
                 const responseJSON = await response.json()
 

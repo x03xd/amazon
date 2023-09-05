@@ -14,6 +14,8 @@ const Lobby: React.FC = () => {
     const [modPrice, setModPrice] = useState<number>(0);
     const {username} = useContext(AuthContext);
 
+    console.log(getCookie("currency"))
+
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -50,7 +52,7 @@ const Lobby: React.FC = () => {
                 },
                 body:JSON.stringify(
                     {"location": "lobby", "product_id": location.state.id_product, "quantity": selectedValue,
-                        "user": username?.user_id, "currency": username?.currency
+                        "user": username?.user_id, "currency": getCookie("currency")
                     }
                 )
             })
