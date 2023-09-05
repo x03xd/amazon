@@ -1,7 +1,7 @@
 
 KLON AMAZONA, STACK TECHNOLOGICZNY: REACT + TS + DJANGO REST FRAMEWORK + CELERY + RABBITMQ
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 URUCHOMIENIE:
 w root folderze:
 python manage.py runserver - włączenie servera backend
@@ -23,7 +23,7 @@ I POSTĄPIĆ ZGODNIE Z INSTRUKCJĄ
 3. WPISAC W KONSOLĘ
 stripe listen --forward-to http://127.0.0.1:8000/stripe-webhook
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 
 DO USER AUTHENTICATION UŻYTO JWT (ADMIN PANEL Z KOLEI KORZYSTA DEFAULTOWO Z SESSIONS)
 
