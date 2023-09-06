@@ -57,7 +57,6 @@ const Lobby: React.FC = () => {
                 )
             })
             const responseJSON = await response.json()
-            console.log(responseJSON)
 
             if(responseJSON.link){
 				window.location.href = responseJSON.link

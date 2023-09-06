@@ -33,6 +33,8 @@ const Transactions: React.FC = () => {
     const [pages, setPages] = useState<number>(0);
     const {username} = useContext(AuthContext);
 
+    console.log(transactions)
+
     useEffect(() => {
         try{
             fetch(`http://127.0.0.1:8000/api/transactions/${username?.user_id}`)
@@ -56,10 +58,10 @@ const Transactions: React.FC = () => {
                 .then(response => response.json())
                 .then(result => setProducts(result));
             }
-
             catch(error){alert('An error occurred. Please try again later.');}
         }
         setLoading(false);
+
     }, [transactions])
 
     const selectPage = (num: number) => {

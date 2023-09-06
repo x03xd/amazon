@@ -118,7 +118,8 @@ class CartItem(models.Model):
 class Transaction(models.Model):
     bought_by = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     bought_products = ArrayField(models.IntegerField())
-    date = models.DateField()
+    date = models.DateField(auto_now_add=True)
+    transaction_number = models.CharField(max_length=20, unique=True, editable=False, null=True)
 
 
 @receiver(post_save, sender=User)

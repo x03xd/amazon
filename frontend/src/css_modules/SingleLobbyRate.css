@@ -2,15 +2,13 @@
     font-size: 1.8rem !important;
 }
 
-.single-lobby-rate span {
-    font-size: 1.2rem !important;
-    color: gray !important;
-}
-
-
-
 .rate-bars-container {
     width: 80%;
+}
+
+.single-lobby-quantity {
+    color: gray !important;
+    font-size: 1.2rem !important;
 }
 
 
@@ -20,6 +18,9 @@
 
 
 .rate-bar {
-    background: gray;
     border-radius: 0.2rem;
+    height: 2.4rem;
+    display: flex;
+    align-items: center;
 }
+

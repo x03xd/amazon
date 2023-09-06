@@ -21,8 +21,7 @@ class CountAvgRate(ListAPIView):
             queryset = queryset.filter(rated_products=product_id)
 
         return queryset
-
-
+    
 
 class ProductRateCounter(APIView):
     
@@ -65,20 +64,26 @@ class RateProduct(APIView):
 
     
     def patch(self, request, **kwargs):
+        user_id = self.kwargs.get("id")
         created = False
 
         try:
             try:
-                user = User.objects.get(id = self.kwargs.get("id"))
+                product = Product.objects.get(id=self.kwargs.get("pid"))
+            
+            except Product.DoesNotExist:
+                return Response({"error": "Object does not exist"}, status=404)
+
+            try:
+                user = User.objects.get(id=user_id )
 
             except User.DoesNotExist:
                 return Response({"error": "Object does not exist"}, status=404)
             
-            try:
-                product = Product.objects.get(id = self.kwargs.get("pid"))
-            
-            except Product.DoesNotExist:
-                return Response({"error": "Object does not exist"}, status=404)
+            people_who_bought = product.bought_by_rec.filter(id=user_id).exists()
+
+            if not people_who_bought:
+                return Response({"status": False, "info": "You have to buy the product to be able to rate it"})
             
             rate_of_user, created = Rate.objects.get_or_create(
                 rated_by = user,
@@ -103,7 +108,7 @@ class DeleteRate(APIView):
             user_id = request.data.get("user_id")
             product_id = request.data.get("product_id")
 
-            rate = Rate.objects.get(rated_by__id = user_id, rated_products__id = product_id)
+            rate = Rate.objects.get(rated_by__id=user_id, rated_products__id=product_id)
             rate.delete()
 
             return Response('The rate has been restarted')

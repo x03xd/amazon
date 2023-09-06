@@ -11,6 +11,7 @@ from django.core.cache import cache
 from decimal import Decimal
 from django.http import JsonResponse
 import stripe
+import random
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -117,7 +118,6 @@ class StripeCheckout(APIView):
 
 
     def fill_data(self, price, title, quantity):
-        print(price, self.ratio)
         data = {
             'price_data': {
                 'currency': self.currency.lower(),
@@ -129,6 +129,15 @@ class StripeCheckout(APIView):
             'quantity': quantity,
         }
         return data
+    
+
+def random_transaction_id():
+    while True:
+        transaction_number = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=10))
+        if not Transaction.objects.filter(transaction_number=transaction_number).exists():
+            break
+
+    return transaction_number
     
 
 @csrf_exempt
@@ -198,14 +207,14 @@ def handle_checkout_session_completed(event):
 
             cart_items.delete()
 
+        random_transaction_id_value = random_transaction_id()
+ 
         Transaction.objects.create(
             bought_by=user,
             bought_products=bought,
-            date=datetime.now().date()
+            transaction_number=random_transaction_id_value,
         )
 
     except:
         return Exception("Failed")
-
-
 

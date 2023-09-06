@@ -125,12 +125,10 @@ export const AuthProvider = ({children}: ContextProvider) => {
                 },
                 body: JSON.stringify({'username': username, 'password': e.target.usernameorpassword.value})
             })
-
             const data = await response.json()
 
             if(response.status === 200){
                 const decodedCurrency: UserData = jwt_decode(data.access)
-                //console.log(decodedCurrency)
 
                 document.cookie = `username=${JSON.stringify(data.access)}`
                 document.cookie = `currency=${decodedCurrency["currency"]}`;

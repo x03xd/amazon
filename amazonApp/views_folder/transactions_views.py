@@ -15,7 +15,6 @@ class TransactionsAPI(ListAPIView):
         return queryset
 
 
-    
 class ProductsFromTransactions(APIView):
 
     def adding_products(self, end, table):
@@ -29,7 +28,7 @@ class ProductsFromTransactions(APIView):
                 
             if counter == end:
                 break
-
+        
         return lst_f
 
 

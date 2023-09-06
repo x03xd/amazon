@@ -109,7 +109,7 @@ const Rating: React.FC<OpinionsProps> = ({ product_id, user_id }) => {
     return(
         <div className = "lobby-opinions">  
             <div className = "lobby-opinions-rating-percentages">
-                <SingleLobbyRate product_id = {product_id} />
+                <SingleLobbyRate product_id = {product_id} user_id = {user_id}/>
             </div>
 
             <div className = "lobby-opinions-text">
