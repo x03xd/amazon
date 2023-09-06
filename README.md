@@ -21,7 +21,7 @@ stripe login
 I POSTĄPIĆ ZGODNIE Z INSTRUKCJĄ
 
 3. WPISAC W KONSOLĘ
-stripe listen --forward-to http://127.0.0.1:8000/stripe-webhook
+stripe listen --forward-to http://127.0.0.1:8000/api/stripe-webhook/
 
 
 
