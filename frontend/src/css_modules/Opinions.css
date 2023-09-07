@@ -5,6 +5,27 @@
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.3);
     padding: 2rem;
+    gap: 3rem;
+}
+
+.lobby-opinions-header {
+    display: flex;
+    gap: 1rem;
+}
+
+.lobby-opinions-title {
+    font-size: 1.8rem !important;
+}
+
+.lobby-opinions div:first-child {
+    grid-column: 1 / 4;
+}
+
+.opinion {
+    background: hsla(60, 3%, 92%, 0.897);
+    border-radius: 0.4rem;
+    box-shadow: 0px 0px 5px 1px rgba(85, 84, 84, 0.3);
+    padding: 1rem;
 }
 
 .opinion-date {
@@ -27,9 +48,6 @@
     color: var(--dark-orange) !important;
 }
 
-.opinion:first-child {
-    margin-top: 1.5rem; 
-}
 
 .opinion:not(:first-child) {
     margin-top: 2.5rem; 

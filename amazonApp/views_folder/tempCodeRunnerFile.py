@@ -1,0 +1,1 @@
+serializer = ProductSerializer(queryset, many=True, context=provide_currency_context(user_id))

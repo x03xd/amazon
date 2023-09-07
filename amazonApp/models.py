@@ -86,7 +86,7 @@ class Rate(models.Model):
     
 
 class Opinion(models.Model):
-    rate = models.OneToOneField(Rate, on_delete=models.CASCADE, null=True, blank=True)
+    rate = models.OneToOneField(Rate, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=30)
     text = models.TextField(max_length=1200)
     reviewed_product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, db_index=True)
@@ -120,12 +120,13 @@ class Transaction(models.Model):
     bought_products = ArrayField(models.IntegerField())
     date = models.DateField(auto_now_add=True)
     transaction_number = models.CharField(max_length=20, unique=True, editable=False, null=True)
+    total_price = models.DecimalField(max_digits=8, decimal_places=2, null=True)
 
 
 @receiver(post_save, sender=User)
 def create_one_to_one(sender, instance, created, **kwargs):
     if created:
-        one_to_one = Cart.objects.create(test_name=f"{instance}'s cart", owner = instance)
+        one_to_one = Cart.objects.create(test_name=f"{instance}'s cart", owner=instance)
         instance.one_to_one = one_to_one
         instance.save()
 
@@ -133,6 +134,6 @@ def create_one_to_one(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Product)
 def create_one_to_one(sender, instance, created, **kwargs):
     if created:
-        rating = Rate.objects.create(rated_products = instance, rate = None)
+        rating = Rate.objects.create(rated_products=instance, rate=None)
         instance.rating = rating
         instance.save()

@@ -51,7 +51,7 @@ const EditProfile : React.FC = () => {
                     <div></div>
 
                     <div className = "edit-profile-container-main">
-                        <span className = "edit-profile-container-title">Logowanie i bezpieczeństwo</span>
+                        <span className = "narrow-container-title">Logowanie i bezpieczeństwo</span>
                         <div className = "mt-3">
                             {
                                 data.map((item: DataOfOperation, index: number) => <EditProfileCard access = {accessToChange} key = {index} link = {item.link} id = {index} header = {item.header} accessLink = {item.accessLink} text = {item.text} buttonValue = {item.buttonValue} shortcut = {item.shortcut} /> )
