@@ -1,47 +1,63 @@
+<h1>Amazon Clone</h1>
+    
+<h2>Technologies</h2>
+<p>React + TypeScript + Django REST framework + Celery + RabbitMQ</p>
 
-KLON AMAZONA, STACK TECHNOLOGICZNY: REACT + TS + DJANGO REST FRAMEWORK + CELERY + RABBITMQ
-<h1>xzd</h1>
+<h2>Running</h2>
+<p>In the root folder:</p>
 
-URUCHOMIENIE:
-w root folderze:
-python manage.py runserver - włączenie servera backend
-celery -A amazon worker -l info -P eventlet - używane to pracy z zadaniami w tle na systemie windows
-celery -A amazon beat -l info - cykliczne wywoływanie API walutowego o czas zdefiniowany w settings.py
+<ul>
+  <li><code>python manage.py runserver</code> - Start the backend server</li>
+  <li><code>celery -A amazon worker -l info -P eventlet</code> - Use this for background tasks on Windows</li>
+  <li><code>celery -A amazon beat -l info</code> - Periodically call the currency API as defined in settings.py</li>
+</ul>
 
-w folderze frontend
-npm start - włączenie servera frontend
+<p>In the frontend folder:</p>
+<ul>
+  <li><code>npm start</code> - Start the frontend server</li>
+</ul>
 
-PONADTO ZAINSTALOWAC STRIPE CLI I ZALACZYC ENDPOINTA WEBHOOKA 'stripe-webhook/' POSTEPUJAC ZGODNIE Z KROKAMI PONIZEJ (POTRZEBNE W CELU )
-1. INSTALACJA:
-https://github.com/stripe/stripe-cli/releases/tag/v1.17.2
-I WYPAKOWAC
+<p>start RabbitMQ server</p>
 
-2. WPISAC W KONSOLĘ
-stripe login 
-I POSTĄPIĆ ZGODNIE Z INSTRUKCJĄ
-
-3. WPISAC W KONSOLĘ
-stripe listen --forward-to http://127.0.0.1:8000/api/stripe-webhook/
-
-
-
-DO USER AUTHENTICATION UŻYTO JWT (ADMIN PANEL Z KOLEI KORZYSTA DEFAULTOWO Z SESSIONS)
-
-APLIKACJA ZAWIERA TAKIE FEATURY JAK:
-1. REJESTRACJA
-2. LOGOWANIE/WYLOGOWYWANIE
-3. FILTR PRODUKTÓW
-4. MOŻLIWOŚĆ KUPNA PRODUKTU/PRODUKTÓW
-5. KOSZYK
-6. PODGLĄD ZAMÓWIEŃ ORAZ MOŻLIWOŚĆ WYSTAWIENIA OCENY DLA ZAMÓWIONYCH PRODUKTÓW
-7. ZMIANA WALUTY
-8. BACKGROUND TASK W POSTACI API KTORE RAZ, A NASTĘPNIE CO CZAS OKRESLONY W settings.py ZA POMOCA CELERY AKTUALIZUJE KURSY WALUT
-9. MOŻLIWOŚĆ EDYCJI DANYCH UŻYTKOWNIKA
-10. REKOMENDACJE
-11. SYSTEM OPINII
-12. SYSTEM PŁATNOŚCI ZE STRIPE PAYMENT ORAZ WEBHOOKIEM KONTROLUJACYM OPERACJE NA BAZIE DANYCH
+<p>Stripe Webhook Configuration</p>
+<p>Install Stripe CLI:</p>
+<ul>
+    <li>Download from <a href="https://github.com/stripe/stripe-cli/releases/tag/v1.17.2">here</a> and extract.</li>
+    <li>Run <code>stripe login</code> and follow the instructions.</li>
+    <li>Run <code>stripe listen --forward-to http://127.0.0.1:8000/api/stripe-webhook/</code></li>
+</ul>
 
 
-UWAGI:
-API WALUTOWE MOŻE BYĆ WYCZERPANE. W TAKIM WYPADKU ZACHĘCAM DO ZMIANY KLUCZA NA WŁASNY W PLIKU settings.py - FIXER_API_KEY.
+<h2>Features</h2>
+<ul>
+  <li>Registration</li>
+  <li>Login/Logout</li>
+  <li>Product Filtering</li>
+  <li>Ability to Purchase Products</li>
+  <li>Shopping Cart</li>
+  <li>Order Preview and Ability to Rate Ordered Products</li>
+  <li>Currency Change</li>
+  <li>Background Task in the Form of an API That Once, and Then at Specified Intervals in settings.py Using Celery, Updates Currency Exchange Rates</li>
+  <li>User Data Editing</li>
+  <li>Recommendations</li>
+  <li>Review System</li>
+  <li>Payment System with Stripe Payment and Webhooks Controlling Operations on the Database</li>
+</ul>
+
+<h2>Public API</h2>
+<ul>
+  <li>
+    <span>Currency Exchange API</span>
+    <a href="https://fixer.io/documentation">here</a>
+  </li>
+  
+  <li>
+    <span>Payment Gateaway</span>
+    <a href="https://stripe.com/docs/checkout/quickstart">here</a>
+  </li>
+</ul>
+
+
+
+
 
