@@ -1,5 +1,5 @@
 
-from amazonApp.models import Product, Rate, User
+from amazonApp.models import Product, Rate, User, Opinion
 from amazonApp.serializers import RateSerializer, GetterRateSerializer, ProductRateSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,6 +8,10 @@ from django.db.models import Avg
 from rest_framework.response import Response
 from django.db.models import Count
 from collections import defaultdict
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+
+
 
 class CountAvgRate(ListAPIView):
     serializer_class = RateSerializer
@@ -57,7 +61,7 @@ class RateProduct(APIView):
             return Response(serializer.data["rate"])
 
         except Rate.DoesNotExist:
-            return Response({"error": "Object does not exist"}, status=404)
+            return Response("Object does not exist")
         
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
@@ -65,21 +69,13 @@ class RateProduct(APIView):
     
     def patch(self, request, **kwargs):
         user_id = self.kwargs.get("id")
+        rate = self.kwargs.get("rate")
         created = False
 
         try:
-            try:
-                product = Product.objects.get(id=self.kwargs.get("pid"))
-            
-            except Product.DoesNotExist:
-                return Response({"error": "Object does not exist"}, status=404)
-
-            try:
-                user = User.objects.get(id=user_id )
-
-            except User.DoesNotExist:
-                return Response({"error": "Object does not exist"}, status=404)
-            
+            product = Product.objects.get(id=self.kwargs.get("pid"))
+            user = User.objects.get(id=self.kwargs.get("id"))
+        
             people_who_bought = product.bought_by_rec.filter(id=user_id).exists()
 
             if not people_who_bought:
@@ -88,17 +84,27 @@ class RateProduct(APIView):
             rate_of_user, created = Rate.objects.get_or_create(
                 rated_by = user,
                 rated_products = product,
-                defaults={'rate': self.kwargs.get("rate")}
+                defaults={'rate': rate}
             )
 
             if not created:
-                rate_of_user.rate = self.kwargs.get("rate")
+                rate_of_user.rate = rate
                 rate_of_user.save()
 
-            return Response({"status": True})
+            else:      
+                opinion = get_object_or_404(Opinion, reviewed_by=user, reviewed_product=product)
+
+                opinion.rate = rate_of_user
+                opinion.save()
+
+            return Response({"status": True}, status=status.HTTP_200_OK)
+        
+                
+        except (Rate.DoesNotExist, User.DoesNotExist, Product.DoesNotExist):
+            return Response({"error": "Object does not exist"}, status=404)
     
         except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
 class DeleteRate(APIView):
@@ -112,7 +118,7 @@ class DeleteRate(APIView):
             rate.delete()
 
             return Response('The rate has been restarted')
-
+        
         except Rate.DoesNotExist:
             return Response({"error": "Object does not exist"}, status=404)
 

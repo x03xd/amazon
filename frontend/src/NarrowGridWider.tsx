@@ -6,7 +6,7 @@ import {Outlet} from 'react-router-dom';
 const NarrowGrid : React.FC = () => {
 
     return(
-        <div className = "narrow-container">
+        <div className = "narrow-container-wider">
             
             <div>
             </div>

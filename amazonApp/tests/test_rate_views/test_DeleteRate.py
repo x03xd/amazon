@@ -45,7 +45,7 @@ class TestDeleteRate:
 
         data = {'user_id': user.id, 'product_id': product.id}
         response = api_client.post(url, data, format='json')
-
+        
         assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.data == {"error": "Object does not exist"}
 

@@ -69,7 +69,6 @@ class StripeCheckout(APIView):
             cancel_url=settings.SITE_URL + '/',
         )
 
-
     def core(self):
         if self.location == "cart":
             return self.handle_cart()
@@ -121,7 +120,7 @@ class StripeCheckout(APIView):
         data = {
             'price_data': {
                 'currency': self.currency.lower(),
-                'unit_amount': int(Decimal(price) * Decimal(self.ratio)) * 100,
+                'unit_amount': int(Decimal(price) * Decimal(self.ratio) * 100),
                 'product_data': {
                     'name': title,
                 },
@@ -175,6 +174,7 @@ def handle_checkout_session_completed(event):
     user_id = int(user_id)
     product_id = int(product_id) if product_id else None
     quantity = int(quantity) if quantity else None
+    total_price_ = 0
     bought = []
     
     try:
@@ -185,8 +185,12 @@ def handle_checkout_session_completed(event):
 
             if product.quantity >= quantity:
                 bought.extend([product.id] * quantity)
+                product.bought_by_rec.add(user)
+
+                total_price_ += product.price * quantity
                 product.quantity -= quantity
                 product.save()
+
 
         elif location == "cart":
             cart_items = CartItem.objects.filter(cart__owner=user)
@@ -195,17 +199,21 @@ def handle_checkout_session_completed(event):
             for record in serializer.data:
                 product = Product.objects.get(id=record["product"])
 
-                if product.quantity >= record["quantity"]:
-                    bought.extend([record["product"]] * record["quantity"])
-                else:
+                if product.quantity < record["quantity"]:
                     return
-                
+
             for record in serializer.data:
                 product = Product.objects.get(id=record["product"])
+
+                bought.extend([record["product"]] * record["quantity"])
+                total_price_ += record["total_price"]
+                
+                product.bought_by_rec.add(user)
                 product.quantity -= record["quantity"]
                 product.save()
 
             cart_items.delete()
+
 
         random_transaction_id_value = random_transaction_id()
  
@@ -213,6 +221,7 @@ def handle_checkout_session_completed(event):
             bought_by=user,
             bought_products=bought,
             transaction_number=random_transaction_id_value,
+            total_price = total_price_
         )
 
     except:

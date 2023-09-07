@@ -31,7 +31,7 @@ urlpatterns = [
     #RATE
     path('avg-rate/', rate_views.CountAvgRate.as_view(), name="avg-rate"),
     path('avg-rate/<product_id>/', rate_views.CountAvgRate.as_view(), name='single-avg-rate'),
-    path('rate-product/<id>/<pid>/<rate>', rate_views.RateProduct.as_view(), name='rate-product'),
+    path('rate-product/<id>/<pid>/<rate>/', rate_views.RateProduct.as_view(), name='rate-product'),
     path('delete-rate/', rate_views.DeleteRate.as_view(), name='delete-rate'),
     path('product-rates/<product_id>', rate_views.ProductRateCounter.as_view(), name='product-rates'),
     
@@ -52,8 +52,8 @@ urlpatterns = [
     path("cart/<user_id>", cart_views.CartAPI.as_view(), name="cart"),
 
     #TRANSACTIONS
-    path("transactions/<id>", transactions_views.TransactionsAPI.as_view()),
-    path("products-from-transactions/", transactions_views.ProductsFromTransactions.as_view()),
+    path("transactions/<user_id>/<year>", transactions_views.TransactionsAPI.as_view()),
+    path("transaction-products/<products_id>/<user_id>", transactions_views.TransactionProducts.as_view()),
 
     #CURRENCIES
     path("currency-converter/<id>", currencies_views.CurrencyConverterAPI.as_view(), name="currency-converter"),

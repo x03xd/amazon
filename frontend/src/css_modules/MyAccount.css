@@ -4,8 +4,6 @@
     margin-top: 2rem !important;
 }
 
-
-
 .my-account-cards-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -19,6 +17,5 @@
 }
 
 .my-account-cards-container.second {
-
     margin-top: 50px !important;
 }

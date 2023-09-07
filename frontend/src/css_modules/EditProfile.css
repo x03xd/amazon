@@ -6,8 +6,7 @@
     min-height: 35rem;
 }
 
-
-.edit-profile-container-title {
+.narrow-container-title {
     font-size: 2.3rem !important;
 }
 
@@ -31,12 +30,11 @@
 
 .single-transaction-card-content > div span:first-child {
     font-weight: 600;
-    font-size: 1.15rem !important;
 }
 
 
 .edit-profile-card-grid {
-    display:grid;
+    display: grid;
     grid-template-columns: 6fr 1.5fr;
     place-items: unset !important;
 }
@@ -58,5 +56,3 @@ span.no-transactions-info {
     color: gray !important;
     font-size: 3rem !important;
 }
-
-/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */

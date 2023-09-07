@@ -32,7 +32,7 @@ const SelectCurrency: React.FC = () => {
 
     return(
         <>
-            <select disabled={!authToken} defaultValue={selectedCurrency} onChange={handleCurrencyChange}>
+            <select className = "cursor-finger" disabled={!authToken} defaultValue={selectedCurrency} onChange={handleCurrencyChange}>
                 <option value = "EUR">EUR</option>
                 <option value = "GBP">GBP</option>
                 <option value = "USD">USD</option>

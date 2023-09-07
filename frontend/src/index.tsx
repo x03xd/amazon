@@ -18,6 +18,7 @@ import EditProfile from './EditProfile';
 import Transactions from './Transactions';
 import ProtectedRoute from './ProtectedRoute';
 import PasswordChange from './PasswordChange';
+import NarrowGridWider from './NarrowGridWider';
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
@@ -36,6 +37,9 @@ root.render(
                         <Route element = {<NarrowGrid />}>
                             <Route path="/account" element={<ProtectedRoute path="/account" element={<MyAccount />} />} />
                             <Route path="/account/edit-profile" element={<ProtectedRoute path="/account/edit-profile" element={<EditProfile />} />} />
+                        </Route>
+
+                        <Route element = {<NarrowGridWider />}>
                             <Route path="/account/transactions" element={<ProtectedRoute path="/account/transactions" element={<Transactions />} />} />
                         </Route>
                     </Route>

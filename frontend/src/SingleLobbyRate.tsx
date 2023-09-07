@@ -46,10 +46,6 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id, user_id }
 
     return(
         <div className = "single-lobby-rate">  
-            <div>
-                <p>Opinie o produkcie</p>
-            </div>
-
             <div className = "star-rating-container stars-bigger">
                 <CountingRate rate = {rate} product_id = {product_id} />
             </div>
