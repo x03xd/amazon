@@ -1,0 +1,89 @@
+
+
+
+.single-transaction-card-content {
+    display:grid;
+    grid-template-rows: 4fr auto 2fr;
+    border: 0.05rem solid lightgray;
+    border-radius: 0.4rem;
+}
+
+
+
+.single-transaction-card-content-header {
+    background: rgb(245, 244, 244);
+    height: 7rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 4fr;
+    border-top-left-radius: 0.4rem !important;
+    border-top-right-radius: 0.4rem !important;
+    border-bottom: 0.05rem solid lightgray;
+}
+
+
+.single-transaction-card-content-header span {
+    color: gray !important;
+    font-size: 1rem !important;
+}
+
+.transaction-profile-container-header {
+    display: flex;
+    align-items: center;
+}
+
+.transaction-profile-container-main > div:nth-child(2) {
+    margin-top: 1rem; 
+}
+
+.transaction-profile-container-main > :not(:first-child):not(:nth-child(2)) {
+    margin-top: 2rem; 
+}
+
+.single-transaction-card-content-main-inner {
+    display: grid;
+    grid-template-columns: 1.5fr 5fr 4fr;
+    height: 10rem;
+}
+
+
+.single-transaction-card-content-main-1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.single-transaction-card-content-main-2 {
+    display: flex;
+    align-items: center;
+}
+
+.single-transaction-card-content-main-2 > div span {
+    font-size: 1.15rem !important;
+}
+
+.single-transaction-card-content-main-3 {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    
+}
+
+.single-transaction-card-footer {
+    display: flex;
+    align-items: center;
+    border-top: 0.05rem solid lightgray;
+}
+
+
+.single-transaction-card-content-left p {
+    font-size: 1.5rem !important;
+}
+
+
+.view-product-transactions {
+    border-radius: 0.4rem;
+    border: 0.05rem solid lightgray;
+    width: 12rem;
+    height: 2.3rem;
+}
