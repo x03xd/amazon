@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'backend',
+    'amazonApp',
     'frontend',
     'corsheaders',
     'rest_framework',
@@ -146,7 +146,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'frontend/build/static/media'
 
 
-AUTH_USER_MODEL = 'backend.User'
+AUTH_USER_MODEL = 'amazonApp.User'
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
@@ -213,14 +213,17 @@ LOGIN_URL = 'token_obtain_pair'
 
 CELERY_BEAT_SCHEDULE = {
     'update-exchange-rates': {
-        'task': 'backend.tasks.background_task',  
+        'task': 'amazonApp.tasks.background_task',  
         'schedule': 24 * 3600,  
     },
 }
 
 SITE_URL = "http://localhost:3000"
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+
+
+FIXER_API_URL = os.environ.get('FIXER_API_URL')
 FIXER_API_KEY = os.environ.get('FIXER_API_KEY')
+
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 STRIPE_ENDPOINT_SECRET = os.environ.get('STRIPE_ENDPOINT_SECRET')
