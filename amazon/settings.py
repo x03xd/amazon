@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'new_amazon',
         'USER': 'postgres',
         'PASSWORD': 'admin',
-        'HOST': 'localhost',  
+        'HOST': 'postgres_container',  
         'PORT': '5432',  
     }
 }
@@ -220,10 +220,9 @@ CELERY_BEAT_SCHEDULE = {
 
 SITE_URL = "http://localhost:3000"
 
-
+CELERY_ENABLED = True
 
 FIXER_API_URL = os.environ.get('FIXER_API_URL')
 FIXER_API_KEY = os.environ.get('FIXER_API_KEY')
-
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 STRIPE_ENDPOINT_SECRET = os.environ.get('STRIPE_ENDPOINT_SECRET')

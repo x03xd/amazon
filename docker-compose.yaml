@@ -1,6 +1,36 @@
 version: '3.9'
 
 services:
+
+  rabbitmq:
+    image: "rabbitmq:management" 
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    environment:
+      - CELERY_BROKER_URL=amqp://guest@rabbitmq:5672//
+      - CELERY_RESULT_BACKEND=rpc://
+    depends_on: 
+      - rabbitmq
+
+  beat:
+    build:
+      context: .
+      dockerfile: Dockerfile.beat
+    environment:
+      - CELERY_BROKER_URL=amqp://guest@rabbitmq:5672//
+      - CELERY_RESULT_BACKEND=rpc://
+    depends_on:
+      - rabbitmq
+
   frontend:
     build:
       context: ./frontend
@@ -8,17 +38,7 @@ services:
     ports:
       - '3000:3000'
 
-  backend: 
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
-    env_file:
-      - .env
-    ports:
-      - '8000:8000'
-  
-  postgres:
+  database:
     image: postgres:latest 
     container_name: postgres_container 
     environment:
@@ -27,3 +47,21 @@ services:
       POSTGRES_PASSWORD: admin
     ports:
       - "5432:5432"
+    volumes:
+      - ./data_amazon.sql:/docker-entrypoint-initdb.d/data_amazon.sql
+
+  backend: 
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env
+    depends_on:
+      - database
+      - rabbitmq
+    ports:
+      - '8000:8000'
+    
+
+
