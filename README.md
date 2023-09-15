@@ -43,6 +43,7 @@
   <li>Recommendations</li>
   <li>Review System</li>
   <li>Payment System with Stripe Payment and Webhooks Controlling Operations on the Database</li>
+  <li>Unit tests for some functionalities</li>
 </ul>
 
 
