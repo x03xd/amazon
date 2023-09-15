@@ -61,7 +61,7 @@ const Lobby: React.FC = () => {
 				window.location.href = responseJSON.link
 			}
         }
-        catch(error){console.log(error);}
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
     async function addToCard(e: React.MouseEvent<HTMLInputElement>){
@@ -77,12 +77,11 @@ const Lobby: React.FC = () => {
                 body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
             });
             const responseJSON = await response.json();
-
-            if(responseJSON?.status) alert("Produkt pomyślnie dodano do koszyka");
-            else alert(responseJSON.status)
+            alert(responseJSON?.info);
         }
         catch(error){alert('An error occurred. Please try again later.');}
     }
+
 
     return(
         <div className = "lobby-content">

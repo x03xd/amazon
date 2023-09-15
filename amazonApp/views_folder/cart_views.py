@@ -86,17 +86,16 @@ class CartAPI(APIView):
 
 class ProcessAPI(APIView):
 
-
     def validate_conditions(self, quantity, product_quantity, total_quantity):
-        
-        if quantity > product_quantity:
-            return False, Response({"status": "Quantity exceeds available stock"})
 
-        if not (1 <= quantity <= 10):
-            return False, Response({"status": "Quantity is not in the range of 1-10"})
+        if quantity > product_quantity:
+            return False, Response({"status": False, "info": "Quantity exceeds available stock"})
+
+        if quantity > 10 and quantity < 1:
+            return False, Response({"status": False, "info": "Quantity is not in the range of 1-10"})
 
         if isinstance(total_quantity, int) and total_quantity + quantity > 10:
-            return False, Response({"status": "Maximum quantity of a single item exceeded"})
+            return False, Response({"status": False, "info": "Maximum quantity of your cart items exceeded"})
 
         return True, None
 
@@ -132,13 +131,14 @@ class ProcessAPI(APIView):
                     total_price = float(product.price) * quantity
                 )
 
-            return Response({"status": True})
+            return Response({"status": True, "info": "Produkt pomyślnie dodano do koszyka"})
 
-        except (CartItem.DoesNotExist, User.DoesNotExist, Product.DoesNotExist) as e:
-            return Response({"error": "Error message", "detail": str(e)}, status=404)
+        except (User.DoesNotExist, Product.DoesNotExist, Cart.DoesNotExist) as e:
+            return Response({"error": "Object does not exist"}, status=404)    
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+
         
         
 class RemoveItemCart(APIView):
