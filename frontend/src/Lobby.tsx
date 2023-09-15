@@ -14,8 +14,6 @@ const Lobby: React.FC = () => {
     const [modPrice, setModPrice] = useState<number>(0);
     const {username} = useContext(AuthContext);
 
-    console.log(getCookie("currency"))
-
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -78,10 +76,7 @@ const Lobby: React.FC = () => {
                 body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
             });
             const responseJSON = await response.json();
-
-            if(responseJSON?.status) alert("Produkt pomyślnie dodano do koszyka");
-            else alert(responseJSON)
-
+            alert(responseJSON?.info);
         }
         catch(error){alert('An error occurred. Please try again later.');}
     }
