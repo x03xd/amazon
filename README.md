@@ -6,16 +6,27 @@
 <h2>Running</h2>
 <p>In the root folder:</p>
 
-
-
   <code>docker-compose up</code></li>
   <p>If the backend localhost is not working, try reloading the backend service. This is a common issue caused by the backend server starting before the message broker has finished.
   </p>
 
   <code>docker-compose restart backend</code>
 
-  <span>The backend server is defined on port 8000.</span>
-  <span>The frontend server is defined on port 3000.</span>
+  <span>The backend server is available on port 8000.</span>
+  <span>The frontend server is available on port 3000.</span>
+
+
+<h2>Services</h2>
+  <ul>
+    <li>frontend</li>
+    <li>backend</li>
+    <li>database - included in the volume is a sample database with a small amount of data for functionality testing. It's worth reviewing what might be provided there</li>
+    <li>celery worker</li>
+    <li>celery beat</li>
+    <li>message broker - rabbitmq</li>
+    <li>stripe cli - gateway for payments</li>
+    <li>database and rabbitmq service controlling starting of backend service</li>
+  </ul>
 
 
 <h2>Features</h2>
@@ -34,6 +45,8 @@
   <li>Payment System with Stripe Payment and Webhooks Controlling Operations on the Database</li>
 </ul>
 
+
+
 <h2>Public API</h2>
 <ul>
   <li>
@@ -42,7 +55,7 @@
   </li>
   
   <li>
-    <span>Payment Gateaway</span>
+    <span>Payment Gateway</span>
     <a href="https://stripe.com/docs/checkout/quickstart">here</a>
   </li>
 </ul>
