@@ -1,7 +1,7 @@
 <h1>Amazon Clone</h1>
     
 <h2>Technologies</h2>
-<p>React + TypeScript + Django REST framework + Celery + RabbitMQ</p>
+<p>React + TypeScript + Django REST Framework + PostgreSQL + Celery + RabbitMQ</p>
 
 <h2>Running</h2>
 <p>In the root folder:</p>
