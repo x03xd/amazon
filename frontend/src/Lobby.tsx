@@ -14,8 +14,6 @@ const Lobby: React.FC = () => {
     const [modPrice, setModPrice] = useState<number>(0);
     const {username} = useContext(AuthContext);
 
-    console.log(getCookie("currency"))
-
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -33,6 +31,7 @@ const Lobby: React.FC = () => {
     }, [])
     
     useEffect(() => {
+        console.log(selectedValue)
     }, [selectedValue])
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -80,8 +79,7 @@ const Lobby: React.FC = () => {
             const responseJSON = await response.json();
 
             if(responseJSON?.status) alert("Produkt pomyślnie dodano do koszyka");
-            else alert(responseJSON)
-
+            else alert(responseJSON.status)
         }
         catch(error){alert('An error occurred. Please try again later.');}
     }

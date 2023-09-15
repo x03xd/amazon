@@ -86,17 +86,19 @@ class CartAPI(APIView):
 
 class ProcessAPI(APIView):
 
-    @staticmethod
-    def validate_conditions(quantity, product_quantity, total_quantity):
+
+    def validate_conditions(self, quantity, product_quantity, total_quantity):
         
         if quantity > product_quantity:
-            return Response("Quantity exceeds available stock")
+            return False, Response({"status": "Quantity exceeds available stock"})
 
         if not (1 <= quantity <= 10):
-            return Response("Quantity is not in range 1-10")
+            return False, Response({"status": "Quantity is not in the range of 1-10"})
 
         if isinstance(total_quantity, int) and total_quantity + quantity > 10:
-            return Response("Maximum quantity of single item exceeded")
+            return False, Response({"status": "Maximum quantity of a single item exceeded"})
+
+        return True, None
 
     
     def post(self, request):
@@ -105,22 +107,16 @@ class ProcessAPI(APIView):
             user_id = request.data.get("user_id")
             quantity = int(request.data.get("quantity", 0))
 
-            try:
-                user = User.objects.get(id=user_id)
-                product = Product.objects.get(id=product_id) 
+            user = User.objects.get(id=user_id)
+            product = Product.objects.get(id=product_id) 
+            total_quantity = CartItem.objects.filter(cart__owner=user).aggregate(Sum('quantity'))['quantity__sum'] 
 
-            except (User.DoesNotExist, Product.DoesNotExist) as e:
-                return Response({"error": "Object does not exist"}, status=404)    
-            
-            total_quantity = CartItem.objects.filter(cart__owner=user).aggregate(Sum('quantity'))['quantity__sum']
-            
-            ProcessAPI.validate_conditions(quantity, product.quantity, total_quantity)
+            valid, response = self.validate_conditions(quantity, product.quantity, total_quantity)
 
-            try:
-                cart = Cart.objects.get(owner__id=user_id)  
+            if not valid:
+                return response
 
-            except Cart.DoesNotExist:
-                return Response({"error": "Object does not exist"}, status=404)     
+            cart = Cart.objects.get(owner__id=user_id)  
 
             try:
                 obj = CartItem.objects.get(cart=cart, product=product)
@@ -137,6 +133,9 @@ class ProcessAPI(APIView):
                 )
 
             return Response({"status": True})
+
+        except (CartItem.DoesNotExist, User.DoesNotExist, Product.DoesNotExist) as e:
+            return Response({"error": "Error message", "detail": str(e)}, status=404)
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
