@@ -60,7 +60,7 @@ const Lobby: React.FC = () => {
 				window.location.href = responseJSON.link
 			}
         }
-        catch(error){console.log(error);}
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
     async function addToCard(e: React.MouseEvent<HTMLInputElement>){

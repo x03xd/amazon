@@ -1,0 +1,89 @@
+version: '3.9'
+
+services:
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+
+  database:
+    image: postgres:15.3
+    container_name: postgres_container 
+    environment:
+      POSTGRES_DB: new_amazon
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data_amazon.sql:/docker-entrypoint-initdb.d/data_amazon.sql
+
+  rabbitmq:
+    image: "rabbitmq:management" 
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  backend: 
+    restart: on-failure
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env
+    depends_on:
+      - check-rabbitmq
+      - check-database
+    ports:
+      - '8000:8000'
+
+  check-rabbitmq: 
+    image: jwilder/dockerize:0.6.1
+    depends_on:
+      - rabbitmq
+      - check-database
+    command: 'dockerize -wait=tcp://rabbitmq:5672'
+
+  check-database: 
+    image: jwilder/dockerize:0.6.1
+    depends_on:
+      - database
+    command: 'dockerize -wait=tcp://postgres_container:5432'
+
+  worker:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    environment:
+      - CELERY_BROKER_URL=amqp://guest@rabbitmq:5672//
+      - CELERY_RESULT_BACKEND=rpc://
+    depends_on: 
+      - rabbitmq
+      - backend
+
+  beat:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile.beat
+    environment:
+      - CELERY_BROKER_URL=amqp://guest@rabbitmq:5672//
+      - CELERY_RESULT_BACKEND=rpc://
+    depends_on:
+      - rabbitmq
+      - backend
+
+  stripe-cli:
+    image: stripe/stripe-cli
+    environment:
+      STRIPE_API_KEY: ${STRIPE_SECRET_KEY}
+    command:
+      listen --forward-to backend:8000/api/stripe-webhook/

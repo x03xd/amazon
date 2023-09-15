@@ -29,5 +29,5 @@ def background_task():
         return {"USD": 0.86, "PLN": 4.47, "EUR": 1, "GBP": 1.12}  
 
     except requests.exceptions.RequestException as e:
-        return {}
+        return {"USD": 0.86, "PLN": 4.47, "EUR": 1, "GBP": 1.12} 
         

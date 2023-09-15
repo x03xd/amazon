@@ -3,13 +3,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from amazonApp.models import Product, Transaction, User, Product, CartItem
-from datetime import datetime
 from amazonApp.serializers import CartItemProductsSerializer, CartItemSerializer, ProductSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.core.cache import cache
 from decimal import Decimal
-from django.http import JsonResponse
 import stripe
 import random
 

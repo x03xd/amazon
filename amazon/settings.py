@@ -8,7 +8,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s9weo$!_fl)l=j+iw*k_@04178j^stjg5#d4@0oqs8fa%gktc3'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -87,7 +90,7 @@ DATABASES = {
         'NAME': 'new_amazon',
         'USER': 'postgres',
         'PASSWORD': 'admin',
-        'HOST': 'localhost',  
+        'HOST': 'postgres_container',  
         'PORT': '5432',  
     }
 }
@@ -215,10 +218,12 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-FIXER_API_URL = "http://data.fixer.io/api/latest"
-FIXER_API_KEY = '3f1d8c17a80596d5a89ba0001f8fa2a5'
-
-STRIPE_SECRET_KEY = 'sk_test_51NlxoXLItapzlYRNHP9yqTcsagF76UbviJU6eVYidHmBoxpg7Pmm1oVWU2IjG02grnGlcdDlYQd6gY7YPTPFXvnb00bpNUzjwl'
-STRIPE_ENDPOINT_SECRET = 'whsec_80e89d7b3f021a1320d0576c70992c0260de3f8e7dd3e302c14943dc2377d206'
-
 SITE_URL = "http://localhost:3000"
+
+CELERY_ENABLED = True
+
+FIXER_API_URL = os.environ.get('FIXER_API_URL')
+FIXER_API_KEY = os.environ.get('FIXER_API_KEY')
+
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+STRIPE_ENDPOINT_SECRET = os.environ.get('STRIPE_ENDPOINT_SECRET')
