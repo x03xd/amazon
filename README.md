@@ -6,25 +6,16 @@
 <h2>Running</h2>
 <p>In the root folder:</p>
 
-<ul>
-  <li><code>python manage.py runserver</code> - Start the backend server</li>
-  <li><code>celery -A amazon worker -l info -P eventlet</code> - Use this for background tasks on Windows</li>
-  <li><code>celery -A amazon beat -l info</code> - Periodically call the currency API as defined in settings.py</li>
-</ul>
 
-<p>In the frontend folder:</p>
 <ul>
-  <li><code>npm start</code> - Start the frontend server</li>
-</ul>
+  <li><code>docker-compose up</code></li>
+  <li>If the backend localhost is not working, try reloading the backend service. This is a common issue caused by the backend server starting before the message broker has finished.
+  </li>
 
-<p>start RabbitMQ server</p>
+  <li><code>docker-compose restart backend</code></li>
 
-<p>Stripe Webhook Configuration</p>
-<p>Install Stripe CLI:</p>
-<ul>
-    <li>Download from <a href="https://github.com/stripe/stripe-cli/releases/tag/v1.17.2">here</a> and extract.</li>
-    <li>Run <code>stripe login</code> and follow the instructions.</li>
-    <li>Run <code>stripe listen --forward-to http://127.0.0.1:8000/api/stripe-webhook/</code></li>
+  <li>The backend server is defined on port 8000.</li>
+  <li>The frontend server is defined on port 3000.</li>
 </ul>
 
 
