@@ -7,16 +7,15 @@
 <p>In the root folder:</p>
 
 
-<ul>
-  <li><code>docker-compose up</code></li>
-  <li>If the backend localhost is not working, try reloading the backend service. This is a common issue caused by the backend server starting before the message broker has finished.
-  </li>
 
-  <li><code>docker-compose restart backend</code></li>
+  <code>docker-compose up</code></li>
+  <p>If the backend localhost is not working, try reloading the backend service. This is a common issue caused by the backend server starting before the message broker has finished.
+  </p>
 
-  <li>The backend server is defined on port 8000.</li>
-  <li>The frontend server is defined on port 3000.</li>
-</ul>
+  <code>docker-compose restart backend</code>
+
+  <span>The backend server is defined on port 8000.</span>
+  <span>The frontend server is defined on port 3000.</span>
 
 
 <h2>Features</h2>
