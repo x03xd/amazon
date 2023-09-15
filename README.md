@@ -1,32 +1,18 @@
 <h1>Amazon Clone</h1>
     
 <h2>Technologies</h2>
-<p>React + TypeScript + Django REST framework + Celery + RabbitMQ</p>
+<p>React + TypeScript + Django REST Framework + PostgreSQL + Celery + RabbitMQ</p>
 
 <h2>Running</h2>
 <p>In the root folder:</p>
 
 <ul>
-  <li><code>python manage.py runserver</code> - Start the backend server</li>
-  <li><code>celery -A amazon worker -l info -P eventlet</code> - Use this for background tasks on Windows</li>
-  <li><code>celery -A amazon beat -l info</code> - Periodically call the currency API as defined in settings.py</li>
+    <li>docker-compose up</li>
+    <li><code>If the backend localhost is not working, try reloading the backend service with docker-compose restart backend. This is a common issue caused by the backend server starting before the message broker has finished.</code></li>
+
+    <li>Backend server is defined on port :8000</li>
+    <li>Frontend server is defined on port :3000</li>
 </ul>
-
-<p>In the frontend folder:</p>
-<ul>
-  <li><code>npm start</code> - Start the frontend server</li>
-</ul>
-
-<p>start RabbitMQ server</p>
-
-<p>Stripe Webhook Configuration</p>
-<p>Install Stripe CLI:</p>
-<ul>
-    <li>Download from <a href="https://github.com/stripe/stripe-cli/releases/tag/v1.17.2">here</a> and extract.</li>
-    <li>Run <code>stripe login</code> and follow the instructions.</li>
-    <li>Run <code>stripe listen --forward-to http://127.0.0.1:8000/api/stripe-webhook/</code></li>
-</ul>
-
 
 <h2>Features</h2>
 <ul>
