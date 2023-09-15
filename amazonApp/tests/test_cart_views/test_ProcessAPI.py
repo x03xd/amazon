@@ -24,12 +24,12 @@ class TestProcessAPI:
     ])
 
     def test_validate_conditions(self, quantity, product_quantity, total_quantity, exception):
-        result = ProcessAPI.validate_conditions(quantity, product_quantity, total_quantity)
+        valid, response = self.validate_conditions(quantity, product_quantity, total_quantity)
 
-        if result is None:
-            assert result == exception
+        if not valid:
+            assert response == exception
         else:
-            assert result.data == exception
+            assert response.data == exception
 
 
     def test_post_200(self, create_cartItem, create_product, create_user, create_cart, api_client):
