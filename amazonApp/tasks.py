@@ -24,9 +24,10 @@ def background_task():
         if "rates" in data:
             return data["rates"]
         else:
-    
+            #default setting in case of not working API
             return {"USD": 0.86, "PLN": 4.47, "EUR": 1, "GBP": 1.12}  
 
     except requests.exceptions.RequestException as e:
+        #default setting in case of not working API
         return {"USD": 0.86, "PLN": 4.47, "EUR": 1, "GBP": 1.12} 
         

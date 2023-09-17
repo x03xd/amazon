@@ -37,7 +37,7 @@ const cardsData : CardDataArray["array"] = [
 export interface CardData2 {
     title: string;
     content: string;
-    link :string;
+    link : string;
 }
 
 interface CardDataArray2 {
