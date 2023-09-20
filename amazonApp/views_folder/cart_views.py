@@ -28,7 +28,6 @@ class CartAPI(APIView):
                 
     def get(self, request, *args, **kwargs):
         try:
-
             user_id = self.kwargs.get("user_id")
             currency_context = provide_currency_context(user_id)
 
@@ -91,7 +90,7 @@ class ProcessAPI(APIView):
         if quantity > product_quantity:
             return False, Response({"status": False, "info": "Quantity exceeds available stock"})
 
-        if quantity > 10 and quantity < 1:
+        if quantity > 10 or quantity < 1:
             return False, Response({"status": False, "info": "Quantity is not in the range of 1-10"})
 
         if isinstance(total_quantity, int) and total_quantity + quantity > 10:

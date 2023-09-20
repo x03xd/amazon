@@ -61,7 +61,7 @@ class RateProduct(APIView):
             return Response(serializer.data["rate"])
 
         except Rate.DoesNotExist:
-            return Response("Object does not exist")
+            return Response({"error": "Object does not exist"})
         
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)

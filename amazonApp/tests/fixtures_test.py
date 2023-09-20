@@ -34,7 +34,7 @@ def create_cart(create_user):
 
 @pytest.fixture
 def create_cartItem(create_product, create_cart):
-    cartItem, _ = CartItem.objects.get_or_create(cart=create_cart, product=create_product, quantity=10, total_price=decimal.Decimal('100'))
+    cartItem, _ = CartItem.objects.get_or_create(cart=create_cart, product=create_product, quantity=6, total_price=decimal.Decimal('100'))
     return cartItem
 
 
@@ -52,7 +52,7 @@ def create_product(create_category, create_brand, create_user):
         description="Default description",
         price=decimal.Decimal('100.00'),  # Use Decimal for precise representation
         image="image",
-        quantity=1,
+        quantity=5,
         category_name=create_category,
         brand=create_brand,
     )
