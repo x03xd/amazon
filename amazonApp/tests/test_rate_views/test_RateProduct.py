@@ -29,17 +29,17 @@ class TestRateProduct:
         response = api_client.get(url)
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data == 3 #rate
+        assert response.data == 3
 
 
     @patch('amazonApp.views_folder.rate_views.Rate.objects.get')
-    def test_get_404(self, mock_get, api_client, create_rate, create_user, create_product):
-        mock_get.side_effect = Rate.DoesNotExist("Simulated error")
+    def test_get_404(mock_get, api_client, create_rate, create_user, create_product):
+        mock_get.side_effect = Rate.DoesNotExist("Object does not exist")
 
         rate = create_rate
         user = create_user
         product = create_product
-        
+
         url = reverse('rate-product', kwargs={'id': user.id, 'pid': product.id, 'rate': rate.rate})
         response = api_client.get(url)
 
