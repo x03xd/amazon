@@ -1,11 +1,7 @@
-.star-rating-icon {
-    font-size: 1.3rem !important;
-}
 
 .star-rating-icon {
     font-size: 1.15rem !important;
 }
-
 
 .star-rating-container {
     display: flex;
@@ -19,5 +15,9 @@ div.lightgrey-empty svg path {
 
 div.yellow-filled svg path {
     color: orange !important;
+}
+
+div.yellow-filled svg path {
+    width: 12rem !important;
 }
 

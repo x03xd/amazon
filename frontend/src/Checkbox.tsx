@@ -1,18 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-interface PriceRange {
-    item: {
-        desc: string,
-        range: {start : number, end : number}
-    }
-}
-
-
-interface BrandsAPI {
-    id: number,
-    brand_name: string,
-    belong_to_category: number
-}
+import {Brands, PriceLimits} from './Store'
 
 
 interface CheckboxProps {
@@ -20,7 +7,7 @@ interface CheckboxProps {
     index: number;
     name: string;
     booleanArray: boolean[],
-    arrayProp: any
+    arrayProp: any,
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arrayProp }) => {    
@@ -37,11 +24,10 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
 
     const [items, setItems] = useState<boolean[]>(booleanArray);
     
-    let uniqueFilteredBrands2 = [...new Set(filteredBrands2)];
-    let uniqueFilteredPrices2 = [...new Set(filteredPrices2)];
+    const uniqueFilteredBrands2 = [...new Set(filteredBrands2)];
+    const uniqueFilteredPrices2 = [...new Set(filteredPrices2)];
 
-    const [allUniqueContentArray, setAllUniqueContentArray] = useState<PriceRange[] | BrandsAPI[]>(arrayProp); //defined w interfejsie
-
+    const [allUniqueContentArray, setAllUniqueContentArray] = useState<PriceLimits[] | Brands[]>(arrayProp); 
 
     useEffect(() => {
         setItems(booleanArray)
@@ -49,7 +35,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
     }, [booleanArray, arrayProp])
 
     useEffect(() => {
-        items.map((item: boolean, index: number) => {
+        items.map((_: boolean, index: number) => {
             const savedData = localStorage.getItem(nut + index);
             if (savedData) {
                 const temp = JSON.parse(savedData);
@@ -60,11 +46,9 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
         });
     }, [items]);
     
- 
-    function isPriceRange(value: BrandsAPI | PriceRange): value is PriceRange {
-        return value !== undefined && (value as PriceRange).item !== undefined;
+    function isPriceRange(value: Brands | PriceLimits): value is PriceLimits {
+        return value !== undefined && (value as PriceLimits).item !== undefined;
     }
-      
 
     /* TRIGGERUJE SIE PO ZMIANIE CHECKBOXA I*/
 
@@ -77,7 +61,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
  
         items.map((item, index: number) => {
 
-            const object = {value: item, nut: nut, id: nut === "c" ? (allUniqueContentArray[index]) : isPriceRange(allUniqueContentArray[index]) ? (allUniqueContentArray[index] as PriceRange).item.range : null}
+            const object = {value: item, nut: nut, id: nut === "c" ? (allUniqueContentArray[index]) : isPriceRange(allUniqueContentArray[index]) ? (allUniqueContentArray[index] as PriceLimits).item.range : null}
 
             localStorage.setItem(nut + index, JSON.stringify(object))
 
@@ -114,16 +98,15 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
             const modifiedQueryString = searchParams.toString();
             const baseUrl = window.location.href.split('?')[0];
             const updatedUrl = baseUrl + '?' + modifiedQueryString;
+
             window.location.href = updatedUrl;
 
         }
-
     },[filteredBrands2, filteredPrices2])
 
-
-    function handleResult(e: any, position: number){
+    function handleResult(position: number){
         setLoading(true);
-        items.map((item : boolean, index : number) => {
+        items.map((_ : boolean, index : number) => {
             if(index === position) {
                 if(!items[index]) {
                     items[index] = true;
@@ -143,7 +126,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
     return(
         <>
             <li key = {index}>
-                <input checked = {ifChecked2} onChange = {(e) => { handleResult(e, index); }} type = "checkbox" />
+                <input checked = {ifChecked2} onChange = {() => { handleResult(index); }} type = "checkbox" />
                 {name}
             </li>
         </>

@@ -1,41 +1,31 @@
 import React, { useRef, useContext } from 'react';
 import AuthContext from "./AuthenticationContext";
-import CSRFToken from './CSRFToken';
 import blocked_padlock from './images/password.png'
 import { useNavigate } from 'react-router-dom';
+import {DataOfOperation, AccessToChangeUsernameState} from './EditProfile';
 
-interface EditProfileCardProps {
-    text: string;
-    header: string;
-    buttonValue: string;
-    id: number;
-    link: string;
-    accessLink: string | null;
-    access: AccessToChangeUsernameStateProp | null
+
+interface EditProfileCardProps extends DataOfOperation{
+    access: AccessToChangeUsernameState | null
 }
 
 
-interface AccessToChangeUsernameStateProp {
-    username: [boolean, string];
-    email: [boolean, string];
-    password: [boolean, string];
-}
-
-const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, buttonValue, id, accessLink, access }) => {
+const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, buttonValue, id, accessLink, access, shortcut }) => {
 
     const inputValue = useRef<HTMLInputElement>(null)
     const {username, logout} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const redirectToPasswordChange = () => {
-        navigate("password/")
+        if(!access?.password[0]) alert(`You cannot change password till ${!access?.password[1]}`)
+        else navigate("password/")
     }
 
     const submitChange = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         
         try{
-            await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
                 method: 'PATCH',
                 credentials: 'include', 
                 headers: {
@@ -43,22 +33,26 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
                 },
                 body: JSON.stringify({"change": inputValue.current?.value})
             })
-            logout()
+            const responseJSON = await response.json();
+            
+            if(responseJSON?.status) logout()
+            else alert(responseJSON?.error)
 
         }
-        catch(error){console.log(`Error: ${error}`)}
+        catch(error){alert('An error occurred. Please try again later.');}
     }
-
-    console.log(access)
 
     return(
         <div className = "edit-profile-card">
-            <form method = "POST">
-                <CSRFToken />
+            <div className = "edit-profile-card-grid">
                 
                 <div className = "edit-profile-card-content">
                     <span>{header}</span> <br/>
-                    {id >= 2 ? <span>{text}</span> : <input ref = {inputValue} type = "text" defaultValue = {text || ""} />}
+
+                    {
+                        id >= 2 ? <span>{text}</span> : (access && access[shortcut as keyof AccessToChangeUsernameState][0] === false ?
+                        <input ref = {inputValue} type = "text" defaultValue = {text || ""} readOnly /> : <input ref = {inputValue} type = "text" defaultValue = {text || ""} />)
+                    }
                 </div>
 
                 <div className = "edit-profile-card-button">
@@ -71,7 +65,7 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
                         <button onClick = {redirectToPasswordChange} className = "button-standard-gradient">{buttonValue}</button>
                     }
                 
-                    {link === "edit-username" && !access?.username[0] ? 
+                    {link === "edit-username" && access?.username[0] === false ? 
                     <>
                         <img src = {blocked_padlock} alt = "blocked" loading = "lazy" />
                         <span>Do: {access?.username[1]}</span>
@@ -79,7 +73,7 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
                     : null}
 
 
-                    {link === "edit-email" && !access?.email[0] ? 
+                    {link === "edit-email" && access?.email[0] === false ? 
                     <>
                         <img src = {blocked_padlock} alt = "blocked" loading = "lazy" /> 
                         <span>Do: {access?.email[1]}</span>
@@ -87,7 +81,7 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
                     : null}
 
 
-                    {link === "edit-password" && !access?.password[0] ? 
+                    {link === "change-password" && access?.password[0] === false ? 
                     <>
                         <img src = {blocked_padlock} alt = "blocked" loading = "lazy" /> 
                         <span>Do: {access?.password[1]}</span>
@@ -95,11 +89,13 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
                     : null}
 
                 </div>
-            </form>
+                
+            </div>
         </div>
     );
 
 }
+
 
 
 export default EditProfileCard

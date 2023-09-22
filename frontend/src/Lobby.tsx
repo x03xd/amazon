@@ -1,63 +1,68 @@
-import { useState, useEffect, useContext } from 'react';
-import {useLocation} from 'react-router-dom';
+import {useState, useEffect, useContext} from 'react';
+import {useLocation, useNavigate} from 'react-router-dom';
 import adress from './images/loc1.png';
 import padlock2 from './images/padlock2.png';
-import CSRFToken from './CSRFToken';
 import AuthContext from "./AuthenticationContext";
 import React from 'react';
+import getCookie from './getCookie'
+import Recommendations from './Recommendations';
+import Opinions from './Opinions';
 
 const Lobby: React.FC = () => {
-
     const [selectedValue, setSelectedValue] = useState<number>(1);
-    let {username} = useContext(AuthContext)
     const [brand, setBrand] = useState<string>("");
-    const location = useLocation();
+    const [modPrice, setModPrice] = useState<number>(0);
+    const {username} = useContext(AuthContext);
 
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/brand/${location.state.brand}`)
-        .then(response => response.json())
-        .then(result => setBrand(result?.brand_name))
-    }, [])
+        try{
+            fetch(`http://127.0.0.1:8000/api/brand/${location.state.brand}`)
+            .then(response => response.json())
+            .then(result => setBrand(result?.brand_name))
 
+            fetch(`http://127.0.0.1:8000/api/lobby-price-mod/${username?.user_id}/${location.state.id_product}`)
+            .then(response => response.json())
+            .then(result => setModPrice(result?.modified_price))
+        }
+        catch(error){alert(error);}
+    }, [])
+    
     useEffect(() => {
     }, [selectedValue])
 
-    const handleSelectChange = (e: any) => {
-        setSelectedValue(parseInt(e.target.value, 10))
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedValue(parseInt(e.target.value, 10));
     };
 
-    let status = location.state.status
-    let statusColor;
+    window.addEventListener('popstate', function(e: PopStateEvent) {
+        navigate("/s");
+    });
 
-    if(status <= 0){
-        status = "Niedostępny"
-        statusColor = "text-danger";
-    }
-
-    else {
-        status = "Dostępny"
-        statusColor = "text-success";
-    }
-
-
-    const finalizeOrderLobby = async (product_id: number) => {
+    const finalizeOrderLobby = async () => {
         try{
-            await fetch(`http://127.0.0.1:8000/api/finalize-order/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/payment-creation/`, {
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({"location": "lobby", "product_id": [location.state.id_product], "quantity": selectedValue, "user": username?.user_id})
+                body:JSON.stringify(
+                    {"location": "lobby", "product_id": location.state.id_product, "quantity": selectedValue,
+                        "user": username?.user_id, "currency": getCookie("currency")
+                    }
+                )
             })
-        }
+            const responseJSON = await response.json()
 
-        catch (error) {
-            console.error('Error updating token:', error);
+            if(responseJSON.link){
+				window.location.href = responseJSON.link
+			}
         }
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
-    
     async function addToCard(e: React.MouseEvent<HTMLInputElement>){
         e.preventDefault();
 
@@ -70,9 +75,10 @@ const Lobby: React.FC = () => {
                 },
                 body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
             });
-            const rj = await response.json()
+            const responseJSON = await response.json();
+            alert(responseJSON?.info);
         }
-        catch(error){console.log("Error: ", error)}
+        catch(error){alert('An error occurred. Please try again later.');}
     }
 
     return(
@@ -80,25 +86,30 @@ const Lobby: React.FC = () => {
 
             <div className = "lobby-content-gallery mt-5">
                 <div>
-                    <img className = "p-5" height = "450" width = "600" src = {location.state.g1} />
+                    <img src = {location.state?.image} alt = "product" loading = "lazy" className = "p-5" height = "450" width = "600" />
                 </div>
 
-                <div>
-                    <span className = "mt-p-5">{location.state.desc}</span> <br/>
+                <div className = "mt-5">
+                    <span className = "mt-p-5">{location.state?.desc}</span> <br/>
                     <span>Marka: {brand}</span>
                 </div>
             </div>
 
-
             <div className = "mt-5">
-                <div className = "lobby-content-sidebar border border-secondary">
+                <div className = "lobby-content-sidebar">
 
                     <div className = "">
-                        <span>{location.state.price * selectedValue}</span><br/>
+                        <span>
+                            {modPrice !== 0 ? (
+                                `${modPrice * selectedValue} ${getCookie("currency") ? getCookie("currency") : "USD"}`
+                            ) : (
+                                null
+                            )}
+                        </span><br />
                     </div>
 
                     <div>
-                        <a className = "fw-550" href = "">DARMOWA dostawa </a> <br/>
+                        <a href = "#" className = "fw-550">DARMOWA dostawa </a> <br/>
                     </div>
 
                     <div>
@@ -106,11 +117,7 @@ const Lobby: React.FC = () => {
                     </div>
 
                     <div className = "d-flex align-items-center">
-                        <img src = {adress} alt = "address" /> <a className = "" href = "">Wybierz adres dostawy</a>
-                    </div>
-
-                    <div>
-                        <span className = {`fs-18 fw-500 ${statusColor}`}>{status}</span>
+                        <img src = {adress} alt = "address" loading = "lazy" /> <a href = "#" className = "">Wybierz adres dostawy</a>
                     </div>
 
                     <div className = "d-flex align-items-center">
@@ -132,27 +139,22 @@ const Lobby: React.FC = () => {
 
                     <div className = "lobby-buttons">
                         <form method = "POST">
-                            <CSRFToken />
                             <input onClick = {addToCard} type = "button" id = "add-to-card-button" value = "Dodaj do koszyka"/>
                         </form>
 
                         <form method = "POST">
-                            <CSRFToken />
-
-                            {selectedValue <= location.state.quantity
-                            ?
-                            <input onClick = {() => finalizeOrderLobby(location.state.id)} className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
-                            :
-                            <input disabled type = "button" className = "bg-danger" id = "buy-now-button" value = "Nie mamy takiej ilości produktu" />
+                            {selectedValue <= location.state?.quantity
+                                ?
+                                <input onClick = {() => finalizeOrderLobby()} className = "bg-warning" type = "button" id = "buy-now-button" value = "Kup teraz" />
+                                :
+                                <input disabled type = "button" className = "bg-danger" id = "buy-now-button" value = "Nie mamy takiej ilości produktu" />
                             }
-
-                            
                         </form>
                     </div>
 
                     <div className = "d-flex align-items-center">
-                        <img src = {padlock2} />
-                        <a className = "ms-1" href = "">Bezpieczna transakcja</a>
+                        <img src = {padlock2} alt = "padlock" loading = "lazy"/>
+                        <a href = "#" className = "ms-1">Bezpieczna transakcja</a>
                     </div>
 
                     <div>
@@ -161,10 +163,23 @@ const Lobby: React.FC = () => {
 
                     <div>
                         <span>Zasady dotyczące zwrotów:</span> <br/>
-                        <a href = "">Możliwość zwrotu do 31 stycznia 2023</a>
+                        <a href = "#">Możliwość zwrotu do 31 stycznia 2023</a>
                     </div>
 
                 </div>
+            </div>
+            
+            {username?.user_id !== undefined
+                ?
+                    <div className = "opinions-bar">
+                        <Opinions product_id = {location.state?.id_product} user_id = {username?.user_id} />
+                    </div>
+                :
+                <></>
+            }
+
+            <div className = "recommendation-bar">
+                <Recommendations products_id = {[location.state?.id_product.toString()]} />
             </div>
         </div>
     );

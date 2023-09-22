@@ -1,25 +1,54 @@
 import {useNavigate} from 'react-router-dom';
-import React, {useState, ChangeEvent, FormEvent} from 'react';
+import React, {useState, ChangeEvent, FormEvent, useEffect} from 'react';
 import logo from './images/xd.png';
 import cart from './images/shopping-cart-xxl.png';
+import SelectCurrency from './SelectCurrency'
 
 export interface setValueState{
     value: string;
 }
 
-
 export interface NavbarProps {
     overlayStyle: (style: string) => void;
     loginModalStyle: (style: string) => void;
-    leftModalStyle: (style: string) => void;
     unclickableNavbarChild: (style: string) => void;
     unclick?: string;
+    dropStyle: string;
 }
 
+interface Categories {
+    id: number;
+    name : string;
+}
 
-const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle, leftModalStyle, unclickableNavbarChild }) => {
+const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, unclickableNavbarChild, dropStyle }) => {
 
     const navigate = useNavigate();
+    const [value, setValue] = useState<string>("");
+    const [dropdownOptions, setDropdownOptions] = useState<Categories[] | []>([])
+    const [dropdownOptionsStyle, setDropdownOptionsStyle] = useState<string>("")
+
+    useEffect(() => {  
+        try {
+            fetch(`http://127.0.0.1:8000/api/categories/`)
+            .then(response => response.json())
+            .then(result => (setDropdownOptions(result)));
+        }
+        catch (error){}
+    }, [])
+    
+
+    useEffect(() => {
+        if(dropStyle === "") setDropdownOptionsStyle("")
+    }, [dropStyle])
+
+    const searchBarHandling = (e: ChangeEvent<HTMLInputElement>) => {
+        setValue(e.target.value);
+    }
+
+    const activeDrop = (style: string) => {
+        setDropdownOptionsStyle(style)
+    }
 
     const activeOverlay = (style: string) => {
         overlayStyle(style);
@@ -29,42 +58,37 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
         loginModalStyle(style);
     }
 
-    const activeLeftModal = (style: string) => {
-        leftModalStyle(style);
-    }
-
     const unclickableNavbar = (style: string) => {
         unclickableNavbarChild(style)
-
     }
 
     const subCategoryNavigate = (e: FormEvent<HTMLFormElement>): void => {
         if(value == null) navigate("") ;
-
         else navigate("s");
     }
 
-    const returnHome = (): void => {
-        navigate("");
+    const navigateTo = (location: string): void => {
+        navigate(location)
     }
 
-    const userCart = (): void => {
-        navigate("cart");
-    }
+    const dropdownQuery = (categoryName: string) => {
+        navigate("s")
 
-    const [value, setValue] = useState<string>("");
+        const currentURL = new URL(window.location.href);
+        const queryParams = new URLSearchParams(currentURL.search);
 
-    const searchBarHandling = (e: ChangeEvent<HTMLInputElement>) => {
-        setValue(e.target.value);
+        queryParams.set("q", categoryName);
+        currentURL.search = queryParams.toString();
+        window.history.replaceState(null, "", currentURL.href);
+        window.location.reload()
     }
 
     return(
-
             <nav>
                 <div className = 'navbar-upper-part'>
 
-                    <div onClick = {returnHome} className = "logo-box cursor-finger">
-                        <img className = 'logo mt-2 ms-4' loading = "lazy" src = {logo} />
+                    <div onClick = {() => {navigateTo("")}} className = "logo-box cursor-finger">
+                        <img className = 'logo mt-2 ms-4' loading = "lazy" src = {logo} alt = "logo" />
                     </div>
 
                     <div>
@@ -72,10 +96,16 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
                         <span>Wybierz adres dostawy</span>
                     </div>
 
-                    <div>
+                    <div className = "search-bar">
                         <form method = "GET" onSubmit = {subCategoryNavigate}>
-                            <input onChange = {searchBarHandling} name = "q" className = "main-search-bar" type = "text" onClick = {() => {activeOverlay('active'); unclickableNavbar('pointer-event-handler')}} required/>
+                            <input autoComplete="off" onChange = {searchBarHandling} name = "q" className = "main-search-bar" type = "search" onClick = {() => {activeDrop('active'); activeOverlay('active'); unclickableNavbar('pointer-event-handler')}} required/>
                         </form>
+
+                        <ul className={`dropdown-options ${dropdownOptionsStyle}`}>
+                            {dropdownOptions.map((option, index: number) => (
+                                <li onClick = {() => {dropdownQuery(option?.name)}} key={index}>{option?.name}</li>
+                            ))}
+                        </ul>
                     </div>
 
                     <div className = "position-static cursor-finger">
@@ -84,22 +114,19 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
                     </div>
 
                     <div>
-                        <span>Zwroty</span><br/>
-                        <span>i zamówienia</span>
+                        <SelectCurrency />
                     </div>
 
                     <div className = "cart-box cursor-finger">
-                        <img onClick = {userCart} className = "cart" src = {cart} loading = "lazy" alt = "cart" />
+                        <img onClick = {() => {navigateTo("cart")}} className = "cart" src = {cart} loading = "lazy" alt = "cart" />
                         <span>Koszyk</span>
                     </div>
 
                 </div>
 
-
                 <div className = 'navbar-lower-part'>
-
                     <div>
-                        <span className = "ms-5" onClick= {() => {activeOverlay('active'); activeLeftModal('active'); unclickableNavbar('pointer-event-handler')}}>Menu</span>
+                        <span className = "ms-5">Menu</span>
                     </div>
 
                     <div>
@@ -125,13 +152,9 @@ const Navbar: React.FC<NavbarProps> = ({ unclick, overlayStyle, loginModalStyle,
                     <div>
                         <span>Dział Obsługi Klienta</span>
                     </div>
-
                 </div>
-            
             </nav>
-      
     );
-
 }
 
 export default Navbar;

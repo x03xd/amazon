@@ -9,6 +9,4 @@ const CartSideBar : React.FC = () => {
 
 }
 
-
-
 export default CartSideBar;

@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
 
                         <div className = "footer-lower-part-inner-main">
                             <div>
-                                <a>IMDb</a>
+                                <a href = "">IMDb</a>
                                 <span>
                                     Filmy, seriale<br/>
                                     i gwiazdy
@@ -125,7 +125,7 @@ const Footer: React.FC = () => {
                             </div>
 
                             <div>
-                                <a>Goodreads</a>
+                                <a href = "">Goodreads</a>
                                 <span>
                                     Recenzje książek<br/>
                                     i rekomendacje
@@ -133,7 +133,7 @@ const Footer: React.FC = () => {
                             </div>
 
                             <div>
-                                <a>Amazon Web Services</a>
+                                <a href = "">Amazon Web Services</a>
                                 <span>
                                     Skalowalna chmura<br/>
                                     Usługi obliczeniowe
@@ -141,7 +141,7 @@ const Footer: React.FC = () => {
                             </div>
 
                             <div>
-                                <a>Amazon Music</a>
+                                <a href = "">Amazon Music</a>
                                 <span>
                                     Dostęp do<br/>
                                     milionów utworów
@@ -149,7 +149,7 @@ const Footer: React.FC = () => {
                             </div>
 
                             <div>
-                                <a>Book Depository</a>
+                                <a href = "">Book Depository</a>
                                 <span>
                                     Książki objęte darmową<br/>
                                     dostawą na całym świecie
@@ -157,14 +157,14 @@ const Footer: React.FC = () => {
                             </div>
 
                             <div>
-                                <a>Alexa</a>
+                                <a href = "">Alexa</a>
                                 <span>
                                     Skuteczna Analityka Internetowa
                                 </span>
                             </div>
 
                             <div>
-                                <a>Shopbop</a>
+                                <a href = "">Shopbop</a>
                                 <span>
                                     Projektanci<br/>
                                     Marki odzieżowe
@@ -172,14 +172,12 @@ const Footer: React.FC = () => {
                             </div>
 
                             <div>
-                                <a>DPReview</a>
+                                <a href = "">DPReview</a>
                                 <span>
                                     Fotografia<br/>
                                     cyfrowa
                                 </span>
                             </div>
-
-
 
                         </div>
 
@@ -187,11 +185,11 @@ const Footer: React.FC = () => {
                     </div>
 
                     <div className = "footer-lower-part-inner-2">
-                        <a>Warunki użytkowania i sprzedaży &nbsp;&nbsp;&nbsp;</a>
-                        <a>Informacja o prywatności &nbsp;&nbsp;&nbsp;</a>
-                        <a>Nota Prawna &nbsp;&nbsp;&nbsp;</a>
-                        <a>Cookies &nbsp;&nbsp;&nbsp;</a>
-                        <a>Reklamy dopasowane do zainteresowań &nbsp;&nbsp;&nbsp;</a><br/>
+                        <a href = "">Warunki użytkowania i sprzedaży &nbsp;&nbsp;&nbsp;</a>
+                        <a  href = "">Informacja o prywatności &nbsp;&nbsp;&nbsp;</a>
+                        <a  href = "" >Nota Prawna &nbsp;&nbsp;&nbsp;</a>
+                        <a  href = "">Cookies &nbsp;&nbsp;&nbsp;</a>
+                        <a  href = "">Reklamy dopasowane do zainteresowań &nbsp;&nbsp;&nbsp;</a><br/>
                         <span>© 1996-2022 Amazon.com, Inc. lub podmioty powiązane</span>
                     </div>
 

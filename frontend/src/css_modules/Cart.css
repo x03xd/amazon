@@ -1,0 +1,41 @@
+
+.card-content {
+   display: grid;
+   grid-template-columns: 4fr 1fr;
+   gap: 2.7rem;
+}
+
+
+
+.card-content-objects p {
+    font-size: 3rem !important;
+}
+
+.card-content-left {
+    grid-column: 1 / 2;
+    display: grid;
+    gap: 2.5rem;
+}
+
+.card-content-left-first-content {
+    width: 100%;
+}
+
+
+.card-content-left-first {
+    grid-row: 1 / 2;
+    display: flex;
+}
+
+
+.card-content-left-second {
+    grid-row: 2 / 3;
+    height: 8rem;
+}
+
+
+
+.card-content-right {
+    grid-column: 2 / 3;
+    border-radius: 6px;
+}

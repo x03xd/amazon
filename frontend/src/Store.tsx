@@ -1,207 +1,168 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import ProductCard from './ProductCard';
 import UList from './UList';
 import Clear from './Clear';
 import Rating from './Rating';
 import Checkbox from './Checkbox';
 import QueryParamsContext from "./QueryParamsContext";
 import {priceLimits} from './static_ts_files/priceLimits'
+import ProductsWithRatings from './ProductsWithRatings'
+import { ProductsInterface } from './static_ts_files/commonInterfaces';
+import AuthContext from "./AuthenticationContext";
 
-interface Products {
-    brand: string;
-    description: string;
-    gallery1: boolean | null;
-    gallery2: boolean | null;
-    gallery3: boolean | null;
-    id: number;
-    image: string;
-    price: number;
-    quantity: number;
-    status?: boolean | null;
-    category_name: number;
-    title: string;
-}
 
 interface Categories {
     id: number;
     name : string;
 }
 
-
-interface Rate {
-    rated_products: string;
-    average_rate: number;
-}
-
-
-interface PriceLimits {
+export interface PriceLimits {
     item: {
         desc: string,
         range: {start : number, end : number}
     }
 }
 
-
-interface BrandsAPI {
+export interface Brands {
     id: number,
     brand_name: string,
     belong_to_category: number
 }
 
 
-
 const Store: React.FC = () => {
     
-        const searchParams = new URLSearchParams(window.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
 
-        const [productsWithRatings, setProductsWithRatings] = useState<JSX.Element[]>([]);
-        const [products, setProducts] = useState<Products[]>([]);
+    const [prices, setPrices] = useState<PriceLimits[]>([]);
+    const [categories, setCategories] = useState<Categories[]>([]);
+    const [brands, setBrands] = useState<Brands[]>([]);
 
-        const [prices, setPrices] = useState<PriceLimits[]>([]);
-        const [categories, setCategories] = useState<Categories[]>([]);
-        const [brands, setBrands] = useState<BrandsAPI[]>([]);
-        const [averageRate, setAverageRate] = useState<Rate[]>([]);
+    const aRef = useRef<HTMLInputElement>(null);
+    const bRef = useRef<HTMLInputElement>(null);
 
-        const aRef = useRef<HTMLInputElement>(null);
-        const bRef = useRef<HTMLInputElement>(null);
+    const [pricesFalseFilled, setPricesFalseFilled] = useState<boolean[]>([]);
+    const [brandsFalseFilled, setBrandsFalseFilled] = useState<boolean[]>([]);
+    const [products, setProducts] = useState<ProductsInterface[]>([]);
+    const {username} = useContext(AuthContext);
 
-        const [pricesFalseFilled, setPricesFalseFilled] = useState<boolean[]>([]);
-        const [brandsFalseFilled, setBrandsFalseFilled] = useState<boolean[]>([]);
+    const {q_QueryParam} = useContext(QueryParamsContext);
+    const url = window.location.href;
+    const index = url.indexOf('http://localhost:3000/s');
+    const queryLinkPart = url.substring(index + 'http://localhost:3000/s'.length);
 
-        let {q_QueryParam} = useContext(QueryParamsContext);
-        const url = window.location.href;
+    useEffect(() => {
+        try {
+            fetch(`http://127.0.0.1:8000/api/categories/`)
+            .then(response => response.json())
+            .then(result => setCategories(result));
 
-        const index = url.indexOf('http://localhost:3000/s');
-        const queryLinkPart = url.substring(index + 'http://localhost:3000/s'.length);
+            fetch(`http://127.0.0.1:8000/api/brands/${q_QueryParam}`)
+            .then(response => response.json())
+            .then(result => setBrands(result));
 
-        useEffect(() => {
-            
-            try {
-                fetch(`http://127.0.0.1:8000/api/categories/`)
-                .then(response => response.json())
-                .then(result => setCategories(result));
+            console.log()
+            fetch(`http://127.0.0.1:8000/api/products/${username?.user_id}/${username?.currency}/${queryLinkPart}`)
+            .then(response => response.json())
+            .then(result => setProducts(result));
+        }
 
-                fetch(`http://127.0.0.1:8000/api/brands/${q_QueryParam}`)
-                .then(response => response.json())
-                .then(result => setBrands(result));
+        catch(error){alert('An error occurred. Please try again later.');}
 
-                fetch(`http://127.0.0.1:8000/api/avg-rate`)
-                .then(response => response.json())
-                .then(result => setAverageRate(result));
-
-                fetch(`http://127.0.0.1:8000/api/products/${queryLinkPart}`)
-                .then(response => response.json())
-                .then(result => setProducts(result));
-            }
-            catch (error){console.error("Error fetching data:", error);}
-
-            for(let nums of priceLimits){
-                setPrices(prev => [...prev, nums]);
-            }   
+        for(let nums of priceLimits){
+            setPrices(prev => [...prev, nums]);
+        }   
    
         }, [])
 
-        console.log(products)
-
-
-        useEffect(() => {
-            for(let i: number = 0; i <= [...new Set(prices)].length - 1; i++){
-                setPricesFalseFilled(ar2 => [...ar2, false])
-            }
-        }, [prices])    
-       
-
-        useEffect(() => {        
-            for(let i: number = 0; i <= [...new Set(brands)].length - 1; i++){
-                setBrandsFalseFilled(ar2 => [...ar2, false])
-            }
-        }, [brands])     
+    useEffect(() => {
+        for(let i: number = 0; i <= [...new Set(prices)].length - 1; i++){
+            setPricesFalseFilled(ar2 => [...ar2, false])
+        }
+    }, [prices])    
+    
+    useEffect(() => {        
+        for(let i: number = 0; i <= [...new Set(brands)].length - 1; i++){
+            setBrandsFalseFilled(ar2 => [...ar2, false])
+        }
+    }, [brands])     
         
+    function clearQueryString(arg: string){
+        switch (arg) {
+            case "c":
 
-        function clearQueryString(arg: string){
+                brands.map((item: Brands, index: number) => {
 
-            switch (arg) {
-                case "c":
+                    let storage = JSON.parse(localStorage.getItem("c" + index) || "");
+                    let checkStorage = storage ? storage.value : "";
 
-                    brands.map((item: any, index: number) => {
-
-                        let storage = JSON.parse(localStorage.getItem("c" + index) || "");
-                        let checkStorage = storage ? storage.value : "";
-
-                        if(checkStorage){
-                            let object = {value: false, nut: "c", id: (item["brand_name"] || []) }
-                            localStorage.setItem("c" + index, JSON.stringify(object));
-                        }
+                    if(checkStorage){
+                        const object = {value: false, nut: "c", id: (item["brand_name"] || []) }
+                        localStorage.setItem("c" + index, JSON.stringify(object));
+                    }
                     
-                        return null;
-                    })
-                    break;
+                    return null;
+                })
+                break;
 
-                case "u":
-                    prices.map((item: any, index: number) => {
+            case "u":
+                prices.map((_: PriceLimits, index: number) => {
 
-                        const storage = JSON.parse(localStorage.getItem("u" + index) || "");
-                        const checkStorage = storage ? storage.value : "";
-
-                        if(checkStorage){
-                            const object = {value: false, nut: "u", id: ([...new Set(prices)] || [])[index] }
-                            localStorage.setItem("u" + index, JSON.stringify(object));
-                        }
-                        
-                        return null;
-                    })
-                    break;
-
-
-                case "rating":
-         
-                    const storage = JSON.parse(localStorage.getItem("rating") || "");
+                    const storage = JSON.parse(localStorage.getItem("u" + index) || "");
                     const checkStorage = storage ? storage.value : "";
 
                     if(checkStorage){
-                        const object = {value: false, num: 0};
-                        localStorage.setItem("rating", JSON.stringify(object));
+                        const object = {value: false, nut: "u", id: (prices || [])[index] }
+                        localStorage.setItem("u" + index, JSON.stringify(object));
                     }
                         
                     return null;
+                })
+                break;
 
-            }
+            case "rating":
+         
+                const storage = JSON.parse(localStorage.getItem("rating") || "");
+                const checkStorage = storage ? storage.value : "";
 
-            window.location.reload();
-        }
-
-
-        function customPrice(): void{
-            searchParams.set('u', `${aRef.current?.value}-${bRef.current?.value}`);
-            const modifiedQueryString = searchParams.toString();
-            const baseUrl = window.location.href.split('?')[0];
-            const updatedUrl = baseUrl + '?' + modifiedQueryString;
-            window.location.href = updatedUrl;
-        }
-
-        function changeQ(qValue: string): void{
-            searchParams.set('q', qValue.toLowerCase());
-            const modifiedQueryString = searchParams.toString();
-            const baseUrl = window.location.href.split('?')[0];
-            const updatedUrl = baseUrl + '?' + modifiedQueryString;
-            window.location.href = updatedUrl;
-        }
-
-
-        useEffect(() => {
-            aLoop:
-            for (let item of products) {
-                for (let rate of averageRate) {
-                    if (Number(rate["rated_products"]) === item["id"]) {
-                        setProductsWithRatings(prevProducts => [
-                            ...prevProducts,
-                            <ProductCard key={item["id"]} item={item} rate={rate["average_rate"]} />
-                        ]);
-                        continue aLoop;
-                    }
+                if(checkStorage){
+                    const object = {value: false, num: 0};
+                    localStorage.setItem("rating", JSON.stringify(object));
                 }
-            }
-        }, [products, averageRate]);
+                        
+                return null;
+        }
+        window.location.reload();
+    }
+
+    function isOnlyNumber(str: string) {
+        return /^[0-9]+$/.test(str);
+    }
+
+    function customPrice(): void {
+        const minVal: string = aRef.current?.value || "";
+        const maxVal: string = bRef.current?.value || "";
+
+        if(!isOnlyNumber(minVal)) alert("Only positive integers accepted at min input");
+        if(!isOnlyNumber(maxVal)) alert("Only positive integers accepted at max input");
+
+        else if(parseFloat(minVal) > parseFloat(maxVal)) alert("The value of min input must be lower than the value of max input")
+
+        else{
+            searchParams.set('u', `${parseFloat(minVal)}-${parseFloat(maxVal)}`);
+            const modifiedQueryString = searchParams.toString();
+            const baseUrl = window.location.href.split('?')[0];
+            const updatedUrl = baseUrl + '?' + modifiedQueryString;
+            window.location.href = updatedUrl;       
+        }
+    }
+
+    function changeQ(qValue: string): void {
+        searchParams.set('q', qValue.toLowerCase());
+        const modifiedQueryString = searchParams.toString();
+        const baseUrl = window.location.href.split('?')[0];
+        const updatedUrl = baseUrl + '?' + modifiedQueryString;
+        window.location.href = updatedUrl;
+    }
 
         return(
             <div className = "store-content mt-5">
@@ -210,7 +171,7 @@ const Store: React.FC = () => {
 
                     <div className = "pt-0">
                         <span>Możliwość darmowej dostawy</span> <br/>
-                        <input type = "checkbox" /> <a className = "" href = ""> Darmowa wysyłka przez Amazon <br/>
+                        <input type = "checkbox" /> <a href = "#" className = ""> Darmowa wysyłka przez Amazon <br/>
                         Darmowa dostawa dla wszystkich klientów <br/> przy zamówieniach o wartosci powyżej 40 zł, wysyłanych przez Amazon</a>
                     </div>
 
@@ -240,7 +201,6 @@ const Store: React.FC = () => {
                         </ul>
                     </div>
 
-
                     <div>
                         <span>Cena</span>
                         <Clear text = "Wyczyść" nut = "u" func = {clearQueryString} />
@@ -253,24 +213,22 @@ const Store: React.FC = () => {
                         </ul>
                     </div>
 
-
-                        <div className = "d-flex align-items-center price-filters">
-                            <input ref = {aRef} className = "" type = "text" placeholder = "Min"/>
-                            <input ref = {bRef} className = "ms-1" type = "text" placeholder = "Max"/>
-                            <button onClick = {customPrice} className = "ms-1 border 0">Szukaj</button>
-                        </div>
+                    <div className = "d-flex align-items-center price-filters">
+                        <input ref = {aRef} className = "" type="number" placeholder = "Min" step="1" />
+                        <input ref = {bRef} className = "ms-1" type="number" placeholder = "Max" step="1" />
+                        <button onClick = {customPrice} className = "ms-1 border 0">Szukaj</button>
+                    </div>
 
                 </div>
-
 
                 <div className = "store-content-products">
                     <div className = "">
                         <span className = "fw-525">WYNIKI</span><br/>
-                        <a className = "text-decoration-none">Dowiedz się o tych wynikach.</a>
+                        <a href = "#" className = "text-decoration-none">Dowiedz się o tych wynikach.</a>
                     </div>
 
                     <div className = "store-content-results mt-3">
-                        {productsWithRatings}
+                        <ProductsWithRatings products = {products} />
                     </div>
                 </div>
 

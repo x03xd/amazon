@@ -1,13 +1,14 @@
-import { faStar, faStarHalfStroke } from '@fortawesome/free-solid-svg-icons'
+import { IconDefinition, faStar, faStarHalfStroke } from '@fortawesome/free-solid-svg-icons'
 
 
-interface StarStyling {
-    icon: unknown;
+
+export interface StarStyling {
+    icon: IconDefinition;
     style: string;
 }
 
 
-interface StarStylingArray {
+export interface StarStylingArray {
     array: StarStyling[];
 }
 

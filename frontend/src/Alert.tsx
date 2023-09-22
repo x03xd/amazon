@@ -5,7 +5,6 @@ interface AlertProps{
     text: string;
 }
 
-
 const Alert: React.FC<AlertProps> = ({ style, text }) => {
 
     return(

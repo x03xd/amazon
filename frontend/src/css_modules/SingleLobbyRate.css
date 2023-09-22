@@ -1,0 +1,27 @@
+.single-lobby-rate {
+    background: hsla(60, 3%, 92%, 0.897);
+    border-radius: 0.4rem;
+    box-shadow: 0px 0px 5px 1px rgba(85, 84, 84, 0.3);
+    padding: 1rem;
+}
+
+.rate-bars-container {
+    width: 80%;
+}
+
+.single-lobby-quantity {
+    color: gray !important;
+    font-size: 1.2rem !important;
+}
+
+.rate-bar-flex:not(:first-child) {
+    margin-top: 1rem; 
+}
+
+.rate-bar {
+    border-radius: 0.2rem;
+    height: 2.4rem;
+    display: flex;
+    align-items: center;
+}
+

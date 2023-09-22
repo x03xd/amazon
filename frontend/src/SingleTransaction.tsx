@@ -1,125 +1,72 @@
-import React, {useEffect, useState, useContext} from 'react';
-import { ratingStars } from './static_ts_files/ratingLevels';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar } from '@fortawesome/free-solid-svg-icons'
+import React, { useEffect, useState, useContext } from 'react';
+import { TransactionsAPI } from './Transactions';
+import { ProductsInterface } from './static_ts_files/commonInterfaces';
 import AuthContext from "./AuthenticationContext";
-
-
-interface Products {
-    brand: string;
-    description: string;
-    gallery1: boolean | null;
-    id: number;
-    image: string;
-    price: number;
-    quantity: number;
-    status?: boolean | null;
-    subcategory_name: number;
-    title: string;
-}
+import ProductsPerTransaction from './ProductsPerTransaction';
+import getCookie from './getCookie';
 
 interface SingleTransactionProps {
-    transaction: [number, Products, string];
-    product_id: number;
-    key: number;
+    transaction: TransactionsAPI;
 }
 
-const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction, product_id }) => {
+interface ProductsPerTransactionChild extends ProductsInterface {
+    count: number;
+}
 
+
+const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction }) => {
+
+    const [products, setProducts] = useState<ProductsPerTransactionChild[]>();
     const {username} = useContext(AuthContext);
-    const [rate, setRate] = useState<number | undefined>()
 
     useEffect(() => {
+        const joinedIDs = transaction.bought_products.join(',');
 
         try{
-            fetch(`http://127.0.0.1:8000/api/rate-product/${username?.user_id}/${product_id}/${null}`)
+            fetch(`http://127.0.0.1:8000/api/transaction-products/${joinedIDs}/${username?.user_id}`)
             .then(response => response.json())
-            .then(result => setRate(result));
+            .then(result => setProducts(result));
         }
-        catch(error){console.log("Error: ", error)}
+        catch(error){alert("There was an error displaying your transaction.");}
 
     }, [])
 
-
-    const productRate = (rate: number) => {
-        try{
-            fetch(`http://127.0.0.1:8000/api/rate-product/${username?.user_id}/${product_id}/${rate}`, {
-                method: 'PATCH',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({"rate": rate, "user_id": username?.user_id, "product_id": product_id})
-            })
-            .then(response => response.json())
-            .then(result => (setRate(result), window.location.reload()))
-        }
-
-        catch(error){console.log("Error: ", error)}
-    }
-
-
-    const deleteRate = () => {
-
-        try{
-            fetch(`http://127.0.0.1:8000/api/delete-rate/`, {
-                method: 'POST',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({"user_id": username?.user_id, "product_id": product_id})
-            })
-            window.location.reload()
-        }
-
-        catch(error){console.log("Error: ", error)}
-    }
-
-
     return(
-        <div className = "single-transaction-card">
-                
             <div className = "single-transaction-card-content">
-                <div>
-                    <img alt = "product" src = {transaction[1]["image"]} loading = "lazy" />
+                
+                <div className = "single-transaction-card-content-header p-4">
+                    <div>
+                        <span>DATA ZŁOŻENIA <br/>ZAMÓWIENIA</span><br/>
+                        <span>{transaction.date}</span>
+                    </div>
+
+                    <div className = "text-left">
+                        <span>SUMA</span><br/>
+                        <span>{transaction.total_price} {getCookie("currency")}</span>
+                    </div>
+
+                    <div className = "text-right">
+                        <span>NR ZAMÓWIENIA</span><br/>
+                        <span>{transaction.transaction_number || 'KOD'}</span>
+                    </div>
                 </div>
                 
-                <div>
-                    <span>{transaction[1]["description"]}</span> <br/>
+                <div className = "single-transaction-card-content-main">
+                    {products?.map((product: ProductsPerTransactionChild, index: number) => {
+                        return (
+                            <ProductsPerTransaction key = {index} product = {product} />
+                        );
+                    })}
                 </div>
 
-                <div>
-                    <div className = "single-transaction-card-content-left">
-                        <p>Wystaw ocenę</p>
-                        
-                        <div className = "single-transaction-container">
-                            <span onClick = {deleteRate}>reset</span>
-                            {ratingStars.map((star, key) => {        
-                                return(
-                                    <div onClick = {() => {productRate(key+1)}} key = {key} className = {key+1 <= (rate as number) ? "yellow-filled" : "lightgrey-empty"}>
-                                        <FontAwesomeIcon icon = {faStar} className = "star-rating-icon" />
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                    </div>
-
-                    <div className = "mt-4">
-                        <span>{transaction[0]} kupionych dnia: {transaction[2]}</span>
-                    </div>
+                <div className = "single-transaction-card-footer">
+                    <span className = "ms-3">Zarchiwizuj zamówienie</span>
                 </div>
-            </div>
 
-            <div className = "single-transaction-card-button">
             </div>
-    
-        </div>
     );
 
-
 }
-
-
 
 
 export default SingleTransaction;

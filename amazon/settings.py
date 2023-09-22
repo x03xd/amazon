@@ -8,7 +8,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s9weo$!_fl)l=j+iw*k_@04178j^stjg5#d4@0oqs8fa%gktc3'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,6 +42,7 @@ INSTALLED_APPS = [
     'frontend',
     'corsheaders',
     'rest_framework',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -86,8 +90,8 @@ DATABASES = {
         'NAME': 'new_amazon',
         'USER': 'postgres',
         'PASSWORD': 'admin',
-        'HOST': 'localhost',  # Usually 'localhost' for local development
-        'PORT': '5432',  # Usually '5432' for PostgreSQL
+        'HOST': 'postgres_container',  
+        'PORT': '5432',  
     }
 }
 
@@ -149,6 +153,12 @@ CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
 
+    
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+  
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
@@ -198,3 +208,22 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+LOGIN_URL = 'token_obtain_pair'
+
+
+CELERY_BEAT_SCHEDULE = {
+    'update-exchange-rates': {
+        'task': 'amazonApp.tasks.background_task',  
+        'schedule': 24 * 3600,  
+    },
+}
+
+SITE_URL = "http://localhost:3000"
+
+CELERY_ENABLED = True
+
+FIXER_API_URL = os.environ.get('FIXER_API_URL')
+FIXER_API_KEY = os.environ.get('FIXER_API_KEY')
+
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+STRIPE_ENDPOINT_SECRET = os.environ.get('STRIPE_ENDPOINT_SECRET')

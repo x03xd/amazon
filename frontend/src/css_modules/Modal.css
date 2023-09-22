@@ -130,31 +130,3 @@ form  {
 
 /* OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY --- OVERLAY */
 
-.overlay {
-    display: none;
-    background: rgba(0, 0, 0, .5);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 5;
-}
-
-
-.overlay-high {
-    display: none;
-    background: rgba(0, 0, 0, .5);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 12;
-}
-
-
-
-.pointer-event-handler {
-    pointer-events: none;
-}

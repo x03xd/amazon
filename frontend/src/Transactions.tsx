@@ -1,125 +1,97 @@
 import React, {useEffect, useState, useContext} from 'react';
 import AuthContext from "./AuthenticationContext";
 import SingleTransaction from './SingleTransaction'
-import leftArrow from './images/left-arrow.png';
-import rightArrow from './images/right-arrow.png';
 
-interface TransactionsAPI {
+
+export interface TransactionsAPI {
     id: number,
     bought_products: number[],
     date: string,
     bought_by: number,
-}
-
-interface Products {
-    brand: string;
-    description: string;
-    gallery1: boolean | null;
-    gallery2: boolean | null;
-    gallery3: boolean | null;
-    id: number;
-    image: string;
-    price: number;
-    quantity: number;
-    status?: boolean | null;
-    subcategory_name: number;
-    title: string;
+    total_price: string,
+    transaction_number: string | null,
 }
 
 const Transactions: React.FC = () => {
 
-    const [transactions, setTransactions] = useState<TransactionsAPI[]>();
-    const [products, setProducts] = useState<[number, Products, string][]>();
-    const [loading, setLoading] = useState<boolean>(true);
+    const currentDate = new Date();
 
-    const [pages, setPages] = useState<number>(0);
+    const [selectedYear, setSelectedYear] = useState<number>(currentDate.getFullYear());
+    const [transactions, setTransactions] = useState<TransactionsAPI[] | null>(null);
+    const [optionYear, setOptionYear] = useState<number[]>([]);
     const {username} = useContext(AuthContext);
 
     useEffect(() => {
+
         try{
-            fetch(`http://127.0.0.1:8000/api/transactions/${username?.user_id}`)
+            fetch(`http://127.0.0.1:8000/api/transactions/${username?.user_id}/${selectedYear}`)
             .then(response => response.json())
-            .then(result => setTransactions(result || []));
+            .then(result => (setTransactions(result || []), console.log(result)));
         }
-        catch(error) {console.log("Error: ", error)}
-    }, [pages])
+        catch(error){alert("There was an error displaying your transaction.");}
 
-    
+    }, [selectedYear])
+
+
     useEffect(() => {
-
-        if(!loading){
-            try{
-                fetch(`http://127.0.0.1:8000/api/products-from-transactions/`, {
-                    method: 'POST',
-                    headers:{
-                        'Content-Type':'application/json'
-                    },
-                    body: JSON.stringify({"lst": transactions, "pages": pages})
-                })
-                .then(response => response.json())
-                .then(result => setProducts(result));
-            }
-
-            catch(error) {console.log("Error: ", error)}
+        for(let i=0; i < 10; i++){
+            setOptionYear(prev => [...prev, selectedYear - i])
         }
+    }, [])
 
-        setLoading(false);
-    }, [transactions])
-
-    const selectPage = (num: number) => {
-        if(products?.length !== 5 && num > 0) return null;
-        if(pages + num >= 0) {setPages(current_page => current_page + num)}
+    const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newValue = parseInt(e.target.value, 10);
+        setSelectedYear(newValue);
     }
-
-    console.log(transactions)
 
     return(
         <div className = "my-account-content">
             <div></div>
 
             <div>
-                <div className = "edit-profile-container">
-
+                <div className = "transaction-profile-container">
                     <div></div>
 
-                        <div className = "edit-profile-container-main">
-                            <span className = "edit-profile-container-title">Transakcje</span>
+                        <div className = "transaction-profile-container-main">
+                            <div className = "transaction-profile-container-header">
+                                <span className = "narrow-container-title">Transakcje</span>
 
-                           {
-                            transactions && transactions.length > 0
-                            ?
-                                <>
-                                    <img onClick = {() => selectPage(-5)} className = "mb-3 ms-3" width = "32" src = {leftArrow} alt = "left-arrow" />
-                                    <img onClick = {() => selectPage(5)} className = "mb-3 ms-3" width = "32" src = {rightArrow} alt = "left-arrow" />
-                                        
-                                    <div className = "mt-3">
-                                        {
-                                            products?.map((item, index: number) => <SingleTransaction transaction = {item} key = {index} product_id = {item[1]["id"]} />)
-                                        }   
-                                    </div>
-                                </>  
-                            :
-                                <div className = "no-transactions-info-container">            
-                                    <span className = "no-transactions-info">Brak transakcji</span>
+                                <div className = "ms-3 mt-1">
+                                    {selectedYear ? (
+                                        <select className = "cursor-finger" defaultValue={selectedYear} onChange={handleYearChange}>
+                                            {optionYear.map((year: number, index: number) => {
+                                                return(
+                                                    <option key = {index} value = {year}>{year}</option>
+                                                )
+                                            })}
+                                        </select>
+
+                                        ) : (
+                                            <></>
+                                        )
+                                    }
                                 </div>
-                            }
+                            </div>
 
+                                {
+                                    transactions?.map((transaction: TransactionsAPI, index: number) => {
+                                        return(
+                                            <SingleTransaction key = {index} transaction = {transaction} />
+                                        )
+                                    })
+                                }
                         </div>  
                     
-
                     <div></div>
 
                 </div>  
-
             </div>
 
             <div></div>
         </div>
-    )
+    );
 
 }
-
-
 
 export default Transactions;
 

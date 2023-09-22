@@ -1,24 +1,12 @@
 import card_picture from './images/cardz.svg';
 import React, { useState, useEffect, useContext} from 'react';
-import CardObject from './CardObject';
+import CardObject from './CartObject';
 import AuthContext from "./AuthenticationContext";
-import CSRFToken from './CSRFToken';
-import CardFinalizing from './CardFinalizing';
+import CardFinalizing from './CartFinalizing';
 import CartSideBar from './CartSideBar'
 import { useNavigate } from 'react-router-dom';
-
-interface Product {
-    brand: string;
-    description: string;
-    gallery1: boolean | null;
-    id: number;
-    image: string;
-    price: number;
-    quantity: number;
-    status?: boolean | null;
-    category_name: number;
-    title: string;
-}
+import { ProductsInterface } from './static_ts_files/commonInterfaces';
+import Recommendations from './Recommendations';
 
 interface CartItem {
     id: number;
@@ -26,7 +14,7 @@ interface CartItem {
     cart: number;
     product: number;
     total_price: number;
-    product_data: Product
+    product_data: ProductsInterface;
 }
 
 interface HashMap {
@@ -36,7 +24,7 @@ interface HashMap {
 const Card: React.FC = () => {
 
     const [cardUserGetter, setCardUserGetter] = useState<CartItem[]>([]);
-
+    const [cardUserGetterID, setCardUserGetterID] = useState<number[]>([]);
     const [reload, setReload] = useState<[number, number]>();
     const [isPossible, setIsPossible] = useState<HashMap>([]);
     const [total, setTotal] = useState<number>(0);
@@ -46,21 +34,13 @@ const Card: React.FC = () => {
 
     useEffect(() => {
         try{
-            fetch('http://127.0.0.1:8000/api/cart/', {
-                method: 'POST',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({"username": username?.username})
-            })
+            fetch(`http://127.0.0.1:8000/api/cart/${username?.user_id}`)
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0)));
+            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0), setCardUserGetterID(result?.serialized_id)));
         }
-        catch(error) {console.log("Error: ", error)}
-
+        catch(error){alert('An error occurred. Please try again later.');}
     }, [reload])
 
-    
     const removeProduct = (num: number) => {
         setCardUserGetter(prevItems => prevItems.filter(item => item.product !== num));
     }
@@ -85,15 +65,13 @@ const Card: React.FC = () => {
         delete isPossible[val]
     }
 
-
     if(cardUserGetter && cardUserGetter.length === 0){
         return(
             <div className = "card-content mt-5">
-            <CSRFToken />
                 <div className = "card-content-left">
                     <div className = "card-content-left-first bg-light">
                         <div className = "card-content-left-first-img">
-                            <img width = "350" src = {card_picture} />
+                            <img width = "350" src = {card_picture} loading = "lazy" alt = "" />
                         </div>
 
                         <div className = "card-content-left-first-content">
@@ -107,11 +85,10 @@ const Card: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className = "card-content-left-second bg-light">
-
+                    <div className = "card-content-left-second bg-light"> 
                     </div>
-
-                    <p className = "fs-11">Ceny i dostępność produktów w serwisie Amazon.pl mogą ulec zmianie. Produ,kty sa tymsaczowo przechowywane w koszyku. Wyświetlone w tym miescu cena są zawsze aktualne. <br/> Chesz Chcwsz zrealizować kod z karty podarunkowej lub kod promocyjny? Wpisz kod podusmowując zamówienie</p>
+                    
+                    <p className = "fs-11">Ceny i dostępność produktów w serwisie Amazon.pl mogą ulec zmianie. Produkty sa tymsaczowo przechowywane w koszyku. Wyświetlone w tym miescu cena są zawsze aktualne. <br/> Chesz Chcwsz zrealizować kod z karty podarunkowej lub kod promocyjny? Wpisz kod podusmowując zamówienie</p>
                 </div>
 
                 <div className = "card-content-right bg-light">
@@ -123,17 +100,13 @@ const Card: React.FC = () => {
     }
 
     else{
-
         return(
-
-             <div className = "card-content mt-5">
-
+            <div className = "card-content mt-5">
                 <div className = "card-content-left">
-
-                    <div className = "card-content-objects bg-light">
+                    <div className = "card-content-objects bg-light shadow">
                         <div>
                             <div className = "p-4 ms-3">
-                                <p className = "">Koszyk</p>
+                                <p className = "ms-4">Koszyk</p>
                             </div>
 
                             <div className = "d-flex justify-content-center">
@@ -143,27 +116,25 @@ const Card: React.FC = () => {
              
                         <div className = "card-content-objects-inner mt-5 bg-light">
                             {
-                            
-                            (cardUserGetter as CartItem[] || []).map((item: any, index: number) => {
-                                return(
-                                    <CardObject
-                                        item = {item} key = {index}
-                                        ajaxFunction = {removeProduct}
-                                        prev = {prev}
-                                        isPossibleCheck = {isPossibleCheck}
-                                        removeIsPossibleCheck = {removeIsPossibleCheck}
-                                    />
-                                )    
-                            })}
+                                (cardUserGetter as CartItem[] || []).map((item: CartItem, index: number) => {
+                                    return(
+                                        <CardObject
+                                            item = {item} key = {index}
+                                            ajaxFunction = {removeProduct}
+                                            prev = {prev}
+                                            isPossibleCheck = {isPossibleCheck}
+                                            removeIsPossibleCheck = {removeIsPossibleCheck}
+                                        />
+                                    )    
+                                })
+                            }
                         </div>
-
 
                         <div className = "card-content-objects-footer">
                         </div>
                     </div>
 
-
-                    <div className = "card-content-left-second bg-light">
+                    <div className = "card-content-left-second bg-light shadow">
                     </div>
                 </div>
 
@@ -172,6 +143,10 @@ const Card: React.FC = () => {
                     <CartSideBar />              
                 </div>
 
+                <div className = "recommendation-bar">
+                    <Recommendations products_id = {cardUserGetterID} />
+                </div>
+            
             </div>
 
         );
