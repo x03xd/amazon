@@ -11,18 +11,29 @@ interface RecommendationProps {
 const Recommendations: React.FC<RecommendationProps> = ({ products_id }) => {
 
     const [recommended, setRecommendations] = useState<ProductsInterface[]>([]);
-    const {username} = useContext(AuthContext);
-
+    const {authToken} = useContext(AuthContext);
     const joined = Array.isArray(products_id) ? products_id.join(", ") : "";
 
     useEffect(() => {
-        try {
-            fetch(`http://127.0.0.1:8000/api/recommendations/${username?.username}/${joined}/${username?.user_id}`)
-            .then(response => response.json())
-            .then(result => setRecommendations(result?.recommendations));
-        }
-        catch(error){alert('An error occurred. Please try again later.');}
-    }, [])
+        
+            try {
+                fetch(`http://127.0.0.1:8000/api/recommendations/${joined}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`, 
+                        'Content-Type':'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(result => setRecommendations(result?.recommendations))
+            }
+            
+            catch (error) {
+                alert('An error occurred. Please try again later.');
+            }
+        
+    }, []);
+
+    console.log(recommended)
 
     return(
         <>

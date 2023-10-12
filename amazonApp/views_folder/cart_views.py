@@ -6,9 +6,15 @@ from django.db.models import  Sum
 from decimal import Decimal
 from rest_framework.response import Response
 from amazonApp.views_folder.currencies_views import provide_currency_context
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class CartAPI(APIView):
+
+    def __init__(self):
+        self.JWT_authenticator = JWTAuthentication()
 
     def adding_product_by_id(self, cart_item_serializer):
         product_data_list = []
@@ -16,71 +22,83 @@ class CartAPI(APIView):
         for cart_item in cart_item_serializer:
             try:
                 prod = Product.objects.get(id=cart_item["product"])
-
                 p_serializer = ProductSerializer(prod)
+                
                 cart_item["product_data"] = p_serializer.data
                 product_data_list.append(cart_item)
 
             except Product.DoesNotExist as e:
-                return Response({"error": "Error message", "detail": str(e)}, status=404)
+                return Response({"error": "Error message", "detail": str(e)}, status=status.HTTP_404_NOT_FOUND)
         
         return product_data_list
                 
+
     def get(self, request, *args, **kwargs):
-        try:
-            user_id = self.kwargs.get("user_id")
-            currency_context = provide_currency_context(user_id)
 
-            cart = CartItem.objects.filter(cart__owner__id = user_id).order_by('product__title')
-            serializer = CartItemSerializer(cart, many=True, context=currency_context)
-            serializer_id = list(map(lambda item: item['product'], CartItemSerializer(cart, many=True).data))
+        response = self.JWT_authenticator.authenticate(request)
+        if response is not None:
+            user_id = response[1]['user_id']
 
-            prod_data = self.adding_product_by_id(serializer.data)
+            try:
+                currency_context = provide_currency_context(user_id)
 
-            if currency_context["user_preferred_currency"] is None:
-                currency_context["user_preferred_currency"] = 1
+                cart = CartItem.objects.filter(cart__owner__id=user_id).order_by('product__title')
+                serializer = CartItemSerializer(cart, many=True, context=currency_context)
+                serializer_id = list(map(lambda item: item['product'], CartItemSerializer(cart, many=True).data))
 
-            sum_ = cart.aggregate(total_price_sum=Sum('total_price'))
-            sum_r = round(sum_['total_price_sum'] * Decimal(currency_context["user_preferred_currency"]), 2)
+                prod_data = self.adding_product_by_id(serializer.data)
 
-            return Response({"cart_items": prod_data, "sum": sum_r, "serialized_id": serializer_id})
-        
+                if currency_context["user_preferred_currency"] is None:
+                    currency_context["user_preferred_currency"] = 1
 
-        except (CartItem.DoesNotExist, User.DoesNotExist) as e:
-            return Response({"error": "Error message", "detail": str(e)}, status=404)
+                sum_ = cart.aggregate(total_price_sum=Sum('total_price'))
+                sum_r = round(sum_['total_price_sum'] * Decimal(currency_context["user_preferred_currency"]), 2)
 
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-        
+                return Response({"cart_items": prod_data, "sum": sum_r, "serialized_id": serializer_id})
+                
+            except (CartItem.DoesNotExist, User.DoesNotExist) as e:
+                return Response({"error": "Error message", "detail": str(e)}, status=404)
+
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+        raise Exception("User has too be authenticated.")
+            
 
 
     def patch(self, request, *args, **kwargs):
-        try:
-            product_id = request.data.get("product_id")
-            quantity = request.data.get("quantity")
 
-            user_id = self.kwargs.get("user_id")
+        response = self.JWT_authenticator.authenticate(request)
+        if response is not None:
+            user_id = response[1]['user_id']
 
-            product = Product.objects.get(id=product_id)
-            cart = CartItem.objects.get(cart__owner__id = user_id, product = product)
+            try:
+                product_id = request.data.get("product_id")
+                quantity = request.data.get("quantity")
+
+                product = Product.objects.get(id=product_id)
+                cart = CartItem.objects.get(cart__owner__id = user_id, product = product)
+                
+                if product.quantity < quantity:
+                    raise ValueError("Quantity exceeds available stock")
+
+                new_total_price = (cart.total_price * quantity) / cart.quantity
+
+                cart.quantity = quantity
+                cart.total_price = new_total_price
+
+                cart.save()
+    
+                return Response(product_id)
             
-            if product.quantity < quantity:
-                raise ValueError("Quantity exceeds available stock")
+            except (CartItem.DoesNotExist, Product.DoesNotExist) as e:
+                return Response({"error": "Error message", "detail": str(e)}, status=status.HTTP_404_NOT_FOUND)
+            
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+        raise Exception("User has too be authenticated.")
 
-            new_total_price = (cart.total_price * quantity) / cart.quantity
-
-            cart.quantity = quantity
-            cart.total_price = new_total_price
-
-            cart.save()
-   
-            return Response(product_id)
-        
-        except (CartItem.DoesNotExist, Product.DoesNotExist) as e:
-            return Response({"error": "Error message", "detail": str(e)}, status=404)
-        
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
 class ProcessAPI(APIView):
@@ -100,59 +118,75 @@ class ProcessAPI(APIView):
 
     
     def post(self, request):
-        try:
-            product_id = request.data.get("product_id")
-            user_id = request.data.get("user_id")
-            quantity = int(request.data.get("quantity", 0))
 
-            user = User.objects.get(id=user_id)
-            product = Product.objects.get(id=product_id) 
-            total_quantity = CartItem.objects.filter(cart__owner=user).aggregate(Sum('quantity'))['quantity__sum'] 
-
-            valid, response = self.validate_conditions(quantity, product.quantity, total_quantity)
-
-            if not valid:
-                return response
-
-            cart = Cart.objects.get(owner__id=user_id)  
+        response = self.JWT_authenticator.authenticate(request)
+        if response is not None:
+            user_id = response[1]['user_id']
 
             try:
-                obj = CartItem.objects.get(cart=cart, product=product)
-                obj.quantity += quantity
-                obj.total_price += Decimal(product.price) * quantity
-                obj.save()
+                product_id = request.data.get("product_id")
+                quantity = int(request.data.get("quantity", 0))
 
-            except CartItem.DoesNotExist:
-                obj = CartItem.objects.create(
-                    cart = cart,
-                    product = product,
-                    quantity = quantity,
-                    total_price = float(product.price) * quantity
-                )
+                user = User.objects.get(id=user_id)
+                product = Product.objects.get(id=product_id) 
+                total_quantity = CartItem.objects.filter(cart__owner=user).aggregate(Sum('quantity'))['quantity__sum'] 
 
-            return Response({"status": True, "info": "Produkt pomyślnie dodano do koszyka"})
+                valid, response = self.validate_conditions(quantity, product.quantity, total_quantity)
 
-        except (User.DoesNotExist, Product.DoesNotExist, Cart.DoesNotExist) as e:
-            return Response({"error": "Object does not exist"}, status=404)    
+                if not valid:
+                    return response
 
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+                cart = Cart.objects.get(owner__id=user_id)  
+
+                try:
+                    obj = CartItem.objects.get(cart=cart, product=product)
+                    obj.quantity += quantity
+                    obj.total_price += Decimal(product.price) * quantity
+                    obj.save()
+
+                except CartItem.DoesNotExist:
+                    obj = CartItem.objects.create(
+                        cart = cart,
+                        product = product,
+                        quantity = quantity,
+                        total_price = float(product.price) * quantity
+                    )
+
+                return Response({"status": True, "info": "Produkt pomyślnie dodano do koszyka"})
+
+            except (User.DoesNotExist, Product.DoesNotExist, Cart.DoesNotExist) as e:
+                return Response({"error": "Object does not exist"}, status=404)    
+
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+        raise Exception("User has too be authenticated.")
         
+
 class RemoveItemCart(APIView):
 
+    def __init__(self):
+        self.JWT_authenticator = JWTAuthentication()
+
     def post(self, request):
-        try:
-            user_id = request.data.get("user_id")
-            item_id = request.data.get("item_id")
 
-            cart = CartItem.objects.get(cart__owner__id=user_id, product__id=item_id)
-            cart.delete()
+        response = self.JWT_authenticator.authenticate(request)
+        if response is not None:
+            user_id = response[1]['user_id']
 
-            return Response({"done": True, "product_id": item_id})
+            try:
+                user_id = request.user.id
+                item_id = request.data.get("item_id")
 
-        except CartItem.DoesNotExist as e:
-            return Response({"error": "Error message", "detail": str(e)}, status=404)
+                cart = CartItem.objects.get(cart__owner__id=user_id, product__id=item_id)
+                cart.delete()
 
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+                return Response({"status": True, "product_id": item_id})
+
+            except CartItem.DoesNotExist as e:
+                return Response({"error": "Error message", "detail": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+        raise Exception("User has too be authenticated.")

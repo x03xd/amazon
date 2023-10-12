@@ -14,7 +14,7 @@ interface Nums {
 
 const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
 
-    const {username} = React.useContext(AuthContext);
+    const {authToken} = React.useContext(AuthContext);
 
     const finalizeOrder = async () => {
 
@@ -22,16 +22,19 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
             try{
                 const response = await fetch(`http://127.0.0.1:8000/api/payment-creation/`, {
                     method:'POST',
-                    headers:{
-                        'Content-Type':'application/json'
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`,
                     },
-                    body:JSON.stringify({"location": "cart", "user": username?.user_id, "currency": getCookie("currency")})
+                    credentials: 'include',
+                    body:JSON.stringify({"location": "cart", "currency": getCookie("currency")})
                 })
                 const responseJSON = await response.json()
 
                 if(responseJSON.link){
                     window.location.href = responseJSON.link
                 }
+
             }
             
             catch(error){alert('An error occurred. Please try again later.');}

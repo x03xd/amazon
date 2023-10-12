@@ -13,7 +13,7 @@ const PasswordChange: React.FC = () => {
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
 
-    const {username, logout} = useContext(AuthContext);
+    const {authToken, logout} = useContext(AuthContext);
     const navigate = useNavigate(); 
 
     async function changePassword(e: React.FormEvent){
@@ -24,12 +24,12 @@ const PasswordChange: React.FC = () => {
         }
 
         else{
-
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/edit-password/${username?.user_id}`, {
+                const response = await fetch(`http://127.0.0.1:8000/api/change-password`, {
                     method: 'PATCH',
                     credentials: 'include',
                     headers: {
+                        'Authorization': `Bearer ${authToken}`, 
                         'Content-Type':'application/json',
                     },
                     body: JSON.stringify({"current": currentRef.current?.value, "password":passwordRef.current?.value, "password2":password2Ref.current?.value})

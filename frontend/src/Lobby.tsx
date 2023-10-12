@@ -9,25 +9,36 @@ import Recommendations from './Recommendations';
 import Opinions from './Opinions';
 
 const Lobby: React.FC = () => {
+    
     const [selectedValue, setSelectedValue] = useState<number>(1);
     const [brand, setBrand] = useState<string>("");
     const [modPrice, setModPrice] = useState<number>(0);
-    const {username} = useContext(AuthContext);
+    const {authToken} = useContext(AuthContext);
 
     const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
         try{
-            fetch(`http://127.0.0.1:8000/api/brand/${location.state.brand}`)
+            fetch(`http://127.0.0.1:8000/api/brands/id/${location.state.brand}`)
             .then(response => response.json())
             .then(result => setBrand(result?.brand_name))
 
-            fetch(`http://127.0.0.1:8000/api/lobby-price-mod/${username?.user_id}/${location.state.id_product}`)
+            fetch(`http://127.0.0.1:8000/api/lobby-price-mod/${location.state.id_product}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}` // Assuming authToken is defined in your component
+                }
+            })
             .then(response => response.json())
             .then(result => setModPrice(result?.modified_price))
         }
-        catch(error){alert(error);}
+
+        catch(error){
+            console.log(error)
+            alert(error);
+        }
     }, [])
     
     useEffect(() => {
@@ -45,12 +56,15 @@ const Lobby: React.FC = () => {
         try{
             const response = await fetch(`http://127.0.0.1:8000/api/payment-creation/`, {
                 method:'POST',
-                headers:{
-                    'Content-Type':'application/json'
+                headers: {
+                    'Content-Type':'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                    'credentials': 'include'
                 },
                 body:JSON.stringify(
-                    {"location": "lobby", "product_id": location.state.id_product, "quantity": selectedValue,
-                        "user": username?.user_id, "currency": getCookie("currency")
+                    {
+                        "location": "lobby", "product_id": location.state.id_product,
+                        "quantity": selectedValue, "currency": getCookie("currency")
                     }
                 )
             })
@@ -71,9 +85,10 @@ const Lobby: React.FC = () => {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type':'application/json',
+                    'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify({'product_id': location.state.id_product, 'user_id': username?.user_id, "quantity": selectedValue})
+                body: JSON.stringify({'product_id': location.state.id_product, "quantity": selectedValue})
             });
             const responseJSON = await response.json();
             alert(responseJSON?.info);
@@ -168,18 +183,15 @@ const Lobby: React.FC = () => {
 
                 </div>
             </div>
-            
-            {username?.user_id !== undefined
-                ?
-                    <div className = "opinions-bar">
-                        <Opinions product_id = {location.state?.id_product} user_id = {username?.user_id} />
-                    </div>
-                :
-                <></>
-            }
+
+
+            <div className = "opinions-bar">
+                <Opinions product_id = {location.state?.id_product} />
+            </div>
+    
 
             <div className = "recommendation-bar">
-                <Recommendations products_id = {[location.state?.id_product.toString()]} />
+            
             </div>
         </div>
     );

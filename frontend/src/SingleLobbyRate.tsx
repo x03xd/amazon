@@ -1,6 +1,7 @@
 
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useContext} from 'react';
 import CountingRate from './CoutingRate';
+import AuthContext from "./AuthenticationContext";
 
 interface SingleLobbyRateProps {
     product_id: number;
@@ -13,37 +14,49 @@ interface RateDict {
 }
 
 const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id, user_id }) => {
+
     const [rate, setRate] = useState<number | null>(null);
     const [rateCount, setRateCount] = useState<number>(0);
     const [rateDict, setRateDict] = useState<RateDict[]>([]);
+    const {authToken} = useContext(AuthContext);
 
     useEffect(() => {
-        try{
-            fetch(`http://127.0.0.1:8000/api/avg-rate/${product_id}`)
-            .then(response => response.json())
-            .then(result => (setRateCount(result[0]?.rate_count)));
-        }
-        catch(error){ alert("Opinions cannot be displayed"); }
-    }, [])
+        fetch(`http://127.0.0.1:8000/api/avg-rate/${product_id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authToken}`, 
+                'Content-Type':'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(result => setRateCount(result[0]?.rate_count))
+        .catch(error => alert(`Wystąpił błąd: ${error.message}`));
+    }, []);
+    
 
     useEffect(() => {
-        try{
-            fetch(`http://127.0.0.1:8000/api/product-rates/${product_id}`)
-            .then(response => response.json())
-            .then(result => setRateDict(result));
-        }
-        catch(error){alert("Opinions cannot be displayed");}
-    }, [])
+        fetch(`http://127.0.0.1:8000/api/rate-product/frequency/${product_id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authToken}`, 
+                'Content-Type':'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(result => (console.log(result), setRateDict(result)))
+        .catch(error => alert(`Wystąpił błąd: ${error.message}`));
+    }, []);
+    
 
     useEffect(() => {
-        try{
-            fetch(`http://127.0.0.1:8000/api/rate-product/${user_id}/${product_id}/${rate}`)
-            .then(response => response.json())
-            .then(result => setRate(result));
-        }
-        catch(error){alert("Opinions cannot be displayed");}
-    }, [])
+        fetch(`http://127.0.0.1:8000/api/rate-product/id/${user_id}/${product_id}`, {
+        })
+        .then(response => response.json())
+        .then(result => (console.log(result), setRate(result)))
+        .catch(error => alert(`Wystąpił błąd: ${error.message}`));
+    }, [user_id]);
 
+    
     return(
         <div className = "single-lobby-rate">  
             <div className = "star-rating-container stars-bigger">

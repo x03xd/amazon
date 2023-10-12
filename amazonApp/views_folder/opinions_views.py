@@ -6,75 +6,110 @@ from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
-class DisplayOpinions(ListAPIView):
-    serializer_class = OpinionSerializer
 
-    def get_queryset(self):
-        product_id = self.kwargs.get("product_id")
-        page = int(self.kwargs.get("page"))
+class OpinionsAPI(APIView):
 
-        queryset = Opinion.objects.filter(reviewed_product=product_id)
-        return queryset[page:page+5]
-    
-    
-class CreateOpinion(APIView):
-    
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
+
         try:
             product_id = self.kwargs.get("product_id")
-            user_id = self.kwargs.get("user_id")
+            page = self.kwargs.get("page")
 
-            user = get_object_or_404(User, id=user_id)
-            product = get_object_or_404(Product, id=product_id)
+            opinions = Opinion.objects.filter(reviewed_product=product_id)
+            opinions_in_page = opinions[page:page+5]
 
-            people_who_bought = product.bought_by_rec.filter(id=user_id).exists()
-            if not people_who_bought:
-                return Response({"status": False, "info": "You have to buy the product to be able to rate it"})
+            serialized_data = OpinionSerializer(opinions_in_page, many=True)
+
+            return Response({"status": True, "queryset": serialized_data.data})
             
-            exists = Opinion.objects.filter(reviewed_by=user_id, reviewed_product=product_id).exists()
-            if exists:
-                return Response({"status": False, "detail": "Your opinion for this product exists already!"})
+        except Opinion.DoesNotExist as e:
+            return Response({"message": "Error message", "detail": str(e)}, status=404)
             
-            text = request.data.get("text")
-            title = request.data.get("title")
-
-            if not text or not title:
-                return Response({"status": False, "detail": "Make sure that title and text are not empty!"})
-            
-            rate = None
-
-            try:
-                rate = Rate.objects.get(rated_products=product, rated_by=user)
-
-            except:
-                pass
-
-            Opinion.objects.create(
-                rate = rate if rate else None,
-                title = title,
-                text = text,
-                reviewed_product = product,
-                reviewed_by = user,
-            )
-
-            return Response({"status": True, "detail": "The opinion has been created"})
-
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-
-class RemoveOpinion(APIView):
-    
-    def post(self, request, *args, **kwargs):
-        try:
-            opinion_id = self.kwargs.get("opinion_id")
-
-            opinion = get_object_or_404(Opinion, id=opinion_id)
-            opinion.delete()
-            
-            return Response({"status": True, "detail": "The opinion has been removed"})
-
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+        
+
+    def delete(self, request, *args, **kwargs):
+        JWTAuthenticationer = JWTAuthentication()
+
+        response = JWTAuthenticationer.authenticate(request)
+        if response is not None:
+
+            try:
+                opinion_id = self.kwargs.get("opinion_id")
+
+                opinion = get_object_or_404(Opinion, id=opinion_id)
+                opinion.delete()
+                
+                return Response({"status": True, "detail": "The opinion has been removed"})
+
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            
+        return Response({"status": True, "error": "You have to be authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+    def post(self, request, *args, **kwargs):
+        JWTAuthenticationer = JWTAuthentication()
+
+        response = JWTAuthenticationer.authenticate(request)
+        if response is not None:
+            
+            try:
+                product_id = self.kwargs.get("product_id")
+                user_id = response[1]['user_id']
+
+                user = get_object_or_404(User, id=user_id)
+                product = get_object_or_404(Product, id=product_id)
+
+                if not self.check_if_user_has_bought_product(user_id, product):
+                    return Response({"status": False, "info": "You have to buy the product to be able to rate it"})
+                
+                if self.check_if_opinion_exists(user_id, product_id):
+                    return Response({"status": False, "detail": "Your opinion for this product exists already!"})
+                
+                text = request.data.get("text")
+                title = request.data.get("title")
+
+                if not text or not title:
+                    return Response({"status": False, "detail": "Make sure that title and text are not empty!"})
+                
+                rate = None
+
+                try:
+                    rate = Rate.objects.get(rated_products=product, rated_by=user)
+
+                except:
+                    pass
+
+                self.create_opinion(rate if rate else None, title, text, product, user)
+
+                return Response({"status": True, "detail": "The opinion has been created"})
+
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+        return Response({"status": True, "error": "You have to be authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+
+        
+    def check_if_user_has_bought_product(self, user_id, product):
+        return product.bought_by_rec.filter(id=user_id).exists()
+
+
+    def check_if_opinion_exists(self, user_id, product_id):
+        return Opinion.objects.filter(reviewed_by=user_id, reviewed_product=product_id).exists()
+
+
+    def create_opinion(self, rate, title, text, product, user):
+        Opinion.objects.create(
+            rate=rate,
+            title=title,
+            text=text,
+            reviewed_product=product,
+            reviewed_by=user
+        )
+

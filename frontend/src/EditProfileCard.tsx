@@ -4,16 +4,14 @@ import blocked_padlock from './images/password.png'
 import { useNavigate } from 'react-router-dom';
 import {DataOfOperation, AccessToChangeUsernameState} from './EditProfile';
 
-
 interface EditProfileCardProps extends DataOfOperation{
     access: AccessToChangeUsernameState | null
 }
 
-
 const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, buttonValue, id, accessLink, access, shortcut }) => {
 
     const inputValue = useRef<HTMLInputElement>(null)
-    const {username, logout} = useContext(AuthContext);
+    const {authToken, logout} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const redirectToPasswordChange = () => {
@@ -25,19 +23,19 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
         e.preventDefault();
         
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/${link}/${username?.user_id}`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/${link}`, {
                 method: 'PATCH',
                 credentials: 'include', 
                 headers: {
                     'Content-Type':'application/json',
+                    'Authorization': `Bearer ${authToken}`
                 },
                 body: JSON.stringify({"change": inputValue.current?.value})
             })
             const responseJSON = await response.json();
-            
+
             if(responseJSON?.status) logout()
             else alert(responseJSON?.error)
-
         }
         catch(error){alert('An error occurred. Please try again later.');}
     }

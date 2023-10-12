@@ -6,236 +6,150 @@ import Checkbox from './Checkbox';
 import QueryParamsContext from "./QueryParamsContext";
 import {priceLimits} from './static_ts_files/priceLimits'
 import ProductsWithRatings from './ProductsWithRatings'
-import { ProductsInterface } from './static_ts_files/commonInterfaces';
+import {ProductsInterface, Categories, PriceLimits, Brands, UserInterface} from './static_ts_files/commonInterfaces';
 import AuthContext from "./AuthenticationContext";
-
-
-interface Categories {
-    id: number;
-    name : string;
-}
-
-export interface PriceLimits {
-    item: {
-        desc: string,
-        range: {start : number, end : number}
-    }
-}
-
-export interface Brands {
-    id: number,
-    brand_name: string,
-    belong_to_category: number
-}
+import {customPrice, changeQ, clearQueryString} from './static_ts_files/storeUtils';
 
 
 const Store: React.FC = () => {
-    
-    const searchParams = new URLSearchParams(window.location.search);
 
     const [prices, setPrices] = useState<PriceLimits[]>([]);
     const [categories, setCategories] = useState<Categories[]>([]);
     const [brands, setBrands] = useState<Brands[]>([]);
+    //const [user, setUser] = useState<UserInterface | null>(null);
+    const [products, setProducts] = useState<ProductsInterface[]>([]);
 
     const aRef = useRef<HTMLInputElement>(null);
     const bRef = useRef<HTMLInputElement>(null);
 
-    const [pricesFalseFilled, setPricesFalseFilled] = useState<boolean[]>([]);
-    const [brandsFalseFilled, setBrandsFalseFilled] = useState<boolean[]>([]);
-    const [products, setProducts] = useState<ProductsInterface[]>([]);
-    const {username} = useContext(AuthContext);
+    const [pricesFalseFilled, setPricesFalseFilled] = useState(() =>
+        Array.from({ length: [...new Set(prices)].length }, () => false)
+    );
 
+    const [brandsFalseFilled, setBrandsFalseFilled] = useState(() =>
+        Array.from({ length: [...new Set(brands)].length }, () => false)
+    );
+
+    const {fetchUserData} = useContext(AuthContext);
     const {q_QueryParam} = useContext(QueryParamsContext);
+
     const url = window.location.href;
     const index = url.indexOf('http://localhost:3000/s');
     const queryLinkPart = url.substring(index + 'http://localhost:3000/s'.length);
 
     useEffect(() => {
-        try {
-            fetch(`http://127.0.0.1:8000/api/categories/`)
-            .then(response => response.json())
-            .then(result => setCategories(result));
+        const fetchData = async () =>{
 
-            fetch(`http://127.0.0.1:8000/api/brands/${q_QueryParam}`)
-            .then(response => response.json())
-            .then(result => setBrands(result));
+            try {
+                const userData: any = await fetchUserData();
 
-            console.log()
-            fetch(`http://127.0.0.1:8000/api/products/${username?.user_id}/${username?.currency}/${queryLinkPart}`)
-            .then(response => response.json())
-            .then(result => setProducts(result));
-        }
+                const userId = userData?.data?.id
+                const userCurrency = userData?.data?.currency
 
-        catch(error){alert('An error occurred. Please try again later.');}
-
-        for(let nums of priceLimits){
-            setPrices(prev => [...prev, nums]);
-        }   
-   
-        }, [])
-
-    useEffect(() => {
-        for(let i: number = 0; i <= [...new Set(prices)].length - 1; i++){
-            setPricesFalseFilled(ar2 => [...ar2, false])
-        }
-    }, [prices])    
+                fetch(`http://127.0.0.1:8000/api/categories/`)
+                .then(response => response.json())
+                .then(result => setCategories(result));
     
-    useEffect(() => {        
-        for(let i: number = 0; i <= [...new Set(brands)].length - 1; i++){
-            setBrandsFalseFilled(ar2 => [...ar2, false])
-        }
-    }, [brands])     
-        
-    function clearQueryString(arg: string){
-        switch (arg) {
-            case "c":
+                fetch(`http://127.0.0.1:8000/api/brands/category/${q_QueryParam}`)
+                .then(response => response.json())
+                .then(result => setBrands(result));
 
-                brands.map((item: Brands, index: number) => {
-
-                    let storage = JSON.parse(localStorage.getItem("c" + index) || "");
-                    let checkStorage = storage ? storage.value : "";
-
-                    if(checkStorage){
-                        const object = {value: false, nut: "c", id: (item["brand_name"] || []) }
-                        localStorage.setItem("c" + index, JSON.stringify(object));
-                    }
-                    
-                    return null;
-                })
-                break;
-
-            case "u":
-                prices.map((_: PriceLimits, index: number) => {
-
-                    const storage = JSON.parse(localStorage.getItem("u" + index) || "");
-                    const checkStorage = storage ? storage.value : "";
-
-                    if(checkStorage){
-                        const object = {value: false, nut: "u", id: (prices || [])[index] }
-                        localStorage.setItem("u" + index, JSON.stringify(object));
-                    }
-                        
-                    return null;
-                })
-                break;
-
-            case "rating":
-         
-                const storage = JSON.parse(localStorage.getItem("rating") || "");
-                const checkStorage = storage ? storage.value : "";
-
-                if(checkStorage){
-                    const object = {value: false, num: 0};
-                    localStorage.setItem("rating", JSON.stringify(object));
+                fetch(`http://127.0.0.1:8000/api/products/${userId}/${userCurrency}/${queryLinkPart}`)
+                .then(response => response.json())
+                .then(result => setProducts(result));
+                
+                for (let nums of priceLimits) {
+                    setPrices(prev => [...prev, nums]);
                 }
-                        
-                return null;
-        }
-        window.location.reload();
-    }
+              
+            }
 
-    function isOnlyNumber(str: string) {
-        return /^[0-9]+$/.test(str);
-    }
+            catch (error) {
+                console.error('An error occurred:', error);
+            }
+        };
+      
+        fetchData();
+    }, []);
 
-    function customPrice(): void {
-        const minVal: string = aRef.current?.value || "";
-        const maxVal: string = bRef.current?.value || "";
+    return(
+        <div className = "store-content mt-5">
 
-        if(!isOnlyNumber(minVal)) alert("Only positive integers accepted at min input");
-        if(!isOnlyNumber(maxVal)) alert("Only positive integers accepted at max input");
+            <div className = "store-content-bar">
 
-        else if(parseFloat(minVal) > parseFloat(maxVal)) alert("The value of min input must be lower than the value of max input")
-
-        else{
-            searchParams.set('u', `${parseFloat(minVal)}-${parseFloat(maxVal)}`);
-            const modifiedQueryString = searchParams.toString();
-            const baseUrl = window.location.href.split('?')[0];
-            const updatedUrl = baseUrl + '?' + modifiedQueryString;
-            window.location.href = updatedUrl;       
-        }
-    }
-
-    function changeQ(qValue: string): void {
-        searchParams.set('q', qValue.toLowerCase());
-        const modifiedQueryString = searchParams.toString();
-        const baseUrl = window.location.href.split('?')[0];
-        const updatedUrl = baseUrl + '?' + modifiedQueryString;
-        window.location.href = updatedUrl;
-    }
-
-        return(
-            <div className = "store-content mt-5">
-
-                <div className = "store-content-bar">
-
-                    <div className = "pt-0">
-                        <span>Możliwość darmowej dostawy</span> <br/>
-                        <input type = "checkbox" /> <a href = "#" className = ""> Darmowa wysyłka przez Amazon <br/>
-                        Darmowa dostawa dla wszystkich klientów <br/> przy zamówieniach o wartosci powyżej 40 zł, wysyłanych przez Amazon</a>
-                    </div>
-
-                     <div>
-                        <span>Kategoria</span>
-                        <Clear text = "Wyczyść" nut = "q" func = {clearQueryString}  />
-                        <ul>
-                            {categories.map((item, index) => <UList index = {index} UListFunction = {changeQ} key = {index} item = {item["name"]} /> )}
-                        </ul>
-                     </div>
-
-                    <div>
-                        <span>Recenzja klienta</span>
-                        <Clear text = "Wyczyść" nut = "rating" func = {clearQueryString}  />
-                        <Rating />
-                    </div>
-
-                    <div>
-                        <span>Marka</span><br/>
-                        <Clear text = "Wyczyść" nut = "c" func = {clearQueryString}  />
-                        <ul className = "checkbox-list">
-                            {brands.map((item, index: number) => {
-                                return(
-                                    <Checkbox booleanArray = {brandsFalseFilled} nut = "c" index = {index} key = {index + "c"} name = {item["brand_name"]} arrayProp = {[...new Set(brands)]} />
-                                )
-                            })}
-                        </ul>
-                    </div>
-
-                    <div>
-                        <span>Cena</span>
-                        <Clear text = "Wyczyść" nut = "u" func = {clearQueryString} />
-                        <ul className = "checkbox-list">
-                            {priceLimits.map((item, index: number) => {
-                                return(
-                                    <Checkbox booleanArray = {pricesFalseFilled} nut = "u" index = {index} key = {index + "u"} name = {item.item.desc} arrayProp = {[...new Set(prices)]} />
-                                )
-                            })}
-                        </ul>
-                    </div>
-
-                    <div className = "d-flex align-items-center price-filters">
-                        <input ref = {aRef} className = "" type="number" placeholder = "Min" step="1" />
-                        <input ref = {bRef} className = "ms-1" type="number" placeholder = "Max" step="1" />
-                        <button onClick = {customPrice} className = "ms-1 border 0">Szukaj</button>
-                    </div>
-
+                <div className = "pt-0">
+                    <span>Możliwość darmowej dostawy</span> <br/>
+                    <input type = "checkbox" /> <a href = "#" className = ""> Darmowa wysyłka przez Amazon <br/>
+                    Darmowa dostawa dla wszystkich klientów <br/> przy zamówieniach o wartosci powyżej 40 zł, wysyłanych przez Amazon</a>
                 </div>
 
-                <div className = "store-content-products">
-                    <div className = "">
-                        <span className = "fw-525">WYNIKI</span><br/>
-                        <a href = "#" className = "text-decoration-none">Dowiedz się o tych wynikach.</a>
-                    </div>
-
-                    <div className = "store-content-results mt-3">
-                        <ProductsWithRatings products = {products} />
-                    </div>
+                <div>
+                    <span>Kategoria</span>
+                    <Clear text = "Wyczyść" nut = "q" func = {() => {clearQueryString("q", brands, prices)}}  />
+                    <ul>
+                        {categories.map((item) => (
+                            <UList
+                                key={item.id} 
+                                item={item.name}
+                                index={item.id} 
+                                UListFunction={changeQ}
+                            />
+                        ))}
+                    </ul>
                 </div>
 
-                <div></div>
+                <div>
+                    <span>Recenzja klienta</span>
+                    <Clear text = "Wyczyść" nut = "rating" func = {() => {clearQueryString("rating", brands, prices)}}  />
+                    <Rating />
+                </div>
+
+                <div>
+                    <span>Marka</span><br/>
+                    <Clear text = "Wyczyść" nut = "c" func = {() => {clearQueryString("c", brands, prices)}}  />
+                    <ul className = "checkbox-list">
+                        {brands.map((item, index: number) => {
+                            return(
+                                <Checkbox booleanArray = {brandsFalseFilled} nut = "c" index = {index} key = {index + "c"} name = {item["brand_name"]} arrayProp = {[...new Set(brands)]} />
+                            )
+                        })}
+                    </ul>
+                </div>
+
+                <div>
+                    <span>Cena</span>
+                    <Clear text = "Wyczyść" nut = "u" func = {() => {clearQueryString("u", brands, prices)}} />
+                    <ul className = "checkbox-list">
+                        {priceLimits.map((item, index: number) => {
+                            return(
+                                <Checkbox booleanArray = {pricesFalseFilled} nut = "u" index = {index} key = {index + "u"} name = {item.item.desc} arrayProp = {[...new Set(prices)]} />
+                            )
+                        })}
+                    </ul>
+                </div>
+
+                <div className = "d-flex align-items-center price-filters">
+                    <input ref = {aRef} className = "" type="number" placeholder = "Min" step="1" />
+                    <input ref = {bRef} className = "ms-1" type="number" placeholder = "Max" step="1" />
+                    <button onClick = {() => {customPrice(aRef.current?.value, bRef.current?.value)}} className = "ms-1 border 0">Szukaj</button>
+                </div>
 
             </div>
-        );
-}
 
+            <div className = "store-content-products">
+                <div className = "">
+                    <span className = "fw-525">WYNIKI</span><br/>
+                    <a href = "#" className = "text-decoration-none">Dowiedz się o tych wynikach.</a>
+                </div>
+
+                <div className = "store-content-results mt-3">
+                    <ProductsWithRatings products={products} />
+                </div>  
+            </div>
+                        
+            <div></div>
+        </div>
+        );
+
+}
 export default Store;

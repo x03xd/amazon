@@ -8,13 +8,38 @@ from rest_framework import serializers
 from django.contrib.auth.models import update_last_login
 from rest_framework.response import Response
 from amazonApp.serializers import UserRegistrationSerializer
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
+
+class UserData(APIView):
+
+    def __init__(self):
+        self.JWT_authenticator = JWTAuthentication()
+
+    def get(self, request, *args, **kwargs):
+        response = self.JWT_authenticator.authenticate(request)
+
+        if response is not None:
+            user_info = response[1]  
+            data = {
+                "id": user_info['id'],
+                "email": user_info['email'],
+                "username": user_info['username'],
+                "currency": user_info["currency"]
+            }
+            return Response({"status": True, "data": data})
+        
+        return Response({"status": False})
+    
+    
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
 
+        token['id'] = user.id
         token['username'] = user.username
         token['email'] = user.email
         token['currency'] = user.currency
@@ -36,6 +61,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 class LoginAPI(APIView):
+
     def get(self, request, *args, **kwargs):
         
         try:
@@ -51,13 +77,8 @@ class LoginAPI(APIView):
             return Response({'authenticated': False, "error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
-class LogoutView(APIView):
-    def get(self, request, format=None):
-        pass
-
- 
-
 class RegisterSystem(APIView):
+    
     def post(self, request, *args, **kwargs):
         try:
             serializer = UserRegistrationSerializer(data=request.data)

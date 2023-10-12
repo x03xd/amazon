@@ -9,7 +9,6 @@ interface MyAccountCardProps {
     link: string;
 }
 
-
 const MyAccountCard: React.FC<MyAccountCardProps> = ({ title, image, content, alt, link }) => {
 
     const navigate = useNavigate();

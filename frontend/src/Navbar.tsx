@@ -36,7 +36,6 @@ const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, unclicka
         }
         catch (error){}
     }, [])
-    
 
     useEffect(() => {
         if(dropStyle === "") setDropdownOptionsStyle("")

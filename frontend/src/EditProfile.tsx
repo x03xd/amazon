@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react';
 import AuthContext from "./AuthenticationContext";
 import EditProfileCard from "./EditProfileCard"
+import {UserInterface} from './static_ts_files/commonInterfaces'
 
 export interface AccessToChangeUsernameState {
     username: [boolean, string];
@@ -21,11 +22,12 @@ export interface DataOfOperation {
 const EditProfile : React.FC = () => {
 
     const [accessToChange, setAccessToChangeUsername] = useState<AccessToChangeUsernameState | null>(null);
-    const {username} = useContext(AuthContext);
+    const [user, setUser] = useState<UserInterface | null>(null);
+    const {authToken, fetchUserData} = useContext(AuthContext);
 
     const data: DataOfOperation[] = [
-        {id: 1, accessLink: "username_change_allowed", link: "edit-username", shortcut: "username", header: "Nazwa użytkownika:", text: username?.username || "", buttonValue: "Edytuj"},
-        {id: 2, accessLink: "email_change_allowed", link: "edit-email", shortcut: "email", header: "Adres e-mail:", text: username?.email || "", buttonValue: "Edytuj"},
+        {id: 1, accessLink: "username_change_allowed", link: "edit-username", shortcut: "username", header: "Nazwa użytkownika:", text: user?.username || "", buttonValue: "Edytuj"},
+        {id: 2, accessLink: "email_change_allowed", link: "edit-email", shortcut: "email", header: "Adres e-mail:", text: user?.email || "", buttonValue: "Edytuj"},
         {id: 3, accessLink: "password_change_allowed", link: "change-password", shortcut: "password", header: "Hasło:", text: "********", buttonValue: "Edytuj"},
         {id: 4, accessLink: "", link: "add-phone", shortcut: 'phone', header: "Podstawowy numer telefonu komórkowego:", text: "Aby zwiększyć bezpieczeństwo konta, dodaj swój numer telefonu komórkowego.", buttonValue: "Dodaj"},
         {id: 5, accessLink: "", link: "two-step-verifying", shortcut: 'verifiction', header: "Weryfikacja dwuetapowa:", text: "Dodaj poziom zabezpieczeń. Wymagaj kodu weryfikacyjnego oprócz hasła.", buttonValue: "Włącz"},
@@ -33,12 +35,31 @@ const EditProfile : React.FC = () => {
     ]
 
     useEffect(() => {
+        const fetchData = async () => {
+            const userData: any = await fetchUserData();
+            setUser(userData.data)
+        }
+        fetchData()
+    },[])
+
+    useEffect(() => {
+
         try{
-            fetch(`http://127.0.0.1:8000/api/access-to-change-status/${username?.user_id}`)
+            fetch('http://127.0.0.1:8000/api/access-to-change-status/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type':'application/json',
+                },
+            })
             .then(response => response.json())
             .then(result => setAccessToChangeUsername(result))
         }
-        catch(error){alert('An error occurred. Please try again later.');}
+
+        catch(error){
+            alert('An error occurred. Please try again later.');
+        }
+
     }, [])
 
     return(

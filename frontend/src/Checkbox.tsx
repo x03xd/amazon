@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {Brands, PriceLimits} from './Store'
-
+import {Brands, PriceLimits} from './static_ts_files/commonInterfaces';
 
 interface CheckboxProps {
     nut: string;
@@ -84,7 +83,6 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
 
     useEffect(() => {
         /* USTAWIA QUERY PRZEKIEROWUJE */
-
         if(loading){
          
             if([...new Set(prevDependencyFilteredBrands2.current)].length !== uniqueFilteredBrands2.length){
@@ -119,14 +117,14 @@ const Checkbox: React.FC<CheckboxProps> = ({ booleanArray, name, index, nut, arr
         });
     }
 
-    let savedData = localStorage.getItem(nut + index);
-    let ifChecked = savedData ? JSON.parse(savedData) : null;
-    let ifChecked2 = ifChecked ? ifChecked.value : false;
+    const savedData = localStorage.getItem(nut + index);
+    const ifChecked = savedData ? JSON.parse(savedData) : null;
+    const ifChecked2 = ifChecked ? ifChecked.value : false;
 
     return(
         <>
             <li key = {index}>
-                <input checked = {ifChecked2} onChange = {() => { handleResult(index); }} type = "checkbox" />
+                <input checked = {ifChecked2} onChange = {() => {handleResult(index)}} type = "checkbox" />
                 {name}
             </li>
         </>

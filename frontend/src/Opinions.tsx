@@ -1,21 +1,17 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {UserInterface} from './static_ts_files/commonInterfaces'
 import SingleLobbyRate from './SingleLobbyRate'
 import CountingRate from './CoutingRate';
 import leftArrow from './images/left-arrow.png';
-import user from './images/user.png'
+import user_img from './images/user.png'
 import rightArrow from './images/right-arrow.png';
 import deletebutton from './images/deletebutton.png'
+import AuthContext from "./AuthenticationContext";
 
 interface OpinionsProps {
     product_id: number;
-    user_id: number;
 }
-
-interface Username {
-    username: string;
-    id: number;
-}
-
 interface Rate {
     id: number;
     rate: number;
@@ -30,72 +26,100 @@ interface Opinion {
     text: string;
     reviewed_date: string;
     reviewed_product: string;
-    reviewed_by: Username;
+    reviewed_by: UserInterface;
 }
 
-const Rating: React.FC<OpinionsProps> = ({ product_id, user_id }) => {
+const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
 
     const [opinions, setOpinions] = useState<Opinion[] | null>(null);
     const [pages, setPages] = useState<number>(0);
+    const [user, setUser] = useState<UserInterface | null>(null);
+    
+    const {authToken, fetchUserData} = useContext(AuthContext);
 
     const textAreaValue = useRef<HTMLTextAreaElement | null>(null);
     const inputTitleValue = useRef<HTMLInputElement | null>(null);
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const userData: any = await fetchUserData();
+
+            if(userData != null)
+                setUser(userData.data)
+        }
+        fetchData()
+    },[])
 
     useEffect(() => {
         try{
             fetch(`http://127.0.0.1:8000/api/opinions/${product_id}/${pages}`)
             .then(response => response.json())
-            .then(result => setOpinions(result));
+            .then(result => setOpinions(result.queryset));
         }
-        catch(error){ alert("Opinions cannot be displayed"); }
+
+        catch(error){ 
+            console.log(error)
+            alert("Opinions cannot be displayed");
+        }
     }, [pages])
 
-
+    
     const selectPage = (num: number) => {
         if(opinions && opinions?.length < 5 && num > 0) return null;
         if(pages + num >= 0) {setPages(current_page => current_page + num)}
     }
 
-    async function sendOpinion(e: React.FormEvent<HTMLFormElement>){
+    async function sendOpinion(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-       
+
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/opinion-create/${user_id}/${product_id}`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/opinions/create/${product_id}`, {
                 method: 'POST',
-                credentials: 'include',
                 headers: {
+                    'Authorization': `Bearer ${authToken}`, 
                     'Content-Type':'application/json',
                 },
                 body: JSON.stringify({"text": textAreaValue.current?.value, "title": inputTitleValue.current?.value})
             })
             const responseJSON = await response.json()
-            console.log(responseJSON)
 
-            if(responseJSON?.status){
+            if(responseJSON?.code === "token_not_valid"){
+                alert("You have to be authenticated!")
+            }
+
+            else if(responseJSON?.status){ 
                 window.location.reload()
             }
     
             else {
                 alert(responseJSON?.info)
             }
+
         }
-        catch(error){alert(error);}
+
+        catch(error){
+            alert("Error: " + error);
+        }
+
     }
 
     async function removeOpinion(opinion_number: number){
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/opinion-remove/${opinion_number}`, {
-                method: 'POST',
-                credentials: 'include',
+            const response = await fetch(`http://127.0.0.1:8000/api/opinions/remove/${opinion_number}`, {
+                method: 'DELETE',
                 headers: {
+                    'Authorization': `Bearer ${authToken}`, 
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({})
             })
             const responseJSON = await response.json()
-            console.log(responseJSON)
 
-            if(responseJSON?.status){
+            if(responseJSON?.code === "token_not_valid"){
+                alert("You have to be authenticated!")
+            }
+
+            else if(responseJSON?.status){
                 window.location.reload()
             }
     
@@ -103,7 +127,7 @@ const Rating: React.FC<OpinionsProps> = ({ product_id, user_id }) => {
                 alert(responseJSON?.detail)
             }
         }
-        catch(error){alert(error);}
+        catch(error){alert("Error: " + error);}
     }
 
     return(
@@ -132,7 +156,7 @@ const Rating: React.FC<OpinionsProps> = ({ product_id, user_id }) => {
             </div>
 
             <div className = "lobby-opinions-rating-percentages">
-                <SingleLobbyRate product_id = {product_id} user_id = {user_id}/>
+                <SingleLobbyRate product_id = {product_id} user_id = {user?.id}/>
             </div>
 
             <div className = "lobby-opinions-text">
@@ -142,10 +166,10 @@ const Rating: React.FC<OpinionsProps> = ({ product_id, user_id }) => {
                             <div className = "opinion" key = {index}>
 
                                 <div className = "opinion-user-and-avatar">
-                                    <img src = {user} alt = "avatar" loading = "lazy" />
+                                    <img src = {user_img} alt = "avatar" loading = "lazy" />
                                     <span className = "opinion-reviewed-by-username">{opinion.reviewed_by.username}</span>
                                     {
-                                        user_id === opinion.reviewed_by.id ? <img className = "cursor-finger" src = {deletebutton} loading = "lazy" alt = "remove" onClick = {() => {removeOpinion(opinion.id)}} />: <></>
+                                        user?.id === opinion.reviewed_by.id ? <img className = "cursor-finger" src = {deletebutton} loading = "lazy" alt = "remove" onClick = {() => {removeOpinion(opinion.id)}} />: <></>
                                     }
                                 </div>
                             

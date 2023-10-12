@@ -13,23 +13,32 @@ interface ProductsPerTransactionChild extends ProductsInterface {
     count: number;
 }
 
-
 const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction }) => {
 
     const [products, setProducts] = useState<ProductsPerTransactionChild[]>();
-    const {username} = useContext(AuthContext);
+    const {authToken} = useContext(AuthContext);
 
     useEffect(() => {
         const joinedIDs = transaction.bought_products.join(',');
-
-        try{
-            fetch(`http://127.0.0.1:8000/api/transaction-products/${joinedIDs}/${username?.user_id}`)
+    
+        try {
+            fetch(`http://127.0.0.1:8000/api/transactions/single/${joinedIDs}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`, 
+                    'Content-Type':'application/json',
+                },
+            })
             .then(response => response.json())
-            .then(result => setProducts(result));
+            .then(result => (console.log(result), setProducts(result)))
         }
-        catch(error){alert("There was an error displaying your transaction.");}
-
-    }, [])
+        
+        catch (error) {
+            console.log(error)
+            alert(`"There was an error displaying your transaction."`);
+        }
+        
+    }, []);
 
     return(
             <div className = "single-transaction-card-content">

@@ -13,24 +13,31 @@ export interface TransactionsAPI {
 }
 
 const Transactions: React.FC = () => {
-
     const currentDate = new Date();
 
     const [selectedYear, setSelectedYear] = useState<number>(currentDate.getFullYear());
-    const [transactions, setTransactions] = useState<TransactionsAPI[] | null>(null);
+    const [transactions, setTransactions] = useState<TransactionsAPI[] | []>([]);
     const [optionYear, setOptionYear] = useState<number[]>([]);
-    const {username} = useContext(AuthContext);
+    const {authToken} = useContext(AuthContext);
 
     useEffect(() => {
-
-        try{
-            fetch(`http://127.0.0.1:8000/api/transactions/${username?.user_id}/${selectedYear}`)
+        try {
+            fetch(`http://127.0.0.1:8000/api/transactions/list/${selectedYear}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`, 
+                    'Content-Type':'application/json',
+                }
+            })
             .then(response => response.json())
-            .then(result => (setTransactions(result || []), console.log(result)));
+            .then(result => (console.log(result), setTransactions(result || [])))
+        } 
+        
+        catch (error) {
+            console.log(error)
+            alert(`There was an error displaying your transaction.`);
         }
-        catch(error){alert("There was an error displaying your transaction.");}
-
-    }, [selectedYear])
+    }, [selectedYear]);
 
 
     useEffect(() => {
@@ -73,13 +80,13 @@ const Transactions: React.FC = () => {
                                 </div>
                             </div>
 
-                                {
-                                    transactions?.map((transaction: TransactionsAPI, index: number) => {
-                                        return(
-                                            <SingleTransaction key = {index} transaction = {transaction} />
-                                        )
-                                    })
-                                }
+                            {
+                                Array.isArray(transactions) && transactions.map((transaction: TransactionsAPI, index: number) => {
+                                    return (
+                                    <SingleTransaction key={index} transaction={transaction} />
+                                    )
+                                })
+                            }
                         </div>  
                     
                     <div></div>

@@ -13,7 +13,7 @@ export interface ModalProps{
 const Modal: React.FC<ModalProps> = ({ className, modalOFF, overlayOFF, navbarStatus}) => {
 
     const navigate = useNavigate();
-    const {logout, username} = useContext(AuthContext);
+    const {logout, authToken} = useContext(AuthContext);
 
     const navigateTo = (): void => {
         navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
@@ -30,13 +30,13 @@ const Modal: React.FC<ModalProps> = ({ className, modalOFF, overlayOFF, navbarSt
         <div className = {`login-modal ${className}`}>
 
             <div className = "p-3">
-                {username == null 
+                {authToken == null 
                     ?
                     <button onClick = {() => { navigateTo() }} className = "login-button">Zaloguj się</button>
                     : <button onClick = {logout} className = "login-button">Wyloguj się</button>
                 }
 
-                {username == null ?
+                {authToken == null ?
                     <>
                         <span className = {`mt-4`}>Pierwszy raz w serwisie Amazon?</span> <br/>
                         <span className = "link" onClick = {() => {navigate("/registration")}}>Rozpocznij tutaj.</span>

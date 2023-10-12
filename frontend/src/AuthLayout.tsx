@@ -42,12 +42,12 @@ const AuthLayout: React.FC = () => {
 
                     <div className = "auth-navbar">
                         <div className = "mt-3">
-                             <a href = "#">Warunki użytkowania i sprzedaży</a>
-                             <a href = "#">Informacja o prywatności </a>
-                             <a href = "#">Pomoc </a>
-                             <a href = "#">Nota prawna</a>
-                             <a href = "#">Cookies</a>
-                             <a href = "#">Reklamy dopasowane do zainteresowań</a><br/>
+                            <a href = "#">Warunki użytkowania i sprzedaży</a>
+                            <a href = "#">Informacja o prywatności </a>
+                            <a href = "#">Pomoc </a>
+                            <a href = "#">Nota prawna</a>
+                            <a href = "#">Cookies</a>
+                            <a href = "#">Reklamy dopasowane do zainteresowań</a><br/>
                             <span>© 1996-2022 DeliverService.com, Inc. lub podmioty powiązane</span>
                         </div>
                     </div>

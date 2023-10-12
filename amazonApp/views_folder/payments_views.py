@@ -7,6 +7,7 @@ from amazonApp.serializers import CartItemProductsSerializer, CartItemSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.core.cache import cache
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from decimal import Decimal
 import stripe
 import random
@@ -14,8 +15,10 @@ import random
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class StripeCheckout(APIView):
+
     def __init__(self):
         super().__init__()
+        self.JWT_authenticator = JWTAuthentication()
         self.user_id = None
         self.location = None
         self.quantity = None
@@ -23,12 +26,12 @@ class StripeCheckout(APIView):
         self.currency = "EUR"
         self.ratio = 1
 
-    def parse_request_data(self, data):
-        self.user_id = data.get("user")
-        self.location = data.get("location")
-        self.product_id = data.get("product_id", None)
-        self.quantity = data.get("quantity", None)
-        self.currency = data.get("currency")
+    def parse_request_data(self, request, user_data):
+        self.user_id = user_data['user_id']
+        self.location = request.data.get("location")
+        self.product_id = request.data.get("product_id", None)
+        self.quantity = request.data.get("quantity", None)
+        self.currency = request.data.get("currency", None)
 
         cache_dict = cache.get("exchange_rates")
         if cache_dict:
@@ -41,20 +44,25 @@ class StripeCheckout(APIView):
 
 
     def post(self, request, *args, **kwargs):
-        try:
-            self.parse_request_data(request.data)
-            result = self.core()
 
-            checkout_session = self.create_checkout_session(result)
+        response = self.JWT_authenticator.authenticate(request)
+        if response is not None:
 
-            return Response({'link': checkout_session.url})
-                
-        except stripe.error.StripeError as e:
-            print("Stripe error:", str(e))
-            return Response(
-                {'error': 'Something went wrong when creating stripe checkout session'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            try:
+                self.parse_request_data(request, response[1])
+                result = self.core()
+
+                checkout_session = self.create_checkout_session(result)
+
+                return Response({'link': checkout_session.url})
+                    
+            except stripe.error.StripeError as e:
+                return Response(
+                    {'error': 'Something went wrong when creating stripe checkout session'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+        raise Exception("User has to be authenticated.")
 
 
     def create_checkout_session(self, line_items):
@@ -66,6 +74,7 @@ class StripeCheckout(APIView):
             success_url=settings.SITE_URL + '/',
             cancel_url=settings.SITE_URL + '/',
         )
+
 
     def core(self):
         if self.location == "cart":
@@ -127,101 +136,3 @@ class StripeCheckout(APIView):
         }
         return data
     
-
-def random_transaction_id():
-    while True:
-        transaction_number = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=10))
-        if not Transaction.objects.filter(transaction_number=transaction_number).exists():
-            break
-
-    return transaction_number
-    
-
-@csrf_exempt
-def stripe_webhook(request):
-    payload = request.body
-    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
-    event = None
-
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, settings.STRIPE_ENDPOINT_SECRET
-        )
-    except ValueError as e:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-    except stripe.error.SignatureVerificationError as e:
-        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-
-    if event['type'] == 'checkout.session.completed':
-        handle_checkout_session_completed(event)
-
-    elif event["type"] == "payment_intent.succeeded":
-        print("Succeeded")
-
-    return HttpResponse(status=200)
-
-
-
-def handle_checkout_session_completed(event):
-    intent = event.data.object
-    user_id = intent.metadata.get('user_id', None)  
-    product_id = intent.metadata.get('product_id', None)  
-    quantity = intent.metadata.get('quantity', None)
-    location = intent.metadata.get('location', None)
-
-    user_id = int(user_id)
-    product_id = int(product_id) if product_id else None
-    quantity = int(quantity) if quantity else None
-    total_price_ = 0
-    bought = []
-    
-    try:
-        user = User.objects.get(id=user_id)
-
-        if location == "lobby":
-            product = Product.objects.get(id=product_id)
-
-            if product.quantity >= quantity:
-                bought.extend([product.id] * quantity)
-                product.bought_by_rec.add(user)
-
-                total_price_ += product.price * quantity
-                product.quantity -= quantity
-                product.save()
-
-
-        elif location == "cart":
-            cart_items = CartItem.objects.filter(cart__owner=user)
-            serializer = CartItemSerializer(cart_items, many=True)
-
-            for record in serializer.data:
-                product = Product.objects.get(id=record["product"])
-
-                if product.quantity < record["quantity"]:
-                    return
-
-            for record in serializer.data:
-                product = Product.objects.get(id=record["product"])
-
-                bought.extend([record["product"]] * record["quantity"])
-                total_price_ += record["total_price"]
-                
-                product.bought_by_rec.add(user)
-                product.quantity -= record["quantity"]
-                product.save()
-
-            cart_items.delete()
-
-
-        random_transaction_id_value = random_transaction_id()
- 
-        Transaction.objects.create(
-            bought_by=user,
-            bought_products=bought,
-            transaction_number=random_transaction_id_value,
-            total_price = total_price_
-        )
-
-    except:
-        return Exception("Failed")
-

@@ -10,7 +10,7 @@ from django.db.models import Count
 from collections import defaultdict
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class CountAvgRate(ListAPIView):
@@ -18,7 +18,6 @@ class CountAvgRate(ListAPIView):
 
     def get_queryset(self, **kwargs):
         product_id = self.kwargs.get('product_id')
-
         queryset = Rate.objects.values("rated_products").annotate(average_rate=Avg("rate"), rate_count=Count("rate"))
 
         if product_id:
@@ -27,100 +26,139 @@ class CountAvgRate(ListAPIView):
         return queryset
     
 
-class ProductRateCounter(APIView):
-    
+
+class RatesAPI(APIView):
+
     def get(self, request, *args, **kwargs):
-        product_id = self.kwargs.get('product_id')
 
-        result = Rate.objects.filter(rated_products__id=product_id)
-        serialized_result = ProductRateSerializer(result, many=True)
+        if "product_id" in self.kwargs:
+            product_id = self.kwargs.get("product_id")
+            return self.product_rate_counter(product_id)
+        
+        elif "user_id" in self.kwargs:
+            user_id = self.kwargs.get("user_id")
+            product_id = self.kwargs.get("pid")
+            return self.get_rate_of_product(user_id, product_id)
+        
+        else:
+            return Response({"error": "Invalid request"}, status=400)
+            
+        
 
-        rate_frequencies = defaultdict(int)
+    def product_rate_counter(self, product_id):
+        try:
+            result = Rate.objects.filter(rated_products__id=product_id)
+            serialized_result = ProductRateSerializer(result, many=True)
 
-        for data in serialized_result.data:
-            rate = data['rate']
-            rate_frequencies[rate] += 1
+            rate_frequencies = defaultdict(int)
 
-        for rate in range(1, 6):
-            if rate not in rate_frequencies:
-                rate_frequencies[rate] = 0
+            for data in serialized_result.data:
+                rate = data['rate']
+                rate_frequencies[rate] += 1
 
-        rate_list = [{'rate': rate, 'frequency': frequency} for rate, frequency in rate_frequencies.items()]
-        sorted_rate_list = sorted(rate_list, key=lambda x: x['rate'], reverse=True)
+            for rate in range(1, 6):
+                if rate not in rate_frequencies:
+                    rate_frequencies[rate] = 0
 
-        return Response(sorted_rate_list)
+            rate_list = [{'rate': rate, 'frequency': frequency} for rate, frequency in rate_frequencies.items()]
+            sorted_rate_list = sorted(rate_list, key=lambda x: x['rate'], reverse=True)
+
+            return Response(sorted_rate_list)
+
+        except Rate.DoesNotExist:
+            return Response({"error": "Object does not exist"})
+
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
-class RateProduct(APIView):
-    def get(self, request, **kwargs):
+    def get_rate_of_product(self, user_id, product_id):
 
         try:
-            rate_of_product = Rate.objects.get(rated_by__id = self.kwargs.get("id"), rated_products__id = self.kwargs.get("pid"))
+            rate_of_product = Rate.objects.get(rated_by__id=user_id, rated_products__id=product_id)
             serializer = GetterRateSerializer(rate_of_product)
 
             return Response(serializer.data["rate"])
 
         except Rate.DoesNotExist:
             return Response({"error": "Object does not exist"})
-        
+            
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
+
+
+    def patch(self, request, *args, **kwargs):
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
+
+        if response is not None:
+            try:
+                user_id = response[1]['user_id']
+                rate = self.kwargs.get("rate")
+                product_id = self.kwargs.get("pid")
+
+                product = Product.objects.get(id=product_id)
+                user = User.objects.get(id=user_id)
+
+                if not self.validate_bought(product, user_id):
+                    return Response({"status": False, "info": "You have to buy the product to be able to rate it"})
+                
+                self.create_rate(user, product, rate)
+
+                return Response({"status": True}, status=status.HTTP_200_OK)
+                    
+            except (User.DoesNotExist, Product.DoesNotExist):
+                return Response({"error": "Object does not exist"}, status=404)
+        
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+        return Response({"status": True, "error": "You have to be authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
     
-    def patch(self, request, **kwargs):
-        user_id = self.kwargs.get("id")
-        rate = self.kwargs.get("rate")
+
+    def validate_bought(self, product, user_id):
+        return product.bought_by_rec.filter(id=user_id).exists()
+    
+
+    def create_rate(self, user, product, rate):
         created = False
 
-        try:
-            product = Product.objects.get(id=self.kwargs.get("pid"))
-            user = User.objects.get(id=self.kwargs.get("id"))
-        
-            people_who_bought = product.bought_by_rec.filter(id=user_id).exists()
+        rate_of_user, created = Rate.objects.get_or_create(
+            rated_by = user,
+            rated_products = product,
+            defaults={'rate': rate}
+        )
 
-            if not people_who_bought:
-                return Response({"status": False, "info": "You have to buy the product to be able to rate it"})
+        if not created:
+            rate_of_user.rate = rate
+            rate_of_user.save()
+
+        else:      
+            opinion = get_object_or_404(Opinion, reviewed_by=user, reviewed_product=product)
+            opinion.rate = rate_of_user
+            opinion.save()
+
+
+    def delete(self, request, **kwargs):
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
+
+        if response is not None:
+        
+            try:
+                user_id = response[1]['user_id']
+                product_id = self.kwargs.get("pid")
+
+                rate = Rate.objects.get(rated_by__id=user_id, rated_products__id=product_id)
+                rate.delete()
+
+                return Response('The rate has been restarted')
             
-            rate_of_user, created = Rate.objects.get_or_create(
-                rated_by = user,
-                rated_products = product,
-                defaults={'rate': rate}
-            )
+            except Rate.DoesNotExist:
+                return Response({"error": "Object does not exist"}, status=404)
 
-            if not created:
-                rate_of_user.rate = rate
-                rate_of_user.save()
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
-            else:      
-                opinion = get_object_or_404(Opinion, reviewed_by=user, reviewed_product=product)
-
-                opinion.rate = rate_of_user
-                opinion.save()
-
-            return Response({"status": True}, status=status.HTTP_200_OK)
-        
-                
-        except (Rate.DoesNotExist, User.DoesNotExist, Product.DoesNotExist):
-            return Response({"error": "Object does not exist"}, status=404)
-    
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-
-class DeleteRate(APIView):
-
-    def post(self, request, **kwargs):
-        try:
-            user_id = request.data.get("user_id")
-            product_id = request.data.get("product_id")
-
-            rate = Rate.objects.get(rated_by__id=user_id, rated_products__id=product_id)
-            rate.delete()
-
-            return Response('The rate has been restarted')
-        
-        except Rate.DoesNotExist:
-            return Response({"error": "Object does not exist"}, status=404)
-
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+        return Response({"status": True, "error": "You have to be authenticated"}, status=status.HTTP_401_UNAUTHORIZED)

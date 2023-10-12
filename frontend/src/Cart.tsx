@@ -29,16 +29,30 @@ const Card: React.FC = () => {
     const [isPossible, setIsPossible] = useState<HashMap>([]);
     const [total, setTotal] = useState<number>(0);
 
-    const {username} = useContext(AuthContext);
+    const {authToken} = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
+        
         try{
-            fetch(`http://127.0.0.1:8000/api/cart/${username?.user_id}`)
+            fetch(`http://127.0.0.1:8000/api/cart`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type':'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                }
+            })
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result?.cart_items || []), setTotal(result?.sum || 0), setCardUserGetterID(result?.serialized_id)));
+            .then(result => (setCardUserGetter(result?.cart_items || []),
+             setTotal(result?.sum || 0),
+              setCardUserGetterID(result?.serialized_id), console.log(result)));
         }
-        catch(error){alert('An error occurred. Please try again later.');}
+
+        catch(error){
+            console.log(error)
+            alert('An error occurred. Please try again later.');
+        }
+
     }, [reload])
 
     const removeProduct = (num: number) => {

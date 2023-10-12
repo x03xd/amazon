@@ -13,7 +13,7 @@ interface CountingRateProps {
 const CountingRate: React.FC<CountingRateProps> = ({rate, product_id}) => {
 
     const [rateRange, setRateRange] = useState<number | null>(null);
-    const {username} = useContext(AuthContext);
+    const {authToken} = useContext(AuthContext);
 
     useEffect(() => {
         if (rate !== null) {
@@ -62,22 +62,26 @@ const CountingRate: React.FC<CountingRateProps> = ({rate, product_id}) => {
             }
         }
 
-        else{ 
-            setRateRange(10);
-        }
+        else setRateRange(10); 
     }, [rate])
 
 
     const productRate = async (user_rate: number) => {
+
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/rate-product/${username?.user_id}/${product_id}/${user_rate}`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/rate-product/update/${product_id}/${user_rate}`, {
                 method: 'PATCH',
                 headers:{
-                    'Content-Type':'application/json'
+                    'Content-Type':'application/json',
+                    'Authorization': `Bearer ${authToken}`
                 },
-                body:JSON.stringify({"rate": user_rate, "user_id": username?.user_id, "product_id": product_id})
+                body:JSON.stringify({"rate": user_rate})
             })
             const responseJSON = await response.json()
+
+            if(responseJSON?.code === "token_not_valid"){
+                alert("You have to be authenticated!")
+            }
         
             if(!responseJSON.status){
                 alert(responseJSON?.info)
@@ -86,18 +90,19 @@ const CountingRate: React.FC<CountingRateProps> = ({rate, product_id}) => {
             else{
                 window.location.reload()
             }
+
         }
         catch(error){alert('An error occurred. Please try again later.');}
     }
 
-    const deleteRate = () => {
+    const deleteRate = async () => {
         try{
-            fetch(`http://127.0.0.1:8000/api/delete-rate/`, {
-                method: 'POST',
+            await fetch(`http://127.0.0.1:8000/api/rate-product/delete/${product_id}`, {
+                method: 'DELETE',
                 headers:{
-                    'Content-Type':'application/json'
+                    'Content-Type':'application/json',
+                    'Authorization': `Bearer ${authToken}`
                 },
-                body:JSON.stringify({"user_id": username?.user_id, "product_id": product_id})
             })
             window.location.reload()
         }

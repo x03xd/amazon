@@ -17,16 +17,13 @@ const ProductsWithRatings: React.FC<ProductsWithRatingsProps> = ({ products }) =
     const [averageRate, setAverageRate] = useState<Rate[]>([]);
     
     useEffect(() => {
-        try {
-            fetch(`http://127.0.0.1:8000/api/avg-rate`)
-            .then(response => response.json())
-            .then(result => setAverageRate(result));
-        }
-
-        catch(error){
+        fetch(`http://127.0.0.1:8000/api/avg-rate`)
+        .then(response => response.json())
+        .then(result => setAverageRate(result))
+        .catch(error => {
             alert('An error occurred. Please try again later.');
-        }
-    }, [])
+        });
+    }, []);
     
     useEffect(() => {
         aLoop:

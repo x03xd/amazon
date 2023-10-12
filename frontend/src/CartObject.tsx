@@ -30,16 +30,16 @@ interface Item {
 }
 
 interface Data {
-    done: boolean;
+    status: boolean;
     product_id : number;
 }
 
 const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, removeIsPossibleCheck}) => {
   
-    let {username} = useContext(AuthContext);
+    let {authToken} = useContext(AuthContext);
     const [data, setData] = useState<Data | null>(null);
     const [selectedValue, setSelectedValue] = useState<number>(item.quantity);
-    
+
     useEffect(() => {
         if(item.product_data.quantity < selectedValue) isPossibleCheck(item.product);
         else removeIsPossibleCheck(item.product);
@@ -49,11 +49,11 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
         try{
             fetch("http://127.0.0.1:8000/api/remove-item/", {
                 method: 'POST',
-                credentials: 'include',
-                headers: {
+                headers:{
                     'Content-Type':'application/json',
+                    'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify({"item_id": index_of_item, "user_id": username?.user_id})
+                body: JSON.stringify({"item_id": index_of_item})
             })
             .then(response => response.json())
             .then(result => (setData(result)))  
@@ -61,27 +61,28 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
         catch(error){alert("Item cannot be removed. Try later.");}
     }
 
-
     useEffect(() => {
         try{
-            fetch(`http://127.0.0.1:8000/api/cart/${username?.user_id}`, {
+            fetch(`http://127.0.0.1:8000/api/cart/`, {
                 method: 'PATCH',
-                credentials: 'include',
-                headers: {
+                headers:{
                     'Content-Type':'application/json',
+                    'Authorization': `Bearer ${authToken}`
                 },
                 body: JSON.stringify({"product_id": item.product, "quantity": selectedValue})
             })
             .then(response => response.json())
-            .then(_ => (prev(selectedValue, item.product)))
+            .then(_ => (prev(selectedValue, item.product), console.log(_)))
         }
-        catch(error){}
+
+        catch(error){console.log(error)}
+
     }, [selectedValue])
 
 
     useEffect(() => {
         try{
-            if(data?.done){
+            if(data?.status){
                 const param = data.product_id;
                 handleAjaxRequest(param);
             }

@@ -1,4 +1,4 @@
-import { useLocation} from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 import React, {useContext} from 'react';
 import Alert from './Alert';
 import AuthContext from "./AuthenticationContext";
@@ -6,9 +6,9 @@ import AuthContext from "./AuthenticationContext";
 
 const Login: React.FC = () => {
 
-    const {loginUser, usernameFilter, username, alertStyle, alertText,} = useContext(AuthContext);
+    const {loginUser, usernameFilter, alertStyle, alertText} = useContext(AuthContext);
     const location = useLocation();
-
+    //console.log(user)
 
     return(
         <div className = "modal-container-wrapper">
@@ -22,7 +22,7 @@ const Login: React.FC = () => {
 
                     <p>Zaloguj się</p>
 
-                    <p>{username?.email}</p>
+                    <p>MAIL</p>
 
                     <form onSubmit = {(['/login', '/login/'].includes(location.pathname)) ? usernameFilter : loginUser} method = "POST">
                         <span>{location.state.content}</span>

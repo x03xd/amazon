@@ -11,158 +11,194 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password, check_password
 import re
 from rest_framework.response import Response
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class EditUsername(APIView):
-    
+
     def patch(self, request, **kwargs):
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
 
-        try:
-            change = request.data.get("change")
-            user = User.objects.get(id = self.kwargs.get("id"))
-            today_date = date.today()
+        response = self.JWT_authenticator.authenticate(request)
+        if response is not None:
 
-            if user.username_change_allowed >= today_date:
-                return Response({"error": f"You cannot change username till {user.username_change_allowed}"})
-            
-            if not re.match(r'^[a-zA-Z]+$', change):
-                return Response({"error": "Username should contain only letters."})
+            try:
+                user_id = response[1]['user_id']
+                change = request.data.get("change")
 
-            if User.objects.filter(username=change).exists():
-                return Response({"error": "User with passed username already exists"})
-            
-            user.username = change
+                user = User.objects.get(id=user_id)
+                today_date = date.today()
 
-            new_date = date.today() + timedelta(days=30) 
-            user.username_change_allowed = new_date
-            user.save()
+                if user.username_change_allowed >= today_date:
+                    return Response({"error": f"You cannot change username till {user.username_change_allowed}"})
+                
+                if not re.match(r'^[a-zA-Z]+$', change):
+                    return Response({"error": "Username should contain only letters."})
 
-            return Response({"status": True})
+                if User.objects.filter(username=change).exists():
+                    return Response({"error": "User with passed username already exists"})
+                
+                user.username = change
 
-        except User.DoesNotExist as e:
-            return Response({"error": "Error message", "detail": str(e)}, status=404)
+                new_date = date.today() + timedelta(days=30) 
+                user.username_change_allowed = new_date
+                user.save()
 
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+                return Response({"status": True})
 
+            except User.DoesNotExist as e:
+                return Response({"error": "Error message", "detail": str(e)}, status=404)
+
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+
+        raise Exception("User has too be authenticated.")
+    
 
 class EditEmail(APIView):
 
     def patch(self, request, **kwargs):
-        try:
-            change = request.data.get("change")
-            user = User.objects.get(id = self.kwargs.get("id"))
-            today_date = date.today()
-
-            if user.email_change_allowed >= today_date:
-                return Response({"error": f"You cannot change email till {user.email_change_allowed}"})
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
             
-            validate_email(change)
+        response = self.JWT_authenticator.authenticate(request)
+        if response is not None:
 
-            if User.objects.filter(email=change).exists():
-                return Response({"error": "User with passed email already exists"})
+            try:
+                user_id = response[1]['user_id']
+                change = request.data.get("change")
+
+                user = User.objects.get(id=user_id)
+                today_date = date.today()
+
+                if user.email_change_allowed >= today_date:
+                    return Response({"error": f"You cannot change email till {user.email_change_allowed}"})
+                
+                validate_email(change)
+
+                if User.objects.filter(email=change).exists():
+                    return Response({"error": "User with passed email already exists"})
+                
+                user.email = change
+
+                new_date = date.today() + timedelta(days=30) 
+                user.email_change_allowed = new_date
+                user.save()
+
+                return Response({"status": True})
+
+            except User.DoesNotExist as e:
+                return Response({"error": "Error message", "detail": str(e)}, status=404)
+
+            except ValidationError as e:
+                return Response({"error": "Email format is not correct", "detail": e.messages}, status=status.HTTP_400_BAD_REQUEST)
             
-            user.email = change
+            except Exception as e:
+                return Response({"error": "An error occurred during user registration", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            new_date = date.today() + timedelta(days=30) 
-            user.email_change_allowed = new_date
-            user.save()
-
-            return Response({"status": True})
-
-        except User.DoesNotExist as e:
-            return Response({"error": "Error message", "detail": str(e)}, status=404)
-
-        except ValidationError as e:
-            return Response({"error": "Email format is not correct", "detail": e.messages}, status=status.HTTP_400_BAD_REQUEST)
-        
-        except Exception as e:
-            return Response({"error": "An error occurred during user registration", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise Exception("User has too be authenticated.")
 
 
 
 class EditPassword(APIView):
+
     def patch(self, request, *args, **kwargs):
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
 
-        try:
-            current = request.data.get("current")
-            password = request.data.get("password")
-            password2 = request.data.get("password2")
+        response = self.JWT_authenticator.authenticate(request)
+        if response is not None:
 
-            user = User.objects.get(id = self.kwargs.get("id"))
-            today_date = date.today()
+            try:
+                user_id = response[1]['user_id']
+                current = request.data.get("current")
+                password = request.data.get("password")
+                password2 = request.data.get("password2")
 
-            if user.password_change_allowed >= today_date:
-                return Response({"error": f"You cannot change password till {user.username_change_allowed}"})
+                user = User.objects.get(id=user_id)
+                today_date = date.today()
 
-            password_matches = check_password(current, user.password)
+                if user.password_change_allowed >= today_date:
+                    return Response({"error": f"You cannot change password till {user.username_change_allowed}"})
 
-            if not password_matches:
-                return Response({"error": "Your current password is not correct"})
+                password_matches = check_password(current, user.password)
 
-            if password != password2:
-                return Response({"error": "Passwords do not match."})
+                if not password_matches:
+                    return Response({"error": "Your current password is not correct"})
+
+                if password != password2:
+                    return Response({"error": "Passwords do not match."})
+                
+                validate_password(password)
+
+                hashed_password = make_password(password)
+                user.password = hashed_password
+
+                new_date = today_date + timedelta(days=30) 
+                user.password_change_allowed = new_date
+
+                user.save()
+
+                return Response({"status": True})
+
+            except User.DoesNotExist as e:
+                return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
+
+            except ValidationError as e:
+                return Response({"error": "Password is too weak", "detail": e.messages}, status=status.HTTP_400_BAD_REQUEST)
             
-            validate_password(password)
-
-            hashed_password = make_password(password)
-            user.password = hashed_password
-
-            new_date = today_date + timedelta(days=30) 
-            user.password_change_allowed = new_date
-
-            user.save()
-
-            return Response({"status": True})
-
-        except User.DoesNotExist as e:
-            return JsonResponse({"error": "Error message", "detail": str(e)}, status=404)
-
-        except ValidationError as e:
-            return Response({"error": "Password is too weak", "detail": e.messages}, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                return Response({"error": "An error occurred during user registration", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-        except Exception as e:
-            return Response({"error": "An error occurred during user registration", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+        raise Exception("User has too be authenticated.")
 
 
 class AccessToChangeStatus(APIView):
-        
+    
+    def __init__(self):
+        self.JWT_authenticator = JWTAuthentication()
+
     def get(self, request, *args, **kwargs):
-        today_date = date.today()
 
-        try:
-            user = User.objects.get(id = self.kwargs.get("id"))
+        response = self.JWT_authenticator.authenticate(request)
+        if response is not None:
+            today_date = date.today()
 
-            if user.username_change_allowed >= today_date:
-                status_username = False
+            try:
+                user_id = response[1]['user_id']
+                user = User.objects.get(id=user_id)
 
-            elif user.username_change_allowed < today_date:
-                status_username = True
+                if user.username_change_allowed >= today_date:
+                    status_username = False
 
-
-            if user.email_change_allowed >= today_date:
-                status_email = False
-
-            elif user.email_change_allowed < today_date:
-                status_email = True
+                elif user.username_change_allowed < today_date:
+                    status_username = True
 
 
-            if user.password_change_allowed >= today_date:
-                status_password = False
+                if user.email_change_allowed >= today_date:
+                    status_email = False
 
-            elif user.password_change_allowed < today_date:
-                status_password = True
-
-            return Response({
-                                "username": [status_username, user.username_change_allowed],
-                                "email": [status_email, user.email_change_allowed],
-                                "password": [status_password, user.password_change_allowed]
-                            })
+                elif user.email_change_allowed < today_date:
+                    status_email = True
 
 
-        except User.DoesNotExist:
-            return Response({"error": "Object does not exist"}, status=404)
+                if user.password_change_allowed >= today_date:
+                    status_password = False
 
-        except Exception as e:
-            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+                elif user.password_change_allowed < today_date:
+                    status_password = True
+
+                return Response({
+                                    "username": [status_username, user.username_change_allowed],
+                                    "email": [status_email, user.email_change_allowed],
+                                    "password": [status_password, user.password_change_allowed]
+                                })
+
+            except User.DoesNotExist:
+                return Response({"error": "Object does not exist"}, status=404)
+
+            except Exception as e:
+                return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+            
+        raise Exception("User has too be authenticated.")
+            
