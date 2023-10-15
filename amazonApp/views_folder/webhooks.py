@@ -5,6 +5,7 @@ from amazonApp.models import Product, Transaction, User, Product, CartItem
 from amazonApp.serializers import CartItemSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from amazonApp.views_folder.auth_views import is_authenticated
 from rest_framework.views import APIView
 from django.core.cache import cache
 import stripe
@@ -22,6 +23,7 @@ class WebhookTransaction(APIView):
 
 
     @csrf_exempt
+    #@is_authenticated
     def stripe_webhook(self, request):
         payload = request.body
         sig_header = request.META['HTTP_STRIPE_SIGNATURE']
@@ -64,7 +66,7 @@ class WebhookTransaction(APIView):
             self.create_transaction()
 
         except Exception as e:
-            return JsonResponse({"error": "Failed to process the request"}, status=500)
+            return Response({"error": "Failed to process the request"}, status=500)
 
 
     def random_transaction_id(self):

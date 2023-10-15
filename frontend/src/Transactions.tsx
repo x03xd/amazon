@@ -34,9 +34,9 @@ const Transactions: React.FC = () => {
         } 
         
         catch (error) {
-            console.log(error)
             alert(`There was an error displaying your transaction.`);
         }
+        
     }, [selectedYear]);
 
 

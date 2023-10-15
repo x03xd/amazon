@@ -6,9 +6,8 @@ import AuthContext from "./AuthenticationContext";
 
 const Login: React.FC = () => {
 
-    const {loginUser, usernameFilter, alertStyle, alertText} = useContext(AuthContext);
+    const {loginUser, usernameFilter, alertStyle, alertText, username} = useContext(AuthContext);
     const location = useLocation();
-    //console.log(user)
 
     return(
         <div className = "modal-container-wrapper">
@@ -22,7 +21,7 @@ const Login: React.FC = () => {
 
                     <p>Zaloguj się</p>
 
-                    <p>MAIL</p>
+                    <p>{username}</p>
 
                     <form onSubmit = {(['/login', '/login/'].includes(location.pathname)) ? usernameFilter : loginUser} method = "POST">
                         <span>{location.state.content}</span>

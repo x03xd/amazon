@@ -35,11 +35,15 @@ const SelectCurrency: React.FC = () => {
                 })
                 const responseJSON = await response.json()
 
-                if(!responseJSON.status)
+                if(responseJSON?.code === "token_not_valid"){
+                    alert("You have to be authenticated!")
+                }
+
+                else if(!responseJSON.status)
                     alert(responseJSON.message)
                 
                 else {
-                    document.cookie = `currency=${e.target.value}`
+                    document.cookie = `currency=${e.target.value};`;
                     window.location.reload();
                 }
 

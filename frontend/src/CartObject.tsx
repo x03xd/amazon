@@ -36,58 +36,78 @@ interface Data {
 
 const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, removeIsPossibleCheck}) => {
   
-    let {authToken} = useContext(AuthContext);
+    const {authToken} = useContext(AuthContext);
     const [data, setData] = useState<Data | null>(null);
     const [selectedValue, setSelectedValue] = useState<number>(item.quantity);
 
     useEffect(() => {
-        if(item.product_data.quantity < selectedValue) isPossibleCheck(item.product);
-        else removeIsPossibleCheck(item.product);
+        if(item.product_data.quantity < selectedValue) 
+            isPossibleCheck(item.product);
+        else 
+            removeIsPossibleCheck(item.product);
     }, [selectedValue])
+
 
     const removeProduct = (index_of_item: number) => {
         try{
-            fetch("http://127.0.0.1:8000/api/remove-item/", {
-                method: 'POST',
+            fetch(`http://127.0.0.1:8000/api/cart/remove/${index_of_item}/`, {
+                method: 'DELETE',
                 headers:{
                     'Content-Type':'application/json',
                     'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify({"item_id": index_of_item})
             })
             .then(response => response.json())
-            .then(result => (setData(result)))  
+            .then(result => ((setData(result), console.log(result))))  
         }
-        catch(error){alert("Item cannot be removed. Try later.");}
+        catch(error){
+            alert("Item cannot be removed. Try later.");
+        }
     }
 
     useEffect(() => {
-        try{
-            fetch(`http://127.0.0.1:8000/api/cart/`, {
-                method: 'PATCH',
-                headers:{
-                    'Content-Type':'application/json',
-                    'Authorization': `Bearer ${authToken}`
-                },
-                body: JSON.stringify({"product_id": item.product, "quantity": selectedValue})
-            })
-            .then(response => response.json())
-            .then(_ => (prev(selectedValue, item.product), console.log(_)))
-        }
+        const updateCart = async () => {
 
-        catch(error){console.log(error)}
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/cart/`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({"product_id": item.product, "quantity": selectedValue})
+                });
+                const result = await response.json();
+        
+                if (result?.code === "token_not_valid") {
+                    alert("You have to be authenticated!");
+                } 
 
-    }, [selectedValue])
+                else if (!result?.status) {
+                    alert(result?.message);
+                }
+                
+                else {
+                    prev(selectedValue, result?.message);
+                }
 
+            }
+            
+            catch (error) {
+                alert(error);
+            }
+
+        };
+      
+        updateCart();
+    }, [selectedValue]);
 
     useEffect(() => {
-        try{
-            if(data?.status){
-                const param = data.product_id;
-                handleAjaxRequest(param);
-            }
-        }    
-        catch(error){}
+        if(data?.status){
+            const param = data.product_id;
+            handleAjaxRequest(param);
+        }
+
     }, [data])
 
     const handleAjaxRequest = (num: number): void => {
@@ -143,7 +163,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
             </div>
 
             <div className = "card-content-objects-inner-col-3">
-                <span>{item.total_price} {getCookie("currency") ? getCookie("currency") : "USD"}</span>
+                <span>{item.total_price} {getCookie("currency") ? getCookie("currency") : "EUR"}</span>
             </div>
         </div>
     );

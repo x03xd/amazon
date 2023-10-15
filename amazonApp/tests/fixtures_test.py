@@ -1,7 +1,11 @@
 import pytest
 from amazonApp.models import Category, Brand, Product, User, Cart, CartItem, Rate
 import decimal
+from rest_framework_simplejwt.tokens import AccessToken
+from dotenv import main
+import os
 
+main.load_dotenv()
 
 @pytest.fixture
 def create_category():
@@ -15,12 +19,10 @@ def create_user():
     return user
 
 
-
 @pytest.fixture
 def create_brand(create_category):
     brand, _ = Brand.objects.get_or_create(brand_name='Default Brand', id=1, belongs_to_category=create_category)
     return brand
-
 
 
 @pytest.fixture
@@ -50,7 +52,7 @@ def create_product(create_category, create_brand, create_user):
     product, created = Product.objects.get_or_create(
         title="Default title",
         description="Default description",
-        price=decimal.Decimal('100.00'),  # Use Decimal for precise representation
+        price=decimal.Decimal('100.00'),  
         image="image",
         quantity=5,
         category_name=create_category,
@@ -62,6 +64,18 @@ def create_product(create_category, create_brand, create_user):
 
     return product
 
+
+@pytest.fixture
+def valid_access_token():
+    from django.contrib.auth import get_user_model
+    user = get_user_model().objects.create(
+        username="ex_user",
+        email="ex_user@gmail.com",
+        currency="USD",
+    )
+
+    access_token = AccessToken.for_user(user)
+    return str(access_token)
 
 
 '''@pytest.fixture

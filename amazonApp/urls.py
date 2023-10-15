@@ -33,10 +33,12 @@ urlpatterns = [
     #RATE
     path('avg-rate/', rate_views.CountAvgRate.as_view(), name="avg-rate"),
     path('avg-rate/<product_id>/', rate_views.CountAvgRate.as_view(), name='single-avg-rate'),
-    path('rate-product/update/<pid>/<rate>', rate_views.RatesAPI.as_view(), name='rate-product-update'),
-    path('rate-product/delete/<pid>', rate_views.RatesAPI.as_view(), name='delete-rate'),
-    path('rate-product/id/<user_id>/<pid>/', rate_views.RatesAPI.as_view(), name='rate-product'),
-    path('rate-product/frequency/<product_id>/', rate_views.RatesAPI.as_view(), name='product-rates'),
+
+    path('rate-product/update/<pid>/<rate>', rate_views.RatesAPI.as_view(), name='rate-update'),
+    path('rate-product/delete/<pid>', rate_views.RatesAPI.as_view(), name='rate-remove'),
+    
+    path('rate-product/id/<user_id>/<pid>/', rate_views.RatesAPI.as_view(), name='rate-by-id'),
+    path('rate-product/frequency/<product_id>/', rate_views.RatesAPI.as_view(), name='rate-freq'),
 
     #OPINION
     path('opinions/<str:product_id>/<int:page>/', opinions_views.OpinionsAPI.as_view(), name='opinions'),
@@ -50,8 +52,8 @@ urlpatterns = [
     path("access-to-change-status/", edit_user_views.AccessToChangeStatus.as_view()),
 
     #CART
-    path("process/", cart_views.ProcessAPI.as_view(), name="process"),
-    path("remove-item/", cart_views.RemoveItemCart.as_view(), name="remove-item"),
+    path("cart/create/", cart_views.CartAPI.as_view(), name="cart-create"),
+    path("cart/remove/<int:product_id>/", cart_views.CartAPI.as_view(), name="cart-remove"),
     path("cart/", cart_views.CartAPI.as_view(), name="cart"),
 
     #TRANSACTIONS
@@ -63,10 +65,12 @@ urlpatterns = [
 
     #REST
     path("categories/", views.CategoriesAPI.as_view(), name="categories"),
+
     path("brands/id/<int:id>/", views.BrandsAPI.as_view(), name="brands-by-id"),
     path("brands/category/<str:category>/", views.BrandsAPI.as_view(), name="brands-by-category"),
+    
     path("recommendations/<id>/", views.Recommendations.as_view(), name="recommendations"),
-    path("lobby-price-mod/<product_id>", views.LobbyPriceMod.as_view(), name="lobby-price"),
+    path("lobby-price-mod/<product_id>/<user_id>/", views.LobbyPriceMod.as_view(), name="lobby-price"),
 
     #PAYMENTS
     path("payment-creation/", payments_views.StripeCheckout.as_view(), name="payment"),

@@ -46,10 +46,11 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
             const userData: any = await fetchUserData();
 
             if(userData != null)
-                setUser(userData.data)
+                setUser(userData)
         }
         fetchData()
     },[])
+
 
     useEffect(() => {
         try{
@@ -83,6 +84,7 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
                 body: JSON.stringify({"text": textAreaValue.current?.value, "title": inputTitleValue.current?.value})
             })
             const responseJSON = await response.json()
+            console.log(responseJSON)
 
             if(responseJSON?.code === "token_not_valid"){
                 alert("You have to be authenticated!")
@@ -93,7 +95,7 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
             }
     
             else {
-                alert(responseJSON?.info)
+                alert(responseJSON?.detail)
             }
 
         }
@@ -156,7 +158,7 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
             </div>
 
             <div className = "lobby-opinions-rating-percentages">
-                <SingleLobbyRate product_id = {product_id} user_id = {user?.id}/>
+                <SingleLobbyRate product_id = {product_id} />
             </div>
 
             <div className = "lobby-opinions-text">

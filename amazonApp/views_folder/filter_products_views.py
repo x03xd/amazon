@@ -6,7 +6,6 @@ from django.db.models import Avg
 from rest_framework.response import Response
 from amazonApp.views_folder.currencies_views import provide_currency_context
 from django.core.cache import cache
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 
@@ -14,35 +13,34 @@ class ProductsAPI(APIView):
 
     def get(self, request, *args, **kwargs):
             
-            r = self.request.query_params.get('rating')
-            q = self.request.query_params.get('q')
-            c = self.request.query_params.get('c')
-            u = self.request.query_params.get('u')
+        r = self.request.query_params.get('rating')
+        q = self.request.query_params.get('q')
+        c = self.request.query_params.get('c')
+        u = self.request.query_params.get('u')
 
-            filters = {}
+        filters = {}
             
-            if r is not None:
-                filters['rating'] = float(r)
+        if r is not None:
+            filters['rating'] = float(r)
             
-            if c is not None:
-                filters['brands'] = c.split(",")
+        if c is not None:
+            filters['brands'] = c.split(",")
             
-            if u is not None:
-                filters['prices'] = [list(map(float, u.split("-"))) for u in u.split(",")]
+        if u is not None:
+            filters['prices'] = [list(map(float, u.split("-"))) for u in u.split(",")]
 
-            queryset = Product.objects.all()
+        queryset = Product.objects.all()
 
-            if q:
-                queryset = queryset.filter(category_name__name__icontains=q)
+        if q:
+            queryset = queryset.filter(category_name__name__icontains=q)
             
-            if filters:
-                queryset = self.apply_filters(queryset, filters)
+        if filters:
+            queryset = self.apply_filters(queryset, filters)
 
-            user_id = self.kwargs.get("user_id")
-            print(user_id)
-            
-            serializer = ProductSerializer(queryset, many=True, context=provide_currency_context(user_id))
-            return Response(serializer.data)
+        user_id = self.kwargs.get("user_id")
+
+        serializer = ProductSerializer(queryset, many=True, context=provide_currency_context(user_id))
+        return Response(serializer.data)
 
 
     def apply_filters(self, queryset, filters):

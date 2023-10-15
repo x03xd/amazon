@@ -23,9 +23,8 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
         e.preventDefault();
         
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/${link}`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/${link}/`, {
                 method: 'PATCH',
-                credentials: 'include', 
                 headers: {
                     'Content-Type':'application/json',
                     'Authorization': `Bearer ${authToken}`

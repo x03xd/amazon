@@ -3,7 +3,6 @@ from celery import shared_task
 import requests
 from django.conf import settings
 
-
 @shared_task
 def background_task():
    
@@ -17,10 +16,12 @@ def background_task():
     }
 
     try:
-        response = requests.get(API_URL, params=params)
-        response.raise_for_status() 
+        #response = requests.get(API_URL, params=params)
+        #response.raise_for_status() 
 
-        data = response.json()
+        #data = response.json()
+        data = {}
+
         if "rates" in data:
             return data["rates"]
         else:
@@ -30,4 +31,5 @@ def background_task():
     except requests.exceptions.RequestException as e:
         #default setting in case of not working API
         return {"USD": 0.86, "PLN": 4.47, "EUR": 1, "GBP": 1.12} 
-        
+    
+

@@ -3,7 +3,7 @@ from amazonApp.serializers import CurrencySerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.cache import cache
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from amazonApp.views_folder.auth_views import is_authenticated
 
 
 def provide_currency_context(user_id):
@@ -22,31 +22,25 @@ def provide_currency_context(user_id):
 
 class CurrencyConverterAPI(APIView):
     
-    def __init__(self):
-        self.JWT_authenticator = JWTAuthentication()
-
+    @is_authenticated
     def patch(self, request, *args, **kwargs):
 
-        response = self.JWT_authenticator.authenticate(request)
-        if response is not None:
+        try:
+            user_id = self.kwargs['user_id']
+            currency = request.data.get("currency")
 
-            try:
-                user_id = 12312
-                currency = request.data.get("currency")
+            if currency not in {"USD", "GBP", "PLN", "EUR"}:
+                return Response({"status": False, "message": "Invalid currency choice"})
 
-                if currency not in {"USD", "GBP", "PLN", "EUR"}:
-                    return Response({"status": False, "message": "Invalid currency choice"})
+            user = User.objects.get(id=user_id)
+            user.currency = currency 
+            user.save()
 
-                user = User.objects.get(id=user_id)
-                user.currency = currency 
-                user.save()
+            return Response({"status": True, "message": f"Valid currency choice: {currency}"})
 
-                return Response({"status": True, "message": f"Valid currency choice: {currency}"})
+        except User.DoesNotExist as e:
+            return Response({"message": "Error message", "detail": str(e)}, status=404)
 
-            except User.DoesNotExist as e:
-                return Response({"message": "Error message", "detail": str(e)}, status=404)
+        except Exception as e:
+            return Response({"message": "Internal Server Error", "detail": str(e)}, status=500)
 
-            except Exception as e:
-                return Response({"message": "Internal Server Error", "detail": str(e)}, status=500)
-
-        raise Exception("User has too be authenticated.")

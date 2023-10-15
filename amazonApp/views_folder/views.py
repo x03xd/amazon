@@ -6,8 +6,10 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from django.db.models import Count
 from amazonApp.views_folder.currencies_views import provide_currency_context
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status
+from amazonApp.views_folder.auth_views import is_authenticated
+from django.core.cache import cache
+from ..tasks import background_task
 
 
 class CategoriesAPI(ListAPIView):
@@ -46,7 +48,6 @@ class BrandsAPI(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
-
     def get_brands_by_category(self, category_name):
         try:
             brands = Brand.objects.filter(belongs_to_category__name__icontains=category_name)
@@ -63,53 +64,47 @@ class BrandsAPI(APIView):
 
 class Recommendations(APIView):
 
+    @is_authenticated
     def get(self, request, *args, **kwargs):
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate()
 
-        if response is not None:
+        try:
+            username, user_id = self.kwargs['username'], self.kwargs['user_id']
 
-            try:
-                username, user_id = None, None
-            
-                response = self.JWT_authenticator.authenticate(request)
-                if response is not None:
-                    username = response[1]['username']
-                    user_id = response[1]['user_id']
+            products_id = self.get_product_ids()
+            recommended = self.get_recommendations(username, products_id)
 
-                products_id = self.kwargs.get("id")
-                products_id = [int(item) for item in products_id.split(", ")]
-
-                recommended = Product.objects.filter(bought_by_rec__username=username).exclude(id__in=products_id)
-                recommended = recommended.annotate(freq=Count('bought_by_rec')).order_by('-freq')
-                serialized = ProductSerializer(recommended, many=True, context=provide_currency_context(user_id))
+            serialized = ProductSerializer(recommended, many=True, context=provide_currency_context(user_id))
                 
-                return Response({"recommendations": serialized.data[:5]})
+            return Response({"recommendations": serialized.data[:5]})
 
-            except Product.DoesNotExist:
+        except Product.DoesNotExist:
                 return Response({"error": "Object does not exist"}, status=404)    
 
-            except Exception as e:
-                return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
             
-        return Response({"status": True, "error": "You have to be authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+    def get_recommendations(self, username, products_id):
+        recommended = Product.objects.filter(bought_by_rec__username=username).exclude(id__in=products_id)
+        recommended = recommended.annotate(freq=Count('bought_by_rec')).order_by('-freq')
+        return recommended
+    
+
+    def get_product_ids(self):
+        products_id = self.kwargs.get("id")
+        products_id = [int(item) for item in products_id.split(", ")]
+        return products_id
     
             
 
 class LobbyPriceMod(APIView):
 
-    def __init__(self):
-        self.JWT_authenticator = JWTAuthentication()
-
     def get(self, request, *args, **kwargs):
 
         try:
             product_id = self.kwargs.get("product_id")
-            user_id = None
-
-            response = self.JWT_authenticator.authenticate(request)
-            if response is not None:
-                user_id = response[1]['user_id']
+            user_id = self.kwargs.get("user_id")
 
             product = Product.objects.get(id=product_id)
             serialized_current = ProductSerializer(product, context=provide_currency_context(user_id))

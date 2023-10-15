@@ -43,20 +43,26 @@ const Card: React.FC = () => {
                 }
             })
             .then(response => response.json())
-            .then(result => (setCardUserGetter(result?.cart_items || []),
-             setTotal(result?.sum || 0),
-              setCardUserGetterID(result?.serialized_id), console.log(result)));
+            .then(result => {
+                setCardUserGetter(result?.cart_items || []);
+                setTotal(result?.sum || 0);
+                setCardUserGetterID(result?.serialized_id || null);
+            });
         }
 
         catch(error){
-            console.log(error)
             alert('An error occurred. Please try again later.');
         }
 
     }, [reload])
 
     const removeProduct = (num: number) => {
+        const removedProduct = cardUserGetter.find(item => item.product === num);
+        const removedProductPrice = removedProduct ? removedProduct.total_price : 0;
+        const newTotal = total - removedProductPrice;
+      
         setCardUserGetter(prevItems => prevItems.filter(item => item.product !== num));
+        setTotal(newTotal);
     }
     
     const navigateToLogin = () => {

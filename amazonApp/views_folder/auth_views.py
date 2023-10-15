@@ -12,26 +12,38 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 
-class UserData(APIView):
 
-    def __init__(self):
-        self.JWT_authenticator = JWTAuthentication()
-
-    def get(self, request, *args, **kwargs):
-        response = self.JWT_authenticator.authenticate(request)
+def is_authenticated(method):
+    def wrapper(instance, request, *args, **kwargs):
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
 
         if response is not None:
-            user_info = response[1]  
-            data = {
-                "id": user_info['id'],
-                "email": user_info['email'],
-                "username": user_info['username'],
-                "currency": user_info["currency"]
-            }
-            return Response({"status": True, "data": data})
-        
-        return Response({"status": False})
+            instance.kwargs['user_id'] = response[1].get('user_id')
+            instance.kwargs['email'] = response[1].get('email')
+            instance.kwargs['username'] = response[1].get('username')
+            instance.kwargs['currency'] = response[1].get('currency')
+
+            return method(instance, request, *args, **kwargs)
+        return Response({"status": False, "error": "You have to be authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
     
+    return wrapper
+
+
+class UserData(APIView):
+
+    @is_authenticated
+    def get(self, request, *args, **kwargs):
+
+        data = {
+            "id": self.kwargs['user_id'],
+            "email": self.kwargs['email'],
+            "username": self.kwargs['username'],
+            "currency": self.kwargs['currency'],
+        }
+        
+        return Response({"status": True, "data": data})
+        
     
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     

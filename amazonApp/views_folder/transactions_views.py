@@ -4,32 +4,26 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from amazonApp.views_folder.currencies_views import provide_currency_context
 from collections import Counter
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework import status
+from amazonApp.views_folder.auth_views import is_authenticated
 
 
 class TransactionsAPI(APIView):
 
+    @is_authenticated
     def get(self, request, *args, **kwargs):
-        JWTAuthenticationer = JWTAuthentication()
-        response = JWTAuthenticationer.authenticate(request)
 
-        if response is not None:
-            user_id = response[1]['user_id']
+        user_id = self.kwargs['user_id']
         
-            if "year" in self.kwargs:
-                year = self.kwargs.get("year")
-                return self.get_transactions_by_year(year, user_id)
+        if "year" in self.kwargs:
+            year = self.kwargs.get("year")
+            return self.get_transactions_by_year(year, user_id)
 
-            elif "products_id" in self.kwargs:
-                products_id = self.kwargs.get("products_id")
-                return self.get_transaction_products(products_id, user_id)
-
-            else:
-                return Response({"error": "Invalid request"}, status=400)
-            
-
-        return Response({"status": True, "error": "You have to be authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+        elif "products_id" in self.kwargs:
+            products_id = self.kwargs.get("products_id")
+            return self.get_transaction_products(products_id, user_id)
+        
+        else:
+            return Response({"error": "Invalid request"}, status=400)
             
 
     def get_transactions_by_year(self, year, user_id):
@@ -47,8 +41,6 @@ class TransactionsAPI(APIView):
 
         except Exception as e:
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-
-
 
 
     def get_transaction_products(self, products_id, user_id):

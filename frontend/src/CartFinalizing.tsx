@@ -26,7 +26,6 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${authToken}`,
                     },
-                    credentials: 'include',
                     body:JSON.stringify({"location": "cart", "currency": getCookie("currency")})
                 })
                 const responseJSON = await response.json()
@@ -37,7 +36,10 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
 
             }
             
-            catch(error){alert('An error occurred. Please try again later.');}
+            catch(error){
+                console.log(error)
+                alert('An error occurred. Please try again later.');
+            }
         }
     }
 
@@ -52,7 +54,7 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
                 </div>
 
                 <div className = "p-3">
-                    <span className = "fw-600">Suma: {total} {getCookie("currency") ? getCookie("currency") : "USD"}</span>
+                    <span className = "fw-600">Suma: {total} {getCookie("currency") ? getCookie("currency") : "EUR"}</span>
                 </div>
 
                 <div className = "pe-3">
@@ -60,10 +62,10 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
 
                 <div className = "pb-5 pt-3">
                     { (Object.keys(buyButton).length === 0)
-                     ?
-                     <input onClick = {finalizeOrder} type = "button" id = "finalize-cart" className = "bg-warning" value = "Przejdź do finalizacji zamówienia" />
-                     : 
-                     <input disabled type = "button" id = "finalize-cart" className = "bg-danger" value = "Przejdź do finalizacji zamówienia" />
+                        ?
+                        <input onClick = {finalizeOrder} type = "button" id = "finalize-cart" className = "bg-warning" value = "Przejdź do finalizacji zamówienia" />
+                        : 
+                        <input disabled type = "button" id = "finalize-cart" className = "bg-danger" value = "Przejdź do finalizacji zamówienia" />
                     }
                     
                 </div>

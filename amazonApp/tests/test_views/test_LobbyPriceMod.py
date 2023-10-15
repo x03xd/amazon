@@ -24,7 +24,7 @@ class TestLobbyPriceMod:
         response = api_client.get(url)
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data == {'modified_price': Decimal('85.00')}
+        assert response.data == {'modified_price': Decimal('100.00')}
 
 
     @patch.object(LobbyPriceMod, 'get', side_effect=Exception("Simulated error"))

@@ -2,6 +2,7 @@ import React, {useEffect, useState, useContext} from 'react';
 import AuthContext from "./AuthenticationContext";
 import EditProfileCard from "./EditProfileCard"
 import {UserInterface} from './static_ts_files/commonInterfaces'
+import { useNavigate } from 'react-router-dom';
 
 export interface AccessToChangeUsernameState {
     username: [boolean, string];
@@ -24,6 +25,7 @@ const EditProfile : React.FC = () => {
     const [accessToChange, setAccessToChangeUsername] = useState<AccessToChangeUsernameState | null>(null);
     const [user, setUser] = useState<UserInterface | null>(null);
     const {authToken, fetchUserData} = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const data: DataOfOperation[] = [
         {id: 1, accessLink: "username_change_allowed", link: "edit-username", shortcut: "username", header: "Nazwa użytkownika:", text: user?.username || "", buttonValue: "Edytuj"},
@@ -37,11 +39,12 @@ const EditProfile : React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             const userData: any = await fetchUserData();
-            setUser(userData.data)
-        }
-        fetchData()
-    },[])
+            setUser(userData);
+        };
+        fetchData();
+    }, []);
 
+    
     useEffect(() => {
 
         try{
@@ -53,7 +56,17 @@ const EditProfile : React.FC = () => {
                 },
             })
             .then(response => response.json())
-            .then(result => setAccessToChangeUsername(result))
+            .then(result => {
+
+                if(result?.code === "token_not_valid"){
+                    alert("You have to be authenticated!")
+                    navigate("/")
+                }
+
+                else
+                setAccessToChangeUsername(result)
+            
+            })
         }
 
         catch(error){

@@ -8,37 +8,47 @@ import getCookie from './getCookie'
 import Recommendations from './Recommendations';
 import Opinions from './Opinions';
 
+
 const Lobby: React.FC = () => {
     
     const [selectedValue, setSelectedValue] = useState<number>(1);
     const [brand, setBrand] = useState<string>("");
     const [modPrice, setModPrice] = useState<number>(0);
-    const {authToken} = useContext(AuthContext);
+    const {authToken, fetchUserData} = useContext(AuthContext);
 
     const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
-        try{
-            fetch(`http://127.0.0.1:8000/api/brands/id/${location.state.brand}`)
-            .then(response => response.json())
-            .then(result => setBrand(result?.brand_name))
+        const fetchData = async () => {
+            const userData: any = await fetchUserData();
+            const userId = userData?.id
 
-            fetch(`http://127.0.0.1:8000/api/lobby-price-mod/${location.state.id_product}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}` // Assuming authToken is defined in your component
-                }
-            })
-            .then(response => response.json())
-            .then(result => setModPrice(result?.modified_price))
-        }
+            try{
+                fetch(`http://127.0.0.1:8000/api/brands/id/${location.state.brand}`)
+                .then(response => response.json())
+                .then(result => setBrand(result?.brand_name))
+    
+                fetch(`http://127.0.0.1:8000/api/lobby-price-mod/${location.state.id_product}/${userId}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                })
+                .then(response => response.json())
+                .then(result => setModPrice(result?.modified_price))
+            }
+    
+            catch(error){
+                console.log(error)
+                alert(error);
+            }
 
-        catch(error){
-            console.log(error)
-            alert(error);
         }
+        fetchData()
+
+
     }, [])
     
     useEffect(() => {
@@ -59,7 +69,6 @@ const Lobby: React.FC = () => {
                 headers: {
                     'Content-Type':'application/json',
                     'Authorization': `Bearer ${authToken}`,
-                    'credentials': 'include'
                 },
                 body:JSON.stringify(
                     {
@@ -74,14 +83,17 @@ const Lobby: React.FC = () => {
 				window.location.href = responseJSON.link
 			}
         }
-        catch(error){alert('An error occurred. Please try again later.');}
+        
+        catch(error){
+            alert('An error occurred. Please try again later.');
+        }
     }
 
     async function addToCard(e: React.MouseEvent<HTMLInputElement>){
         e.preventDefault();
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/process/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/cart/create/`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -91,9 +103,20 @@ const Lobby: React.FC = () => {
                 body: JSON.stringify({'product_id': location.state.id_product, "quantity": selectedValue})
             });
             const responseJSON = await response.json();
-            alert(responseJSON?.info);
+            console.log(responseJSON)
+
+            if(responseJSON?.code === "token_not_valid"){
+                alert("You have to be authenticated!")
+            }
+
+            else if(responseJSON.status){
+                alert(responseJSON?.detail);
+            }
         }
-        catch(error){alert('An error occurred. Please try again later.');}
+        catch(error){
+            console.log(error)
+            alert('An error occurred. Please try again later.');
+        }
     }
 
     return(
@@ -188,11 +211,11 @@ const Lobby: React.FC = () => {
             <div className = "opinions-bar">
                 <Opinions product_id = {location.state?.id_product} />
             </div>
-    
 
             <div className = "recommendation-bar">
-            
+                <Recommendations products_id = {[location.state?.id_product.toString()]} />
             </div>
+
         </div>
     );
 

@@ -2,15 +2,12 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from amazonApp.models import Product, Transaction, User, Product, CartItem
-from amazonApp.serializers import CartItemProductsSerializer, CartItemSerializer, ProductSerializer
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from amazonApp.models import Product, Product, CartItem
+from amazonApp.serializers import CartItemProductsSerializer, ProductSerializer
 from django.core.cache import cache
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from amazonApp.views_folder.auth_views import is_authenticated
 from decimal import Decimal
 import stripe
-import random
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -18,7 +15,6 @@ class StripeCheckout(APIView):
 
     def __init__(self):
         super().__init__()
-        self.JWT_authenticator = JWTAuthentication()
         self.user_id = None
         self.location = None
         self.quantity = None
@@ -42,27 +38,22 @@ class StripeCheckout(APIView):
         self.request.session['quantity'] = self.quantity
         self.request.session['location'] = self.location
 
-
+    @is_authenticated
     def post(self, request, *args, **kwargs):
 
-        response = self.JWT_authenticator.authenticate(request)
-        if response is not None:
+        try:
+            self.parse_request_data(request, self.kwargs['user_id'])
+            result = self.core()
 
-            try:
-                self.parse_request_data(request, response[1])
-                result = self.core()
+            checkout_session = self.create_checkout_session(result)
 
-                checkout_session = self.create_checkout_session(result)
-
-                return Response({'link': checkout_session.url})
+            return Response({'link': checkout_session.url})
                     
-            except stripe.error.StripeError as e:
-                return Response(
-                    {'error': 'Something went wrong when creating stripe checkout session'},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
-
-        raise Exception("User has to be authenticated.")
+        except stripe.error.StripeError as e:
+            return Response(
+                {'error': 'Something went wrong when creating stripe checkout session'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
     def create_checkout_session(self, line_items):
@@ -135,4 +126,3 @@ class StripeCheckout(APIView):
             'quantity': quantity,
         }
         return data
-    

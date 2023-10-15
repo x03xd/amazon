@@ -1,5 +1,5 @@
 import {useNavigate} from 'react-router-dom';
-import React, {createContext, useState, ChangeEvent} from 'react';
+import React, {createContext, useState, ChangeEvent, useEffect} from 'react';
 import {parsedCookies} from './static_ts_files/parsingCookie'
 import { UserInterface } from './static_ts_files/commonInterfaces';
 
@@ -35,13 +35,6 @@ interface InitialValuesTypes {
     authToken: null | AuthToken;
 }
 
-interface User {
-    username: string;
-    email: string;
-    id: number;
-    currency: string;
-}
-
 const AuthContext = createContext<InitialValuesTypes>(initialValues);
 
 export default AuthContext;
@@ -50,6 +43,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
     const navigate = useNavigate();
 
     const [authToken, setAuthToken] = useState<AuthToken | null>(parsedCookies.access_token ? parsedCookies.access_token : null);
+    const [refreshToken, setRefreshToken] = useState<AuthToken | null>(parsedCookies.refresh_token ? parsedCookies.refresh_token : null);
     const [alertText, setAlertText] = useState<string>("");
     const [alertStyle, setAlertStyle] = useState<string>("hidden");
     const [username, setUsername] = useState<string | null>(null);
@@ -72,7 +66,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
         try{
             const response = await fetch(`http://127.0.0.1:8000/api/login/${e.target.usernameorpassword.value}`, {
                 method: 'GET', 
-                credentials: 'include',
                 headers: {
                     'Content-Type':'application/json',
                 },
@@ -117,7 +110,10 @@ export const AuthProvider = ({children}: ContextProvider) => {
             if(response.status === 200){
                 document.cookie = `access_token=${data.access};`
                 document.cookie = `refresh_token=${data.refresh};`
+
+                setCurrencyCookieFromJWT(data.access)
                 setAuthToken(data.access)
+                setRefreshToken(data.refresh)
                 navigateToHome()
             }
 
@@ -133,6 +129,28 @@ export const AuthProvider = ({children}: ContextProvider) => {
         catch(error){alert('An error occurred. Please try again later.');}
     }
 
+
+    const setCurrencyCookieFromJWT = (jwt: string): void => {
+        const [header, payload, signature] = jwt.split('.');
+      
+        try {
+            const decodedPayload = JSON.parse(atob(payload));
+            const currency = decodedPayload?.currency;
+    
+            if (currency) {
+                document.cookie = `currency=${currency}; SameSite=None;`;
+                console.log(`Currency set to: ${currency}`);
+            } else {
+                console.warn("Currency not found in JWT payload.");
+            }
+        }
+        
+        catch (error) {
+            console.error("Error decoding JWT payload:", error);
+        }
+    }
+
+
     async function fetchUserData(): Promise<UserInterface | null>  {
         try {
             const fetchOptions = {
@@ -146,9 +164,8 @@ export const AuthProvider = ({children}: ContextProvider) => {
             const result = await response.json();
 
             if (result.status) {
-                return result;
+                return result.data
             }
-            
             return null;
         }
         
@@ -168,7 +185,6 @@ export const AuthProvider = ({children}: ContextProvider) => {
         window.location.reload();
     }
 
-    /*
     const updateToken = async () => {
 
         try{
@@ -177,32 +193,24 @@ export const AuthProvider = ({children}: ContextProvider) => {
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({'refresh':authToken?.refresh})
+                body:JSON.stringify({'refresh':refreshToken})
             })
 
             const data = await response.json()
 
             if (response.status === 200){
                 setAuthToken(data.access)
-                //SPRAWDZ??????????
+                setRefreshToken(data.refresh)
             }
 
-            else{
-                logout();
-            }
-
+            else logout();
         }
 
-        catch (error) {
-            console.error('Error updating token:', error);
-        }
-
+        catch(error){alert('An error occurred. Please try again later.');}
     }
-    */
-
-    /*
-    const fourMinutes = 1000 * 60 * 4;
-    useEffect(()=>{
+    
+    const fourMinutes = 1000 * 10;
+    useEffect(() => {
 
         let interval = setInterval(() => {
             if(authToken){
@@ -211,7 +219,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
         }, fourMinutes)
         return () => clearInterval(interval)
     }, [authToken])
-    */
+
 
     let contextData = {
         loginUser: loginUser,

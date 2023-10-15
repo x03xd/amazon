@@ -10,7 +10,7 @@ from django.db.models import Count
 from collections import defaultdict
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from amazonApp.views_folder.auth_views import is_authenticated
 
 
 class CountAvgRate(ListAPIView):
@@ -44,8 +44,8 @@ class RatesAPI(APIView):
             return Response({"error": "Invalid request"}, status=400)
             
         
-
     def product_rate_counter(self, product_id):
+        
         try:
             result = Rate.objects.filter(rated_products__id=product_id)
             serialized_result = ProductRateSerializer(result, many=True)
@@ -87,39 +87,29 @@ class RatesAPI(APIView):
             return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
 
 
-
+    @is_authenticated
     def patch(self, request, *args, **kwargs):
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
+        user_id = self.kwargs['user_id']
+        rate = self.kwargs['rate']
+        product_id = self.kwargs['pid']
 
-        if response is not None:
-            try:
-                user_id = response[1]['user_id']
-                rate = self.kwargs.get("rate")
-                product_id = self.kwargs.get("pid")
+        try:
+            product = Product.objects.get(id=product_id)
+            user = User.objects.get(id=user_id)
 
-                product = Product.objects.get(id=product_id)
-                user = User.objects.get(id=user_id)
-
-                if not self.validate_bought(product, user_id):
-                    return Response({"status": False, "info": "You have to buy the product to be able to rate it"})
+            if not product.bought_by_rec.filter(id=user_id).exists():
+                return Response({"status": False, "info": "You have to buy the product to be able to rate it"})
                 
-                self.create_rate(user, product, rate)
+            self.create_rate(user, product, rate)
 
-                return Response({"status": True}, status=status.HTTP_200_OK)
+            return Response({"status": True}, status=status.HTTP_200_OK)
                     
-            except (User.DoesNotExist, Product.DoesNotExist):
-                return Response({"error": "Object does not exist"}, status=404)
+        except (User.DoesNotExist, Product.DoesNotExist):
+            return Response({"error": "Object does not exist"}, status=404)
         
-            except Exception as e:
-                return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
-        return Response({"status": True, "error": "You have to be authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
-    
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def validate_bought(self, product, user_id):
-        return product.bought_by_rec.filter(id=user_id).exists()
-    
 
     def create_rate(self, user, product, rate):
         created = False
@@ -140,25 +130,20 @@ class RatesAPI(APIView):
             opinion.save()
 
 
-    def delete(self, request, **kwargs):
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
+    @is_authenticated
+    def delete(self, request, *args, **kwargs):
 
-        if response is not None:
-        
-            try:
-                user_id = response[1]['user_id']
-                product_id = self.kwargs.get("pid")
+        try:
+            user_id = self.kwargs['user_id']
+            product_id = self.kwargs['pid']
 
-                rate = Rate.objects.get(rated_by__id=user_id, rated_products__id=product_id)
-                rate.delete()
+            rate = Rate.objects.get(rated_by__id=user_id, rated_products__id=product_id)
+            rate.delete()
 
-                return Response('The rate has been restarted')
+            return Response('The rate has been restarted')
             
-            except Rate.DoesNotExist:
-                return Response({"error": "Object does not exist"}, status=404)
+        except Rate.DoesNotExist:
+            return Response({"error": "Object does not exist"}, status=404)
 
-            except Exception as e:
-                return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)
-
-        return Response({"status": True, "error": "You have to be authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({"error": "Internal Server Error", "detail": str(e)}, status=500)

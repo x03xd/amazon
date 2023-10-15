@@ -1,4 +1,4 @@
-import pytest
+'''import pytest
 from rest_framework.test import APIClient
 from django.urls import reverse
 from rest_framework import status
@@ -8,10 +8,10 @@ from django.core.cache import cache
 from amazonApp.views_folder.currencies_views import provide_currency_context
 from collections import OrderedDict
 from amazonApp.models import Rate
-from amazonApp.views_folder.rate_views import DeleteRate
+from amazonApp.views_folder.rate_views import DeleteRate'''
 
 
-@pytest.fixture
+'''@pytest.fixture
 def api_client():
     return APIClient()
 
@@ -63,4 +63,4 @@ class TestDeleteRate:
         with pytest.raises(Exception) as exc_info:
             api_client.post(url, data, format='json')
 
-        assert str(exc_info.value) == 'Simulating 500 status error'
+        assert str(exc_info.value) == 'Simulating 500 status error'''

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext} from 'react';
 import CountingRate from './CoutingRate';
 import AuthContext from "./AuthenticationContext";
 
+
 interface SingleLobbyRateProps {
     product_id: number;
     user_id?: number;
@@ -13,12 +14,12 @@ interface RateDict {
     frequency: number;
 }
 
-const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id, user_id }) => {
+const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
 
     const [rate, setRate] = useState<number | null>(null);
     const [rateCount, setRateCount] = useState<number>(0);
     const [rateDict, setRateDict] = useState<RateDict[]>([]);
-    const {authToken} = useContext(AuthContext);
+    const {authToken, fetchUserData} = useContext(AuthContext);
 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/api/avg-rate/${product_id}`, {
@@ -43,18 +44,32 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id, user_id }
             }
         })
         .then(response => response.json())
-        .then(result => (console.log(result), setRateDict(result)))
+        .then(result => setRateDict(result))
         .catch(error => alert(`Wystąpił błąd: ${error.message}`));
     }, []);
     
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/rate-product/id/${user_id}/${product_id}`, {
-        })
-        .then(response => response.json())
-        .then(result => (console.log(result), setRate(result)))
-        .catch(error => alert(`Wystąpił błąd: ${error.message}`));
-    }, [user_id]);
+        const fetchData = async () => {
+
+            try {
+                const userData: any = await fetchUserData();
+                const userId = userData?.id
+
+                console.log(userData)
+
+                const response = await fetch(`http://127.0.0.1:8000/api/rate-product/id/${userId}/${product_id}/`)
+                const result = await response.json();
+                setRate(result);
+            }
+
+            catch (error) {
+                alert(`Wystąpił błąd: ${error}`);
+            }
+        }
+        
+        fetchData()
+    }, []);
 
     
     return(

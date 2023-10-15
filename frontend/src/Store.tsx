@@ -6,17 +6,16 @@ import Checkbox from './Checkbox';
 import QueryParamsContext from "./QueryParamsContext";
 import {priceLimits} from './static_ts_files/priceLimits'
 import ProductsWithRatings from './ProductsWithRatings'
-import {ProductsInterface, Categories, PriceLimits, Brands, UserInterface} from './static_ts_files/commonInterfaces';
+import {ProductsInterface, Categories, PriceLimits, Brands} from './static_ts_files/commonInterfaces';
 import AuthContext from "./AuthenticationContext";
 import {customPrice, changeQ, clearQueryString} from './static_ts_files/storeUtils';
-
+import getCookie from './getCookie';
 
 const Store: React.FC = () => {
 
     const [prices, setPrices] = useState<PriceLimits[]>([]);
     const [categories, setCategories] = useState<Categories[]>([]);
     const [brands, setBrands] = useState<Brands[]>([]);
-    //const [user, setUser] = useState<UserInterface | null>(null);
     const [products, setProducts] = useState<ProductsInterface[]>([]);
 
     const aRef = useRef<HTMLInputElement>(null);
@@ -43,21 +42,20 @@ const Store: React.FC = () => {
             try {
                 const userData: any = await fetchUserData();
 
-                const userId = userData?.data?.id
-                const userCurrency = userData?.data?.currency
+                const userId = userData?.id
 
-                fetch(`http://127.0.0.1:8000/api/categories/`)
-                .then(response => response.json())
-                .then(result => setCategories(result));
+                const categoriesResponse = await fetch('http://127.0.0.1:8000/api/categories/');
+                const categoriesData = await categoriesResponse.json();
+                setCategories(categoriesData);
     
-                fetch(`http://127.0.0.1:8000/api/brands/category/${q_QueryParam}`)
-                .then(response => response.json())
-                .then(result => setBrands(result));
-
-                fetch(`http://127.0.0.1:8000/api/products/${userId}/${userCurrency}/${queryLinkPart}`)
-                .then(response => response.json())
-                .then(result => setProducts(result));
-                
+                const brandsResponse = await fetch(`http://127.0.0.1:8000/api/brands/category/${q_QueryParam}`);
+                const brandsData = await brandsResponse.json();
+                setBrands(brandsData);
+    
+                const productsResponse = await fetch(`http://127.0.0.1:8000/api/products/${userId}/${getCookie("currency") || "EUR"}/${queryLinkPart}`);
+                const productsData = await productsResponse.json();
+                setProducts(productsData);
+    
                 for (let nums of priceLimits) {
                     setPrices(prev => [...prev, nums]);
                 }
