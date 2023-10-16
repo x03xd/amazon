@@ -15,9 +15,8 @@ def api_client():
 @pytest.mark.django_db
 class TestRecommendations:
 
-    def test_get_200(self, api_client, create_product, create_user, valid_access_token):
+    def test_get_200(self, api_client, create_product, valid_access_token):
         product = create_product
-        user = create_user
 
         api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {valid_access_token}')
         
@@ -29,9 +28,7 @@ class TestRecommendations:
 
     @patch.object(Recommendations, 'get', side_effect=Exception("Simulated error"))
     def test_get_500(self, mock_get, api_client, create_product, create_user):
-
         product = create_product
-        user = create_user
         
         url = reverse('recommendations', kwargs={'id': product.id})
 
@@ -43,12 +40,10 @@ class TestRecommendations:
 
 
     @patch('amazonApp.views_folder.views.Product.objects.filter')
-    def test_get_404(self, mock_get, api_client, create_product, create_user, valid_access_token):
+    def test_get_404(self, mock_get, api_client, create_product, valid_access_token):
         mock_get.side_effect = Product.DoesNotExist()
-
         product = create_product
-        user = create_user
-
+ 
         api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {valid_access_token}')
         
         url = reverse('recommendations', kwargs={'id': product.id})

@@ -77,7 +77,7 @@ class CartAPI(APIView):
             cart = CartItem.objects.get(cart__owner__id=user_id, product=product)
                 
             if product.quantity < quantity:
-                return Response({"status": False, "message": "Quantity exceeds available stock", "detail": str(e)}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"status": False, "message": "Quantity exceeds available stock", "detail": str(e)}, status=status.HTTP_200_OK)
 
             new_total_price = (cart.total_price * quantity) / cart.quantity
 

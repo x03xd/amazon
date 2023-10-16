@@ -3,7 +3,6 @@ from amazonApp.models import Category, Brand, Product, User, Cart, CartItem, Rat
 import decimal
 from rest_framework_simplejwt.tokens import AccessToken
 from dotenv import main
-import os
 
 main.load_dotenv()
 
@@ -35,18 +34,6 @@ def create_cart(create_user):
 
 
 @pytest.fixture
-def create_cartItem(create_product, create_cart):
-    cartItem, _ = CartItem.objects.get_or_create(cart=create_cart, product=create_product, quantity=6, total_price=decimal.Decimal('100'))
-    return cartItem
-
-
-@pytest.fixture
-def create_rate(create_product, create_user):
-    rate, _ = Rate.objects.get_or_create(rate=3, rated_by=create_user, rated_products=create_product)
-    return rate
-
-
-@pytest.fixture
 def create_product(create_category, create_brand, create_user):
 
     product, created = Product.objects.get_or_create(
@@ -66,6 +53,21 @@ def create_product(create_category, create_brand, create_user):
 
 
 @pytest.fixture
+def create_cartItem(create_product, create_cart):
+    product = create_product
+    cart = create_cart
+
+    cartItem, _ = CartItem.objects.get_or_create(cart=cart, product=product, quantity=6, total_price=decimal.Decimal('100'))
+    return cartItem
+
+
+@pytest.fixture
+def create_rate(create_product, create_user):
+    rate, _ = Rate.objects.get_or_create(rate=3, rated_by=create_user, rated_products=create_product)
+    return rate
+
+
+@pytest.fixture
 def valid_access_token():
     from django.contrib.auth import get_user_model
     user = get_user_model().objects.create(
@@ -78,20 +80,3 @@ def valid_access_token():
     return str(access_token)
 
 
-'''@pytest.fixture
-def create_product(create_category, create_brand, create_user):
-
-    product, created = Product.objects.get_or_create(
-        title="Default title",
-        description="Default description",
-        quantity=1,
-        price=decimal.Decimal(100),
-        image="image",
-        category_name=create_category,
-        brand=create_brand,
-    )
-
-    if created:
-        product.bought_by_rec.add(create_user)
-
-    return product'''

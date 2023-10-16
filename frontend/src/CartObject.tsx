@@ -69,7 +69,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
         const updateCart = async () => {
 
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/cart/`, {
+                const response = await fetch(`http://127.0.0.1:8000/api/cart/update/`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',

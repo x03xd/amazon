@@ -54,7 +54,7 @@ urlpatterns = [
     #CART
     path("cart/create/", cart_views.CartAPI.as_view(), name="cart-create"),
     path("cart/remove/<int:product_id>/", cart_views.CartAPI.as_view(), name="cart-remove"),
-    path("cart/", cart_views.CartAPI.as_view(), name="cart"),
+    path("cart/update/", cart_views.CartAPI.as_view(), name="cart-update"),
 
     #TRANSACTIONS
     path("transactions/list/<year>/", transactions_views.TransactionsAPI.as_view()),
@@ -68,7 +68,6 @@ urlpatterns = [
 
     path("brands/id/<int:id>/", views.BrandsAPI.as_view(), name="brands-by-id"),
     path("brands/category/<str:category>/", views.BrandsAPI.as_view(), name="brands-by-category"),
-    
     path("recommendations/<id>/", views.Recommendations.as_view(), name="recommendations"),
     path("lobby-price-mod/<product_id>/<user_id>/", views.LobbyPriceMod.as_view(), name="lobby-price"),
 
