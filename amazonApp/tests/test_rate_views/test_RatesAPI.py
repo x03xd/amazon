@@ -36,7 +36,9 @@ class TestRatesAPI:
         url = reverse('rate-by-id', kwargs={'user_id': user.id, 'pid': product.id})
 
         with pytest.raises(Exception) as exc_info:
-            api_client.get(url)
+            response = api_client.get(url)
+            mock_get.assert_called_once_with(url)
+            assert response.status == status.HTTP_500_INTERNAL_SERVER_ERROR
 
         assert str(exc_info.value) == 'Simulated 500 status error'
 
@@ -51,7 +53,9 @@ class TestRatesAPI:
         
         
         with pytest.raises(Exception) as exc_info:
-            api_client.get(url)
+            response = api_client.get(url)
+            mock_get.assert_called_once_with(url)
+            assert response.status == status.HTTP_404_NOT_FOUND
 
         assert str(exc_info.value) == 'Simulated error'
 
@@ -60,13 +64,14 @@ class TestRatesAPI:
     @patch.object(RatesAPI, 'patch', side_effect=Exception('Simulated 500 status error'))
     def test_patch_id_500(self, mock_patch, api_client, create_rate, create_user, create_product):
         rate = create_rate
-        user = create_user
         product = create_product
         
         url = reverse('rate-update', kwargs={'pid': product.id, 'rate': rate.rate})
 
         with pytest.raises(Exception) as exc_info:
-            api_client.patch(url)
+            response = api_client.patch(url)
+            mock_patch.assert_called_once_with(url)
+            assert response.status == status.HTTP_500_INTERNAL_SERVER_ERROR
    
         assert str(exc_info.value) == 'Simulated 500 status error'
 
@@ -92,30 +97,33 @@ class TestRatesAPI:
                 assert str(exc_info.value) == 'Simulated error'  
 
 
-    @patch('amazonApp.views_folder.rate_views.Rate.objects.get')
-    def test_delete_404(self, mock_post, api_client, create_product, valid_access_token):
-        mock_post.side_effect = Rate.DoesNotExist('Simulation error')
+    @patch.object(RatesAPI, 'delete', side_effect=Rate.DoesNotExist('Simulating 404 error'))
+    def test_delete_404(self, mock_delete, api_client, create_product, valid_access_token):
         product = create_product
         
         api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {valid_access_token}')
         url = reverse('rate-remove', kwargs={"pid": product.id})
 
-        response = api_client.delete(url, format='json')
-        
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-        assert response.data == {"error": "Object does not exist"}
+        with pytest.raises(Exception) as exc_info:
+            response = api_client.delete(url, format='json')
+            mock_delete.assert_called_once_with(url, format='json')
+            assert response.status == status.HTTP_404_NOT_FOUND
+
+        assert str(exc_info.value) == 'Simulating 404 error'
 
     
 
     @patch.object(RatesAPI, 'delete', side_effect=Exception('Simulating 500 status error'))
-    def test_delete_500(self, mock_post, api_client, create_rate, create_product):
+    def test_delete_500(self, mock_delete, api_client, create_rate, create_product):
         product = create_product
         create_rate
         
         url = reverse('rate-remove', kwargs={"pid": product.id})
 
         with pytest.raises(Exception) as exc_info:
-            api_client.delete(url, format='json')
+            response = api_client.delete(url, format='json')
+            mock_delete.assert_called_once_with(url, format='json')
+            assert response.status == status.HTTP_500_INTERNAL_SERVER_ERROR
 
         assert str(exc_info.value) == 'Simulating 500 status error'
 

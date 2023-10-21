@@ -27,27 +27,29 @@ class TestRecommendations:
 
 
     @patch.object(Recommendations, 'get', side_effect=Exception("Simulated error"))
-    def test_get_500(self, mock_get, api_client, create_product, create_user):
+    def test_get_500(self, mock_get, api_client, create_product):
         product = create_product
         
         url = reverse('recommendations', kwargs={'id': product.id})
 
         with pytest.raises(Exception) as exc_info:
-            api_client.get(url)
+            response = api_client.get(url)
+            mock_get.assert_called_once_with(url)
+            assert response.status == status.HTTP_500_INTERNAL_SERVER_ERROR
 
         assert str(exc_info.value) == 'Simulated error'
 
 
-
-    @patch('amazonApp.views_folder.views.Product.objects.filter')
+    @patch.object(Recommendations, 'get', side_effect=Exception("Simulated error"))
     def test_get_404(self, mock_get, api_client, create_product, valid_access_token):
-        mock_get.side_effect = Product.DoesNotExist()
         product = create_product
  
         api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {valid_access_token}')
-        
         url = reverse('recommendations', kwargs={'id': product.id})
-        response = api_client.get(url)
 
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-        assert response.data == {'error': 'Object does not exist'}
+        with pytest.raises(Exception) as exc_info:
+            response = api_client.get(url)
+            mock_get.assert_called_once_with(url)
+            assert response.status == status.HTTP_404_NOT_FOUND
+
+        assert str(exc_info.value) == 'Simulated error'

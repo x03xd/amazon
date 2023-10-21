@@ -43,8 +43,7 @@ class TestCurrencyConverterAPI:
         data = {'currency': 'USD'}
 
         response = api_client.patch(url, data, format='json')
-        print(response.data)
-
+        
         assert response.status_code == status.HTTP_200_OK
         assert response.data == {"status": True, "message": f"Valid currency choice: USD"}
 
@@ -64,14 +63,15 @@ class TestCurrencyConverterAPI:
 
 
     @patch.object(CurrencyConverterAPI, 'patch', side_effect=Exception('Simulated error'))
-    def test_patch_500(self, mock_get, api_client):
+    def test_patch_500(self, mock_patch, api_client):
 
         url = reverse('currency-converter')  
         data = {'currency': 'USD'}
 
         with pytest.raises(Exception) as exc_info:
             api_client.patch(url, data, format='json')
-
+            mock_patch.assert_called_once_with(url, data, format='json')
+            
         assert str(exc_info.value) == 'Simulated error'
 
 
@@ -85,5 +85,5 @@ class TestCurrencyConverterAPI:
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert response.data == {'status': False, 'error': 'You have to be authenticated'}
-
+       
 
