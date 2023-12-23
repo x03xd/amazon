@@ -27,10 +27,11 @@ const Transactions: React.FC = () => {
                 headers: {
                     'Authorization': `Bearer ${authToken}`, 
                     'Content-Type':'application/json',
-                }
+                },
+                credentials: 'include'
             })
             .then(response => response.json())
-            .then(result => (console.log(result), setTransactions(result || [])))
+            .then(result => setTransactions(result || []))
         } 
         
         catch (error) {

@@ -1,0 +1,7 @@
+apiVersion: apps/v1
+kind: ConfigMap
+metadata:
+  name: celery-configmap
+data:
+  celery-broker-url: "amqp://guest@rabbitmq:5672/"
+  celery-result-backend: "rpc://"

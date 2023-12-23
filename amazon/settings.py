@@ -91,8 +91,8 @@ DATABASES = {
         'NAME': os.environ.get('NAME'),
         'USER': os.environ.get('USER'),
         'PASSWORD': os.environ.get('PASSWORD'),
-        'HOST': 'postgres_container',  
-        #'HOST': 'localhost',
+        #'HOST': 'postgres_container',  
+        'HOST': 'localhost',
         'PORT': '5432',  
     }
 }
@@ -150,8 +150,13 @@ MEDIA_ROOT = BASE_DIR / 'frontend/build/static/media'
 
 AUTH_USER_MODEL = 'amazonApp.User'
 
+
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
+'''SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+'''
 
 REST_FRAMEWORK = {
 

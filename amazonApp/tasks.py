@@ -16,10 +16,10 @@ def background_task():
     }
 
     try:
-        #response = requests.get(API_URL, params=params)
-        #response.raise_for_status() 
+        response = requests.get(API_URL, params=params)
+        response.raise_for_status() 
 
-        #data = response.json()
+        data = response.json()
         data = {}
 
         if "rates" in data:
