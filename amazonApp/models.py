@@ -71,7 +71,6 @@ class Product(models.Model):
         return self.title
 
 
-
 class Rate(models.Model):
     rate = models.IntegerField(
         validators=[

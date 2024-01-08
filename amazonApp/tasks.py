@@ -3,6 +3,7 @@ from celery import shared_task
 import requests
 from django.conf import settings
 
+
 @shared_task
 def background_task():
    

@@ -64,7 +64,6 @@ class OpinionSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
@@ -75,7 +74,6 @@ class CurrencySerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ["currency"]
-
 
 
 class CartSerializer(ModelSerializer):
@@ -119,7 +117,6 @@ class CartItemSerializer(ModelSerializer):
             
         return representation
     
-
 
 class TransactionSerializer(ModelSerializer):
 
@@ -182,7 +179,6 @@ class CartItemProductsSerializer(ModelSerializer):
             representation["total_price"] = round(Decimal(representation["total_price"]) * Decimal(exchange_rate), 2)
             
         return representation
-
 
 class UserRegistrationSerializer(serializers.Serializer):
     username = serializers.CharField()
