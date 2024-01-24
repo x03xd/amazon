@@ -2,16 +2,13 @@ interface Right {
     [key: string] : number;
 }
 
-
 interface Destination {
     final: [string, Right];
 };
 
-
 interface RatingStars {
     array: string[]
 }
-
 
 const ratingLevels: Destination["final"][] = [
     ["4 and more", {"key": 4}],
@@ -27,6 +24,5 @@ const ratingStars : RatingStars["array"][] = [
     ["fourth", ""],
     ["fifth", ""]
 ]
-
 
 export {ratingStars, ratingLevels}

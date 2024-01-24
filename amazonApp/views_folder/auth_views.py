@@ -73,9 +73,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 class LoginAPI(APIView):
-
     def get(self, request, *args, **kwargs):
-        
         try:
             username = self.kwargs.get("data")
             user_object = User.objects.get(username=username)

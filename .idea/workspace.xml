@@ -2,8 +2,49 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a031a4af-263d-4a20-b0d7-fc1ff09c5dc4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/k8s/backend.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/backend.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8s/backend_secret.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/backend_secret.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile.backend" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile.beat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile.worker" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/amazon/celery.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazon/celery.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amazon/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazon/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amazon/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazon/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amazonApp/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amazonApp/views_folder/auth_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/amazonApp/views_folder/auth_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/Dockerfile.frontend" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/AuthenticationContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/AuthenticationContext.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Cart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Cart.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/CartFinalizing.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/CartFinalizing.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/CartObject.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/CartObject.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/CoutingRate.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/EditProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/EditProfile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/EditProfileCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/EditProfileCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Lobby.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Lobby.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Modal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Modal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Opinions.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Opinions.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/PasswordChange.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/PasswordChange.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/ProductCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/ProductCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/ProductsWithRatings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/ProductsWithRatings.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/ProtectedRoute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/ProtectedRoute.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Recommendations.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Recommendations.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/SelectCurrency.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/SelectCurrency.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/SingleLobbyRate.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/SingleLobbyRate.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/SingleTransaction.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/SingleTransaction.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Store.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Store.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Transactions.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Transactions.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/static_ts_files/myAccountCards.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/static_ts_files/myAccountCards.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/static_ts_files/parsingCookie.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/static_ts_files/parsingCookie.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/static_ts_files/priceLimits.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/static_ts_files/priceLimits.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/static_ts_files/ratingLevels.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/static_ts_files/ratingLevels.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/static_ts_files/starStyling.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/static_ts_files/starStyling.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/static_ts_files/storeUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/static_ts_files/storeUtils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,14 +77,14 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ja\Desktop\amazon-poprawki" />
+      <recent name="C:\Users\ja\Desktop\amazon-poprawki\flyway" />
       <recent name="C:\Users\ja\Desktop\amazon-poprawki\k8s\secrets" />
       <recent name="C:\Users\ja\Desktop\amazon-poprawki\k8s\configmaps" />
       <recent name="C:\Users\ja\Desktop\amazon-poprawki\k8s\pv&amp;pvc" />
-      <recent name="C:\Users\ja\Desktop\amazon-poprawki\k8s\deployments" />
-      <recent name="C:\Users\ja\Desktop\amazon-poprawki\k8s\ingress" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.tests">
+  <component name="RunManager" selected="Python tests.Python tests for testtt.test_xd">
     <configuration name="matrix" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="amazon" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -128,8 +169,23 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests for testtt.test_xd" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="amazon" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/amazon" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;testtt.test_xd&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for testtt.test_xd" />
         <item itemvalue="Python.tests" />
         <item itemvalue="Python.views" />
         <item itemvalue="Python.testing" />

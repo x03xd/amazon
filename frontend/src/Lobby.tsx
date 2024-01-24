@@ -7,7 +7,7 @@ import React from 'react';
 import getCookie from './getCookie'
 import Recommendations from './Recommendations';
 import Opinions from './Opinions';
-
+import {backendURL} from './static_ts_files/constants'
 
 const Lobby: React.FC = () => {
     
@@ -25,11 +25,11 @@ const Lobby: React.FC = () => {
             const userId = userData?.id
 
             try{
-                fetch(`http://127.0.0.1:8000/api/brands/id/${location.state.brand}`)
+                fetch(`${backendURL}/brands/id/${location.state.brand}`)
                 .then(response => response.json())
                 .then(result => setBrand(result?.brand_name))
     
-                fetch(`http://127.0.0.1:8000/api/lobby-price-mod/${location.state.id_product}/${userId}/`, {
+                fetch(`${backendURL}/lobby-price-mod/${location.state.id_product}/${userId}/`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const Lobby: React.FC = () => {
 
     const finalizeOrderLobby = async () => {
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/payment-creation/`, {
+            const response = await fetch(`${backendURL}/payment-creation/`, {
                 method:'POST',
                 headers: {
                     'Content-Type':'application/json',
@@ -93,7 +93,7 @@ const Lobby: React.FC = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/cart/create/`, {
+            const response = await fetch(`${backendURL}/cart/create/`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

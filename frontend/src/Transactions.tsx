@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react';
 import AuthContext from "./AuthenticationContext";
 import SingleTransaction from './SingleTransaction'
+import {backendURL} from './static_ts_files/constants'
 
 
 export interface TransactionsAPI {
@@ -22,7 +23,7 @@ const Transactions: React.FC = () => {
 
     useEffect(() => {
         try {
-            fetch(`http://127.0.0.1:8000/api/transactions/list/${selectedYear}`, {
+            fetch(`${backendURL}/transactions/list/${selectedYear}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${authToken}`, 
@@ -37,7 +38,6 @@ const Transactions: React.FC = () => {
         catch (error) {
             alert(`There was an error displaying your transaction.`);
         }
-        
     }, [selectedYear]);
 
 

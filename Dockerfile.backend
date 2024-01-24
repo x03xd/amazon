@@ -3,11 +3,18 @@ FROM python:3.10.6
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir /app
+
 WORKDIR /app
 
 COPY . /app/
 
 RUN pip install -r requirements.txt
+
+RUN python manage.py makemigrations
+RUN python manage.py migrate
+
+COPY data_amazon.sql /app/data_amazon.sql
+RUN python manage.py dbshell < data_amazon.sql
 
 EXPOSE 8000
 

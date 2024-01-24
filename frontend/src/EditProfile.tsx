@@ -3,6 +3,7 @@ import AuthContext from "./AuthenticationContext";
 import EditProfileCard from "./EditProfileCard"
 import {UserInterface} from './static_ts_files/commonInterfaces'
 import { useNavigate } from 'react-router-dom';
+import {backendURL} from './static_ts_files/constants'
 
 export interface AccessToChangeUsernameState {
     username: [boolean, string];
@@ -48,7 +49,7 @@ const EditProfile : React.FC = () => {
     useEffect(() => {
 
         try{
-            fetch('http://127.0.0.1:8000/api/access-to-change-status/', {
+            fetch(`${backendURL}/access-to-change-status/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${authToken}`,

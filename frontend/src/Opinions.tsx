@@ -1,13 +1,13 @@
 import React, {useState, useEffect, useRef, useContext} from 'react';
-import {useNavigate} from 'react-router-dom';
 import {UserInterface} from './static_ts_files/commonInterfaces'
 import SingleLobbyRate from './SingleLobbyRate'
-import CountingRate from './CoutingRate';
+import CountingRate from './CountingRate';
 import leftArrow from './images/left-arrow.png';
 import user_img from './images/user.png'
 import rightArrow from './images/right-arrow.png';
 import deletebutton from './images/deletebutton.png'
 import AuthContext from "./AuthenticationContext";
+import {backendURL} from './static_ts_files/constants'
 
 interface OpinionsProps {
     product_id: number;
@@ -40,7 +40,6 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
     const textAreaValue = useRef<HTMLTextAreaElement | null>(null);
     const inputTitleValue = useRef<HTMLInputElement | null>(null);
 
-
     useEffect(() => {
         const fetchData = async () => {
             const userData: any = await fetchUserData();
@@ -51,14 +50,12 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
         fetchData()
     },[])
 
-
     useEffect(() => {
         try{
-            fetch(`http://127.0.0.1:8000/api/opinions/${product_id}/${pages}`)
+            fetch(`${backendURL}/opinions/${product_id}/${pages}`)
             .then(response => response.json())
             .then(result => setOpinions(result.queryset));
         }
-
         catch(error){ 
             console.log(error)
             alert("Opinions cannot be displayed");
@@ -75,7 +72,7 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
         e.preventDefault();
 
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/opinions/create/${product_id}`, {
+            const response = await fetch(`${backendURL}/opinions/create/${product_id}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${authToken}`, 
@@ -108,7 +105,7 @@ const Rating: React.FC<OpinionsProps> = ({ product_id }) => {
 
     async function removeOpinion(opinion_number: number){
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/opinions/remove/${opinion_number}`, {
+            const response = await fetch(`${backendURL}/opinions/remove/${opinion_number}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${authToken}`, 

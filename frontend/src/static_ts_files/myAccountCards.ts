@@ -20,7 +20,6 @@ interface CardDataArray {
     array: CardData[]
 }
 
-
 const cardsData : CardDataArray["array"] = [
 /*1*/   {title: "Moje zamówienia", image: order, content: "Śledź przesyłki, zwróc lub ponownie zamów kupione przedmioty", alt: "order", link: "/transactions"},
 /*2*/   {title: "Logowanie i zabezpieczenia", image: contact2, content: "Edytuj login, nazwę użytkownika i numer telefonu", alt: "login and security", link: "/edit-profile"},
@@ -33,7 +32,6 @@ const cardsData : CardDataArray["array"] = [
 /*9*/   {title: "Aplikacja Amazon", image: amazon_app, content: "Pobierz aplikację Amazon", alt: "amazon app", link: ""},
 ]
 
-
 export interface CardData2 {
     title: string;
     content: string;
@@ -44,7 +42,6 @@ interface CardDataArray2 {
     array: CardData2[]
 }
 
-
 const cardsData2 : CardDataArray2["array"] = [
     /*1*/   {title: "Treści cyfrowe i urządzenia", content: "Śledź przesyłki, zwróc lub ponownie zamów kupione przedmioty", link: ""},
     /*2*/   {title: "Powiadomienia e-mail, wiadomości, reklamy i pliki cookie" ,content: "Edytuj login, nazwę użytkownika i numer telefonu", link: ""},
@@ -53,6 +50,4 @@ const cardsData2 : CardDataArray2["array"] = [
     /*5*/   {title: "Dane i prywatność",  content: "Zarządzaj metodami i ustawieniami płatności oraz przeglądaj salda", link: ""},
 ]
     
-
-
 export {cardsData, cardsData2};

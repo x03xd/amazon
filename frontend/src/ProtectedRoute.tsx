@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import AuthContext from './AuthenticationContext';
+import {frontendURL} from './static_ts_files/constants'
 
 interface ProtectedRouteProps {
   path: string;
@@ -15,7 +16,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({element}) => {
 
       if (!authToken && !isAuthRoute) {
             const stateData = {
-              link: 'http://127.0.0.1:8000/login/',
+              link: `${frontendURL}/login/`,
               inputValue: 'Dalej',
               style: 'active',
               style2: 'hidden',

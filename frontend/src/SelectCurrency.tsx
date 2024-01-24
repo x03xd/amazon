@@ -2,6 +2,8 @@ import React, {useContext, useState, useEffect} from 'react';
 import AuthContext from "./AuthenticationContext";
 import getCookie from "./getCookie";
 import {UserInterface} from './static_ts_files/commonInterfaces'
+import {backendURL} from './static_ts_files/constants'
+
 
 const SelectCurrency: React.FC = () => {
 
@@ -24,7 +26,7 @@ const SelectCurrency: React.FC = () => {
 
         else {
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/currency-converter/`, {
+                const response = await fetch(`${backendURL}/currency-converter/`, {
                     method: 'PATCH',
                     credentials: 'include', 
                     headers: {

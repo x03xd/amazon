@@ -2,6 +2,7 @@ import {useNavigate} from 'react-router-dom';
 import React, {useContext, useState, useRef} from 'react';
 import Alert from './Alert';
 import AuthContext from "./AuthenticationContext";
+import {backendURL} from './static_ts_files/constants'
 
 const PasswordChange: React.FC = () => {
     
@@ -25,7 +26,7 @@ const PasswordChange: React.FC = () => {
 
         else{
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/change-password`, {
+                const response = await fetch(`${backendURL}/change-password`, {
                     method: 'PATCH',
                     credentials: 'include',
                     headers: {

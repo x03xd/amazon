@@ -1,6 +1,3 @@
-
-
-
 const parsedCookies : any = document.cookie
     .split(';')
     .reduce((res, c) => {

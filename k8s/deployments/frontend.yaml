@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend-container
+        image: x03xd/amazon_clone:frontend
+        ports:
+        - containerPort: 3000
+        env:
+          - name: BACKEND_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: configmap
+                key: backend-host
+          - name: FRONTEND_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: configmap
+                key: frontend-host
+          - name: PROTOCOL
+            valueFrom:
+              configMapKeyRef:
+                name: configmap
+                key: protocol
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000

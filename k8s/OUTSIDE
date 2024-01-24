@@ -1,0 +1,22 @@
+RABVBITMQ
+
+INGRESS
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/cloud/deploy.yaml
+
+RABBITMQ?
+kubectl apply -f "https://github.com/rabbitmq/cluster-operator/release/latest/download/cluster-operator.yml"
+kubectl apply -f "https://raw.githubusercontent.com/913165/rabbitmqexamples/main/simple-rabbitmq-sluter-service.yaml"
+
+ingress:
+1. odpal deployment i serwis
+2. SPRAWDZ IP LAOD BALANCERA DLA MOJEGO KLASTRA W AZURE
+3. dodaj na stronie z free subdomains do ip serwisu subdomene
+4. odpal ingress
+5. juz
+
+'''
+SPRAWDZ CZY CORS W NGINX CONTROLLERZE OK I W INGRESSIE TEZ
+
+'
+
+az aks show --resource-group <nazwa_grupy_zasobów> --name <nazwa_klastra> --query addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName -o table

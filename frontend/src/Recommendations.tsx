@@ -2,7 +2,7 @@ import {useEffect, useState, useContext} from 'react';
 import AuthContext from "./AuthenticationContext";
 import ProductsWithRatings from './ProductsWithRatings';
 import { ProductsInterface } from './static_ts_files/commonInterfaces';
-
+import {backendURL} from './static_ts_files/constants'
 
 interface RecommendationProps {
     products_id: number[];
@@ -17,7 +17,7 @@ const Recommendations: React.FC<RecommendationProps> = ({ products_id }) => {
     useEffect(() => {
         
         try {
-            fetch(`http://127.0.0.1:8000/api/recommendations/${joined}/`, {
+            fetch(`${backendURL}/recommendations/${joined}/`, {
                 headers: {
                     'Authorization': `Bearer ${authToken}`, 
                     'Content-Type':'application/json',

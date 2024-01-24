@@ -3,6 +3,7 @@ import React, {useState, ChangeEvent, FormEvent, useEffect} from 'react';
 import logo from './images/xd.png';
 import cart from './images/shopping-cart-xxl.png';
 import SelectCurrency from './SelectCurrency'
+import {backendURL} from './static_ts_files/constants'
 
 export interface setValueState{
     value: string;
@@ -30,7 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({ overlayStyle, loginModalStyle, unclicka
 
     useEffect(() => {  
         try {
-            fetch(`http://127.0.0.1:8000/api/categories/`)
+            fetch(`${backendURL}/categories/`)
             .then(response => response.json())
             .then(result => (setDropdownOptions(result)));
         }

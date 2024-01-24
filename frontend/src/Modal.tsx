@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
 import AuthContext from "./AuthenticationContext";
-
+import {frontendURL} from './static_ts_files/constants'
 
 export interface ModalProps{
     className: string;
@@ -16,7 +16,7 @@ const Modal: React.FC<ModalProps> = ({ className, modalOFF, overlayOFF, navbarSt
     const {logout, authToken} = useContext(AuthContext);
 
     const navigateTo = (): void => {
-        navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
+        navigate("/login/", {state: {link: `${frontendURL}/login/`, inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
     }
 
     const navigateToMyAccount = (style: string, location: string) => {

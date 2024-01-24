@@ -2,7 +2,7 @@ import {useNavigate} from 'react-router-dom';
 import React, {createContext, useState, ChangeEvent, useEffect} from 'react';
 import {parsedCookies} from './static_ts_files/parsingCookie'
 import { UserInterface } from './static_ts_files/commonInterfaces';
-
+import {backendURL} from './static_ts_files/constants'
 
 interface ContextProvider {
     children: React.ReactNode;
@@ -64,7 +64,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
         e.preventDefault();
     
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/login/${e.target.usernameorpassword.value}`, {
+            const response = await fetch(`${backendURL}/login/${e.target.usernameorpassword.value}`, {
                 method: 'GET', 
                 headers: {
                     'Content-Type':'application/json',
@@ -97,7 +97,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/token/", {
+            const response = await fetch(`${backendURL}/token/`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -160,7 +160,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
                     'Content-Type': 'application/json',
                 },
             };
-            const response = await fetch(`http://127.0.0.1:8000/api/get-user/`, fetchOptions);
+            const response = await fetch(`${backendURL}/get-user/`, fetchOptions);
             const result = await response.json();
 
             if (result.status) {
@@ -188,7 +188,7 @@ export const AuthProvider = ({children}: ContextProvider) => {
     const updateToken = async () => {
 
         try{
-            const response = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
+            const response = await fetch(`${backendURL}/token/refresh/`, {
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'

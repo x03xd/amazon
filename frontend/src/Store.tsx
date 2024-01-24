@@ -10,6 +10,8 @@ import {ProductsInterface, Categories, PriceLimits, Brands} from './static_ts_fi
 import AuthContext from "./AuthenticationContext";
 import {customPrice, changeQ, clearQueryString} from './static_ts_files/storeUtils';
 import getCookie from './getCookie';
+import {backendURL, frontendURL} from './static_ts_files/constants'
+
 
 const Store: React.FC = () => {
 
@@ -33,8 +35,8 @@ const Store: React.FC = () => {
     const {q_QueryParam} = useContext(QueryParamsContext);
 
     const url = window.location.href;
-    const index = url.indexOf('http://localhost:3000/s');
-    const queryLinkPart = url.substring(index + 'http://localhost:3000/s'.length);
+    const index = url.indexOf(`${frontendURL}/s`);
+    const queryLinkPart = url.substring(index + `${frontendURL}/s`.length);
 
     useEffect(() => {
         const fetchData = async () =>{
@@ -44,15 +46,15 @@ const Store: React.FC = () => {
 
                 const userId = userData?.id
 
-                const categoriesResponse = await fetch('http://127.0.0.1:8000/api/categories/');
+                const categoriesResponse = await fetch(`${backendURL}/categories/`);
                 const categoriesData = await categoriesResponse.json();
                 setCategories(categoriesData);
     
-                const brandsResponse = await fetch(`http://127.0.0.1:8000/api/brands/category/${q_QueryParam}`);
+                const brandsResponse = await fetch(`${backendURL}/brands/category/${q_QueryParam}`);
                 const brandsData = await brandsResponse.json();
                 setBrands(brandsData);
     
-                const productsResponse = await fetch(`http://127.0.0.1:8000/api/products/${userId}/${getCookie("currency") || "EUR"}/${queryLinkPart}`);
+                const productsResponse = await fetch(`${backendURL}/products/${userId}/${getCookie("currency") || "EUR"}/${queryLinkPart}`);
                 const productsData = await productsResponse.json();
                 setProducts(productsData);
     

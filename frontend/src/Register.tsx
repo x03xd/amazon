@@ -1,6 +1,7 @@
 import {useNavigate} from 'react-router-dom';
 import React, {useState, useRef} from 'react';
 import Alert from './Alert';
+import {backendURL, frontendURL} from './static_ts_files/constants'
 
 
 const Register: React.FC = () => {
@@ -17,7 +18,7 @@ const Register: React.FC = () => {
     const navigate = useNavigate();
 
     const navigateTo = (): void => {
-        navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
+        navigate("/login/", {state: {link: `${frontendURL}/login/`, inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
     }
 
     async function submitForm(e: React.FormEvent<HTMLFormElement>){
@@ -30,7 +31,7 @@ const Register: React.FC = () => {
         else setDangerBorder("")
 
         try{
-            const response = await fetch("http://127.0.0.1:8000/api/registration/", {
+            const response = await fetch(`${backendURL}/registration/`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

@@ -3,6 +3,7 @@ import AuthContext from "./AuthenticationContext";
 import blocked_padlock from './images/password.png'
 import { useNavigate } from 'react-router-dom';
 import {DataOfOperation, AccessToChangeUsernameState} from './EditProfile';
+import {backendURL} from './static_ts_files/constants'
 
 interface EditProfileCardProps extends DataOfOperation{
     access: AccessToChangeUsernameState | null
@@ -23,7 +24,7 @@ const EditProfileCard : React.FC<EditProfileCardProps> = ({ text, link, header, 
         e.preventDefault();
         
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/${link}/`, {
+            const response = await fetch(`${backendURL}/${link}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type':'application/json',

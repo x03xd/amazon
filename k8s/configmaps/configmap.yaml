@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap
+data:
+  db-host: postgres-service
+  frontend-host: EXAMPLE.jumpingcrab.com
+  backend-host: EXAMPLE.jumpingcrab.com/api
+  amqp-host: rabbitmq-service
+  celery-result-backend: "rpc://"
+  django_settings_module: "amazon.settings"
+  protocol: http

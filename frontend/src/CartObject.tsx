@@ -1,6 +1,7 @@
 import React, {useEffect, useContext, useState} from 'react';
 import AuthContext from "./AuthenticationContext";
 import getCookie from './getCookie'
+import {backendURL} from './static_ts_files/constants'
 
 interface Item {
     item: {
@@ -47,10 +48,9 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
             removeIsPossibleCheck(item.product);
     }, [selectedValue])
 
-
     const removeProduct = (index_of_item: number) => {
         try{
-            fetch(`http://127.0.0.1:8000/api/cart/remove/${index_of_item}/`, {
+            fetch(`${backendURL}/cart/remove/${index_of_item}/`, {
                 method: 'DELETE',
                 headers:{
                     'Content-Type':'application/json',
@@ -69,7 +69,7 @@ const CardObject: React.FC<Item> = ({item, ajaxFunction, prev, isPossibleCheck, 
         const updateCart = async () => {
 
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/cart/update/`, {
+                const response = await fetch(`${backendURL}/api/cart/update/`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',

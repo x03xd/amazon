@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -88,12 +87,11 @@ WSGI_APPLICATION = 'amazon.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('NAME'),
-        'USER': os.environ.get('USER'),
-        'PASSWORD': os.environ.get('PASSWORD'),
-        #'HOST': 'postgres_container',  
-        'HOST': 'localhost',
-        'PORT': '5432',  
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST'),
+        'PORT': 5432
     }
 }
 
@@ -127,7 +125,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -142,19 +139,33 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/build/static')
 ]
 
-
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'frontend/build/static/media'
 
-
 AUTH_USER_MODEL = 'amazonApp.User'
-
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-'''SESSION_COOKIE_SECURE = False
+FRONTEND_HOST = os.environ.get('FRONTEND_HOST')
+BACKEND_HOST = os.environ.get('BACKEND_HOST')
+PROTOCOL = os.environ.get('PROTOCOL')
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_ORIGINS = [
+    f"{PROTOCOL}://{FRONTEND_HOST}",
+]
+
+CORS_ALLOW_HEADERS = '*'
+
+CSRF_TRUSTED_ORIGINS = [
+    f"{PROTOCOL}://{BACKEND_HOST}"
+]
+
+'''
+SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 '''
 
@@ -214,9 +225,7 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-
 LOGIN_URL = 'token_obtain_pair'
-
 
 CELERY_BEAT_SCHEDULE = {
     'update-exchange-rates': {
@@ -225,8 +234,10 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+AMQP_HOST = os.environ.get('CELERY_BROKER_HOST')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
 
-SITE_URL = "http://localhost:3000"
+SITE_URL = f"{PROTOCOL}://{FRONTEND_HOST}"
 
 CELERY_ENABLED = True
 

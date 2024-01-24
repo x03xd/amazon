@@ -1,6 +1,7 @@
 import AuthContext from "./AuthenticationContext";
 import React from 'react';
 import getCookie from './getCookie'
+import {backendURL} from './static_ts_files/constants'
 
 interface HashMap {
     [key: string]: boolean;
@@ -20,7 +21,7 @@ const CardFinalizing : React.FC<Nums> = ({ total, buyButton }) => {
 
         if(buyButton && buyButton?.size === undefined){
             try{
-                const response = await fetch(`http://127.0.0.1:8000/api/payment-creation/`, {
+                const response = await fetch(`${backendURL}/payment-creation/`, {
                     method:'POST',
                     headers: {
                         'Content-Type': 'application/json',

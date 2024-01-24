@@ -7,21 +7,20 @@ from django.conf import settings
 @shared_task
 def background_task():
    
-    API_URL = settings.FIXER_API_URL
-    API_KEY = settings.FIXER_API_KEY
+    api_url = settings.FIXER_API_URL
+    api_key = settings.FIXER_API_KEY
         
     params = {
-        "access_key": API_KEY,
+        "access_key": api_key,
         "symbols": "EUR, USD, PLN, GBP"
         #base -> EUR
     }
 
     try:
-        response = requests.get(API_URL, params=params)
+        response = requests.get(api_url, params=params)
         response.raise_for_status() 
 
         data = response.json()
-        data = {}
 
         if "rates" in data:
             return data["rates"]

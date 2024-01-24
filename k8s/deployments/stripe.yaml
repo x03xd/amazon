@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stripe-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: stripe
+  template:
+    metadata:
+      labels:
+        app: stripe
+    spec:
+      containers:
+      - name: stripe-container
+        image: stripe/stripe-cli
+        ports:
+          - containerPort: 3404
+        env:
+        - name: STRIPE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: secret
+              key: stripe-secret-key
+        command: [ "/bin/sh", "-c" ]
+        args:
+          - "stripe listen --forward-to backend:8000/api/stripe-webhook/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stripe-service
+spec:
+  selector:
+    app: stripe
+  ports:
+    - protocol: TCP
+      port: 3404
+      targetPort: 3404

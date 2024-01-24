@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useContext} from 'react';
-import CountingRate from './CoutingRate';
+import CountingRate from './CountingRate';
 import AuthContext from "./AuthenticationContext";
+import {backendURL} from './static_ts_files/constants'
 
 
 interface SingleLobbyRateProps {
@@ -22,7 +23,7 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
     const {authToken, fetchUserData} = useContext(AuthContext);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/avg-rate/${product_id}`, {
+        fetch(`${backendURL}/avg-rate/${product_id}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${authToken}`, 
@@ -36,7 +37,7 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
     
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/rate-product/frequency/${product_id}`, {
+        fetch(`${backendURL}/rate-product/frequency/${product_id}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${authToken}`, 
@@ -58,7 +59,7 @@ const SingleLobbyRate: React.FC<SingleLobbyRateProps> = ({ product_id }) => {
 
                 console.log(userData)
 
-                const response = await fetch(`http://127.0.0.1:8000/api/rate-product/id/${userId}/${product_id}/`)
+                const response = await fetch(`${backendURL}/rate-product/id/${userId}/${product_id}/`)
                 const result = await response.json();
                 setRate(result);
             }

@@ -1,9 +1,9 @@
 import {useNavigate} from 'react-router-dom';
 import React, { useContext } from 'react';
 import getCookie from './getCookie'
-import CountingRate from './CoutingRate';
+import CountingRate from './CountingRate';
 import AuthContext from "./AuthenticationContext";
-
+import {frontendURL} from './static_ts_files/constants'
 
 interface ProductCardProps {
     item: {
@@ -37,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, rate }) => {
         }
 
         else {
-            navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
+            navigate("/login/", {state: {link: `${frontendURL}/login/`, inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
         }
     }
     

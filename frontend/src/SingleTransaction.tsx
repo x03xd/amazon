@@ -4,6 +4,8 @@ import { ProductsInterface } from './static_ts_files/commonInterfaces';
 import AuthContext from "./AuthenticationContext";
 import ProductsPerTransaction from './ProductsPerTransaction';
 import getCookie from './getCookie';
+import {backendURL} from './static_ts_files/constants'
+
 
 interface SingleTransactionProps {
     transaction: TransactionsAPI;
@@ -22,7 +24,7 @@ const SingleTransaction: React.FC<SingleTransactionProps> = ({ transaction }) =>
         const joinedIDs = transaction.bought_products.join(',');
     
         try {
-            fetch(`http://127.0.0.1:8000/api/transactions/single/${joinedIDs}`, {
+            fetch(`${backendURL}/transactions/single/${joinedIDs}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${authToken}`, 

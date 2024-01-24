@@ -7,6 +7,7 @@ import CartSideBar from './CartSideBar'
 import { useNavigate } from 'react-router-dom';
 import { ProductsInterface } from './static_ts_files/commonInterfaces';
 import Recommendations from './Recommendations';
+import {backendURL, frontendURL} from './static_ts_files/constants'
 
 interface CartItem {
     id: number;
@@ -35,7 +36,7 @@ const Card: React.FC = () => {
     useEffect(() => {
         
         try{
-            fetch(`http://127.0.0.1:8000/api/cart`, {
+            fetch(`${backendURL}/cart`, {
                 method: 'GET',
                 headers: {
                     'Content-Type':'application/json',
@@ -66,7 +67,7 @@ const Card: React.FC = () => {
     }
     
     const navigateToLogin = () => {
-        navigate("/login/", {state: {link: 'http://127.0.0.1:8000/login/', inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
+        navigate("/login/", {state: {link: `${frontendURL}/login/`, inputValue: 'Dalej', style: 'active', style2: 'hidden', content: 'E-mail lub numer telefonu komórkowego'}});
     }
 
     const navigateToRegister = () => {

@@ -1,5 +1,6 @@
 import { PriceLimits, Brands } from './commonInterfaces';
 
+
 export const isOnlyNumber = (str: string): boolean => {
     return /^[0-9]+$/.test(str);
 }

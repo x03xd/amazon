@@ -4,6 +4,7 @@ import React from 'react';
 import { ratingStars } from './static_ts_files/ratingLevels';
 import AuthContext from "./AuthenticationContext";
 import { faStar } from '@fortawesome/free-solid-svg-icons'
+import {backendURL} from './static_ts_files/constants'
 
 interface CountingRateProps {
     rate: number | null;
@@ -69,7 +70,7 @@ const CountingRate: React.FC<CountingRateProps> = ({rate, product_id}) => {
     const productRate = async (user_rate: number) => {
 
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/rate-product/update/${product_id}/${user_rate}`, {
+            const response = await fetch(`${backendURL}/rate-product/update/${product_id}/${user_rate}`, {
                 method: 'PATCH',
                 headers:{
                     'Content-Type':'application/json',
@@ -97,7 +98,7 @@ const CountingRate: React.FC<CountingRateProps> = ({rate, product_id}) => {
 
     const deleteRate = async () => {
         try{
-            await fetch(`http://127.0.0.1:8000/api/rate-product/delete/${product_id}`, {
+            await fetch(`${backendURL}/rate-product/delete/${product_id}`, {
                 method: 'DELETE',
                 headers:{
                     'Content-Type':'application/json',
